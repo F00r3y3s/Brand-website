@@ -1,0 +1,233 @@
+/* 
+ * Design System 2.0 - Premium Typography & Color Tokens
+ * AInar Brand Agency - Awwwards-level Design System
+ */
+
+:root {
+    /* ========================================
+     TYPOGRAPHY SCALE - Dramatic Hierarchy
+     ======================================== */
+
+    /* Display Typography - Refined & Elegant (Awwwards-level) */
+    --text-display-mega: clamp(48px, 8vw, 120px);
+    /* Hero headlines */
+    --text-display-xxl: clamp(42px, 7vw, 96px);
+    /* Section heroes */
+    --text-display-xl: clamp(32px, 5vw, 64px);
+    /* Major headings */
+    --text-display-lg: clamp(28px, 4vw, 42px);
+    /* Subheadings */
+
+    /* Body Typography - Refined Readability */
+    --text-body-xl: clamp(18px, 1.5vw, 22px);
+    /* Large body */
+    --text-body-lg: clamp(16px, 1.2vw, 18px);
+    /* Medium body */
+    --text-body-base: clamp(15px, 1.1vw, 16px);
+    /* Default body */
+    --text-body-sm: 13px;
+    /* Small text */
+    --text-body-xs: 11px;
+    /* Captions */
+
+    /* Font Weights - Expressive Range */
+    --font-weight-light: 300;
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    --font-weight-black: 900;
+
+    /* Letter Spacing - Optimized for Precision */
+    --letter-spacing-tighter: -0.04em;
+    /* Display mega */
+    --letter-spacing-tight: -0.02em;
+    /* Display headers */
+    --letter-spacing-normal: -0.01em;
+    /* Body text */
+    --letter-spacing-wide: 0.05em;
+    /* Uppercase labels */
+
+    /* Line Heights - Airy and Deliberate */
+    --line-height-tight: 0.95;
+    /* Mega display */
+    --line-height-snug: 1.1;
+    /* Display */
+    --line-height-comfortable: 1.5;
+    /* Subheadings */
+    --line-height-relaxed: 1.7;
+    /* Body text */
+    --line-height-loose: 1.9;
+    /* Large body */
+
+    /* ========================================
+     COLOR SYSTEM - 9-Stop Scales
+     ======================================== */
+
+    /* Gold Palette - Primary Brand */
+    --gold-50: #FBF7ED;
+    --gold-100: #F4E4C1;
+    --gold-200: #EDD89B;
+    --gold-300: #E5CC75;
+    --gold-400: #DEC05B;
+    --gold-500: #D4AF37;
+    /* Primary gold */
+    --gold-600: #C19F32;
+    --gold-700: #967C27;
+    --gold-800: #74601E;
+    --gold-900: #594917;
+
+    /* Sand Palette - Secondary Warm */
+    --sand-50: #FDF9F0;
+    --sand-100: #F9EDCC;
+    --sand-200: #F5E1A9;
+    --sand-300: #F1D586;
+    --sand-400: #EDCA6F;
+    --sand-500: #E8B44F;
+    /* Primary sand */
+    --sand-600: #D5A448;
+    --sand-700: #A68038;
+    --sand-800: #81632B;
+    --sand-900: #634C21;
+
+    /* Accent Blue - Trust & Tech */
+    --accent-blue-50: #E6F4FF;
+    --accent-blue-100: #B3DFFF;
+    --accent-blue-200: #80CAFF;
+    --accent-blue-300: #4DB5FF;
+    --accent-blue-400: #2AA5FF;
+    --accent-blue-500: #1E90FF;
+    /* Primary blue */
+    --accent-blue-600: #1B82E6;
+    --accent-blue-700: #1566B3;
+    --accent-blue-800: #104F8B;
+    --accent-blue-900: #0D3C6A;
+
+    /* Accent Emerald - Growth & Sustainability */
+    --accent-emerald-50: #E6FAF3;
+    --accent-emerald-100: #B3F0DB;
+    --accent-emerald-200: #80E6C3;
+    --accent-emerald-300: #4DDCAB;
+    --accent-emerald-400: #26D69D;
+    --accent-emerald-500: #10B981;
+    /* Primary emerald */
+    --accent-emerald-600: #0EA775;
+    --accent-emerald-700: #0B825C;
+    --accent-emerald-800: #096547;
+    --accent-emerald-900: #074E37;
+
+    /* Accent Rose - Energy & Passion */
+    --accent-rose-50: #FEE7EC;
+    --accent-rose-100: #FCBCC9;
+    --accent-rose-200: #FA91A6;
+    --accent-rose-300: #F86683;
+    --accent-rose-400: #F6526C;
+    --accent-rose-500: #F43F5E;
+    /* Primary rose */
+    --accent-rose-600: #DD3956;
+    --accent-rose-700: #AD2C43;
+    --accent-rose-800: #862234;
+    --accent-rose-900: #671A28;
+
+    /* Neutrals - Premium Dark/Light */
+    --neutral-0: #FFFFFF;
+    --neutral-50: #FAFAFA;
+    --neutral-100: #F5F5F7;
+    --neutral-200: #ECECF1;
+    --neutral-300: #D1D1D6;
+    --neutral-400: #A1A1AA;
+    --neutral-500: #71717A;
+    --neutral-600: #52525B;
+    --neutral-700: #3F3F46;
+    --neutral-800: #27272A;
+    --neutral-900: #1A1A1A;
+    --neutral-950: #0A0A0A;
+
+    /* ========================================
+     SPACING SYSTEM - 4px Grid
+     ======================================== */
+
+    --spacing-0: 0;
+    --spacing-1: 4px;
+    --spacing-2: 8px;
+    --spacing-3: 12px;
+    --spacing-4: 16px;
+    --spacing-5: 20px;
+    --spacing-6: 24px;
+    --spacing-8: 32px;
+    --spacing-10: 40px;
+    --spacing-12: 48px;
+    --spacing-16: 64px;
+    --spacing-20: 80px;
+    --spacing-24: 96px;
+    --spacing-32: 128px;
+    --spacing-40: 160px;
+    --spacing-48: 192px;
+
+    /* ========================================
+     SHADOWS & GLOW - Premium Depth
+     ======================================== */
+
+    /* Elevation Shadows */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+    /* Glow Effects - Gold */
+    --glow-gold-sm: 0 0 10px rgb(212 175 55 / 0.3);
+    --glow-gold-md: 0 0 20px rgb(212 175 55 / 0.4), 0 0 40px rgb(212 175 55 / 0.2);
+    --glow-gold-lg: 0 0 30px rgb(212 175 55 / 0.5), 0 0 60px rgb(212 175 55 / 0.3), 0 0 90px rgb(212 175 55 / 0.1);
+
+    /* Glow Effects - Multi-color */
+    --glow-blue: 0 0 20px rgb(30 144 255 / 0.4), 0 0 40px rgb(30 144 255 / 0.2);
+    --glow-emerald: 0 0 20px rgb(16 185 129 / 0.4), 0 0 40px rgb(16 185 129 / 0.2);
+    --glow-rose: 0 0 20px rgb(244 63 94 / 0.4), 0 0 40px rgb(244 63 94 / 0.2);
+
+    /* ========================================
+     ANIMATION TIMING - Natural Motion
+     ======================================== */
+
+    /* Duration */
+    --duration-instant: 100ms;
+    --duration-fast: 200ms;
+    --duration-normal: 300ms;
+    --duration-slow: 500ms;
+    --duration-slower: 800ms;
+    --duration-slowest: 1200ms;
+
+    /* Easing Curves - Professional */
+    --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+    --ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
+    --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-premium: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* ========================================
+     RADIUS - Refined Corners
+     ======================================== */
+
+    --radius-none: 0;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+
+    /* ========================================
+     Z-INDEX LAYERS - Organized Depth
+     ======================================== */
+
+    --z-base: 0;
+    --z-dropdown: 1000;
+    --z-sticky: 1100;
+    --z-fixed: 1200;
+    --z-modal-backdrop: 1300;
+    --z-modal: 1400;
+    --z-popover: 1500;
+    --z-tooltip: 1600;
+}
