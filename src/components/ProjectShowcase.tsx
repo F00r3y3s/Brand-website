@@ -1,5 +1,14 @@
 'use client';
 
+/**
+ * ProjectShowcase - Scroll-pinned stacking cards
+ * 
+ * Animation: Cards stack on top of each other as user scrolls
+ * - Section pins when it enters viewport
+ * - Each card slides up from below and stacks on previous
+ * - After all cards shown, section unpins and page continues
+ */
+
 import React, { useEffect, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import gsap from 'gsap';
@@ -12,8 +21,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function ProjectShowcase() {
   const { language } = useLanguage();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
 
   const projects = [
     {
@@ -24,7 +33,7 @@ export default function ProjectShowcase() {
           ? ['AI Advisory', 'Sustainability', 'UX Design']
           : ['استشارات الذكاء الاصطناعي', 'الاستدامة', 'تصميم تجربة المستخدم'],
       imageUrl: '/projects/sustainability.png',
-      color: '#0A2A12' // Custom dark accent
+      color: 'var(--brand-teal)'
     },
     {
       title: language === 'en' ? 'AURUM Luxury App' : 'تطبيق أوروم الفاخر',
@@ -34,7 +43,7 @@ export default function ProjectShowcase() {
           ? ['Mobile App', 'Branding', 'Digital Strategy']
           : ['تطبيق الجوال', 'العلامة التجارية', 'الاستراتيجية الرقمية'],
       imageUrl: '/projects/fashion.png',
-      color: '#1A0505'
+      color: 'var(--brand-plum)'
     },
     {
       title: language === 'en' ? 'AI Core Visualizer' : 'مصور جوهر الذكاء الاصطناعي',
@@ -44,7 +53,7 @@ export default function ProjectShowcase() {
           ? ['Generative AI', 'Web Development', 'Future Labs']
           : ['الذكاء الاصطناعي التوليدي', 'تطوير الويب', 'مختبرات المستقبل'],
       imageUrl: '/projects/ai.png',
-      color: '#050A1A'
+      color: 'var(--brand-green)'
     },
     {
       title: language === 'en' ? 'Aetheled Brand' : 'علامة أيثليد التجارية',
@@ -54,123 +63,119 @@ export default function ProjectShowcase() {
           ? ['Brand Identity', '3D Visuals', 'Hospitality']
           : ['هوية العلامة التجارية', 'رسومات ثلاثية الأبعاد', 'الضيافة'],
       imageUrl: '/projects/hospitality.png',
-      color: '#1A1505'
+      color: 'var(--brand-gold)'
     },
   ];
 
-  useEffect(() => {
-    if (!containerRef.current || !cardsRef.current) return;
+  // All items including CTA
+  const totalCards = projects.length + 1; // 4 projects + 1 CTA = 5
 
-    const cards = Array.from(cardsRef.current.children) as HTMLDivElement[];
-    const totalScrollHeight = window.innerHeight * 3; // Scroll distance
+  useEffect(() => {
+    if (!sectionRef.current || !cardsContainerRef.current) return;
+
+    const cards = gsap.utils.toArray<HTMLElement>('.project-card');
+
+    // Kill any existing ScrollTriggers to prevent conflicts
+    ScrollTrigger.getAll().forEach(trigger => {
+      if (trigger.vars.id?.startsWith('project')) {
+        trigger.kill();
+      }
+    });
 
     const ctx = gsap.context(() => {
-
-      // Pin the entire section
-      ScrollTrigger.create({
-        trigger: containerRef.current,
-        start: 'top top',
-        end: `+=${totalScrollHeight}`,
-        pin: true,
-        scrub: true,
-        onUpdate: (self) => {
-          // Optional: track progress for other effects
+      // Create a timeline that we'll scrub through
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          // End after scrolling through all cards (1 viewport per card)
+          end: `+=${window.innerHeight * totalCards}`,
+          pin: true,
+          scrub: 1,
+          id: 'project-showcase',
         }
       });
 
-      // Stacking Animation
-      // Card 1 starts visible.
-      // Card 2 slides up over Card 1.
-      // Card 3 slides up over Card 2.
-      // Each previous card scales down slightly and darkens.
+      // Animate each card (except first which is already visible)
+      cards.forEach((card, index) => {
+        if (index === 0) {
+          // First card is already in position
+          gsap.set(card, { y: 0 });
+          return;
+        }
 
-      cards.forEach((card, i) => {
-        if (i === 0) return; // First card stays put initially
+        // Set initial position: below the viewport
+        gsap.set(card, { y: '100%' });
 
-        // Initial state for subsequent cards: pushed down
-        gsap.set(card, {
-          y: window.innerHeight,
-          scale: 1,
-          filter: 'brightness(1)'
-        });
-
-        // The timeline for THIS card's entry
-        gsap.to(card, {
+        // Add to timeline: slide up into view
+        // Each card takes 1 unit of timeline, spaced evenly
+        tl.to(card, {
           y: 0,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: `top top+=${(i - 1) * (totalScrollHeight / (cards.length - 1))}`,
-            end: `top top+=${i * (totalScrollHeight / (cards.length - 1))}`,
-            scrub: true,
-          }
-        });
+          duration: 1,
+          ease: 'power2.out',
+        }, index - 1); // Start at timeline position (index-1)
 
-        // The timeline for the PREVIOUS card's exit (scale down + darken)
-        if (i > 0) {
-          const prevCard = cards[i - 1];
-          gsap.to(prevCard, {
-            scale: 0.9 + (0.05 * (cards.length - i)), // varying scale for stack effect
-            filter: 'brightness(0.6)',
-            y: -50, // Slight push up
-            ease: 'none',
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: `top top+=${(i - 1) * (totalScrollHeight / (cards.length - 1))}`,
-              end: `top top+=${i * (totalScrollHeight / (cards.length - 1))}`,
-              scrub: true,
-            }
-          });
+        // Optionally dim previous card when new one arrives
+        if (index > 0) {
+          tl.to(cards[index - 1], {
+            scale: 0.95,
+            filter: 'brightness(0.7)',
+            duration: 1,
+            ease: 'power2.out',
+          }, index - 1); // Same time as card slides in
         }
       });
-
-    }, containerRef);
+    }, sectionRef);
 
     return () => ctx.revert();
-  }, [projects.length]);
+  }, [totalCards]);
 
   return (
-    <div className="bg-neutral-950">
-      <section
-        ref={containerRef}
-        className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden"
-      >
-        {/* Header Content - Absolute at top */}
-        <div className="absolute top-12 left-6 right-6 md:top-20 md:left-24 md:right-24 z-10 flex justify-between items-start pointer-events-none">
-          <div className="space-y-4">
-            <TextRevealer
-              text={language === 'en' ? 'SELECTED WORKS' : 'أعمال مختارة'}
-              className="text-gold text-[10px] font-black uppercase tracking-[0.5em]"
-            />
-            <h2 className="text-4xl md:text-5xl font-black font-display text-white tracking-tighter leading-none">
-              {language === 'en' ? 'CASE STUDIES' : 'دراسات الحالة'}
-            </h2>
-          </div>
+    <div className="bg-neutral-50 relative">
 
-          <div className="hidden md:flex flex-col items-end gap-2 text-right">
-            <span className="text-gold text-sm font-bold">01 — 04</span>
-            <span className="text-neutral-500 text-[10px] uppercase tracking-widest">Scroll to Explore</span>
-          </div>
+      {/* Header - Scrolls with page */}
+      <div className="py-24 px-6 md:px-24 flex flex-col items-center justify-center text-center pb-0">
+        <TextRevealer
+          text={language === 'en' ? 'SELECTED WORKS' : 'أعمال مختارة'}
+          className="text-teal text-[10px] font-black uppercase tracking-[0.5em]"
+        />
+        <h2 className="text-4xl md:text-5xl font-black font-display text-neutral-900 tracking-tighter leading-none mb-12">
+          {language === 'en' ? 'CASE STUDIES' : 'دراسات الحالة'}
+        </h2>
+      </div>
+
+      {/* Pinned Section */}
+      <section
+        ref={sectionRef}
+        className="relative h-screen w-full flex flex-col items-center justify-start overflow-hidden pt-12"
+      >
+        {/* Counter indicator */}
+        <div className="hidden md:flex flex-col items-end gap-2 text-right absolute top-12 right-12 z-20">
+          <span className="text-plum text-sm font-bold tracking-widest leading-none">01 — 0{totalCards}</span>
+          <span className="text-neutral-500 text-[10px] uppercase tracking-[0.3em]">Scroll to Explore</span>
         </div>
 
         {/* Cards Container */}
         <div
-          ref={cardsRef}
-          className="relative w-full max-w-[1000px] h-[60vh] md:h-[70vh] flex items-center justify-center perspective-1000"
+          ref={cardsContainerRef}
+          className="relative w-full max-w-[1000px] h-[60vh] md:h-[70vh]"
         >
+          {/* Project Cards */}
           {projects.map((project, index) => (
             <div
               key={index}
-              className="absolute inset-0 w-full h-full p-4 md:p-0 flex items-center justify-center origin-bottom"
-              style={{ zIndex: index + 1 }}
+              className="project-card absolute inset-0 w-full h-full p-4 md:p-0"
+              style={{ zIndex: index + 10 }}
             >
-              {/* Wrapper for the card to allow independent internal layout if needed */}
-              <div className="w-full h-full relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-neutral-900 group">
+              <div
+                className="w-full h-full relative rounded-[2rem] overflow-hidden shadow-2xl border border-black/5 group"
+                style={{ backgroundColor: project.color }}
+              >
                 <ProjectCard {...project} />
 
                 {/* Overlay Index */}
-                <div className="absolute top-8 left-8 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <span className="text-[120px] font-black text-white/5 leading-none font-display">
+                <div className="absolute top-8 left-8 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-1000">
+                  <span className="text-[120px] font-black text-white/10 leading-none font-display pointer-events-none">
                     0{index + 1}
                   </span>
                 </div>
@@ -178,30 +183,34 @@ export default function ProjectShowcase() {
             </div>
           ))}
 
-          {/* "Next Project" CTA Card - The final card in the stack */}
+          {/* CTA Card - Last in stack */}
           <div
-            className="absolute inset-0 w-full h-full flex items-center justify-center origin-bottom bg-gold p-12 rounded-3xl text-center"
-            style={{ zIndex: projects.length + 1, transform: 'translateY(100vh)' }} // Start off-screen
+            className="project-card absolute inset-0 w-full h-full flex items-center justify-center p-4 md:p-0"
+            style={{ zIndex: projects.length + 20 }}
           >
-            <div className="flex flex-col items-center gap-8">
-              <h3 className="text-4xl md:text-7xl font-black text-black tracking-tighter uppercase leading-none">
-                {language === 'en' ? 'YOUR VISION' : 'رؤيتك'}
-                <br />
-                {language === 'en' ? 'STARTS HERE' : 'تبدأ هنا'}
-              </h3>
-              <button className="px-10 py-5 bg-black text-white rounded-full font-bold uppercase tracking-widest hover:scale-110 transition-transform duration-300 flex items-center gap-4">
-                {language === 'en' ? 'Start Project' : 'ابدأ المشروع'}
-                <ArrowRight className="w-5 h-5" />
-              </button>
+            <div className="w-full h-full bg-plum rounded-[2rem] flex flex-col items-center justify-center text-center shadow-2xl relative overflow-hidden">
+              <div className="relative z-10 flex flex-col items-center gap-10">
+                <h3 className="text-4xl md:text-7xl font-black text-white tracking-tighter uppercase leading-none font-display">
+                  {language === 'en' ? 'YOUR VISION' : 'رؤيتك'}
+                  <br />
+                  <span className="text-teal">
+                    {language === 'en' ? 'STARTS HERE' : 'تبدأ هنا'}
+                  </span>
+                </h3>
+                <button className="px-12 py-6 bg-gold text-black rounded-full font-bold uppercase tracking-[0.2em] hover:scale-110 active:scale-95 transition-all duration-500 shadow-xl flex items-center gap-4 group/btn">
+                  {language === 'en' ? 'Start Project' : 'ابدأ المشروع'}
+                  <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-2 transition-transform" />
+                </button>
+              </div>
+              {/* Background glow */}
+              <div className="absolute inset-0 bg-gold/10 blur-3xl rounded-full scale-150 animate-pulse pointer-events-none" />
             </div>
           </div>
         </div>
 
-        {/* Background Ambient Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold/5 blur-[120px] rounded-full pointer-events-none -z-10" />
-
+        {/* Background Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-teal/5 blur-[150px] rounded-full pointer-events-none -z-10" />
       </section>
     </div>
   );
 }
-

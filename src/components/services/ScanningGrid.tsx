@@ -1,12 +1,22 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 
 export default function ScanningGrid() {
     const containerRef = useRef<HTMLDivElement>(null);
     const scannerRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<HTMLDivElement>(null);
+
+    // Client-only random generation - fixes hydration error
+    const [binaryValues, setBinaryValues] = useState<string[]>(
+        Array(100).fill('0') // Server renders all zeros
+    );
+
+    useEffect(() => {
+        // Generate random values ONLY on client
+        setBinaryValues(Array.from({ length: 100 }, () => Math.random() > 0.5 ? '1' : '0'));
+    }, []);
 
     useEffect(() => {
         if (!containerRef.current || !gridRef.current) return;
@@ -59,7 +69,7 @@ export default function ScanningGrid() {
                     >
                         {/* Binary-style bits appearing randomly */}
                         <span className="text-[6px] font-mono text-gold/20 hidden group-hover:block">
-                            {Math.random() > 0.5 ? '1' : '0'}
+                            {binaryValues[i]}
                         </span>
                     </div>
                 ))}

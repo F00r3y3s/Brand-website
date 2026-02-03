@@ -130,19 +130,27 @@
     --accent-rose-800: #862234;
     --accent-rose-900: #671A28;
 
-    /* Neutrals - Premium Dark/Light */
+    /* UAE-Organic Palette - Inspired by Nature & Tech */
+    --brand-teal: #3B7E84;
+    --brand-gold: #DDA15E;
+    --brand-plum: #5A375A;
+    --brand-cream: #FAF7F2;
+    --brand-green: #B5C99A;
+    --brand-sand: #E8B44F;
+
+    /* Neutrals - Premium Organic Basis */
     --neutral-0: #FFFFFF;
-    --neutral-50: #FAFAFA;
-    --neutral-100: #F5F5F7;
-    --neutral-200: #ECECF1;
-    --neutral-300: #D1D1D6;
-    --neutral-400: #A1A1AA;
-    --neutral-500: #71717A;
-    --neutral-600: #52525B;
-    --neutral-700: #3F3F46;
-    --neutral-800: #27272A;
-    --neutral-900: #1A1A1A;
-    --neutral-950: #0A0A0A;
+    --neutral-50: var(--brand-cream);
+    --neutral-100: #F1EBE4;
+    --neutral-200: #ECE4DA;
+    --neutral-300: #D1C7BB;
+    --neutral-400: #A1988E;
+    --neutral-500: #716961;
+    --neutral-600: #524B45;
+    --neutral-700: #3F3934;
+    --neutral-800: #27231F;
+    --neutral-900: #1A1816;
+    --neutral-950: #0D0C0B;
 
     /* ========================================
      SPACING SYSTEM - 4px Grid

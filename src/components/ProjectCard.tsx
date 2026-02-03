@@ -71,10 +71,10 @@ export default function ProjectCard({
       }}
       whileHover={{ scale: 1.01 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative block rounded-3xl overflow-hidden bg-white/5 backdrop-blur-sm border border-white/10 hover:border-gold/30 transition-all duration-500 shadow-2xl"
+      className="group relative block w-full h-full rounded-[2rem] overflow-hidden transition-all duration-500"
     >
       {/* Project Image Container */}
-      <div className="relative h-[300px] sm:h-[350px] md:h-[400px] lg:h-[450px] overflow-hidden">
+      <div className="relative w-full h-full overflow-hidden">
         <motion.img
           src={imageUrl}
           alt={title}
@@ -83,30 +83,30 @@ export default function ProjectCard({
             y: imgY,
             scale: 1.1,
           }}
-          className="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 transition-all duration-1000 brightness-[0.7] group-hover:brightness-90"
+          className="w-full h-full object-cover transition-all duration-1000 brightness-75 group-hover:brightness-90"
         />
 
-        {/* Cinematic Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90" />
+        {/* Cinematic Overlays - Softer for organic feel */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />
 
         {/* View Case Study pill */}
-        <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-all duration-700 -translate-y-2 group-hover:translate-y-0">
-          <div className="flex items-center gap-2 px-6 py-3 bg-white text-black font-black text-[10px] uppercase tracking-widest shadow-2xl rounded-sm">
+        <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-all duration-700 -translate-y-4 group-hover:translate-y-0">
+          <div className="flex items-center gap-2 px-8 py-4 bg-white text-black font-black text-[10px] uppercase tracking-widest shadow-2xl rounded-full">
             <span>{language === 'en' ? 'Open Case' : 'فتح الحالة'}</span>
             <ArrowUpRight size={14} />
           </div>
         </div>
 
         {/* Bottom Metadata */}
-        <div className="absolute bottom-10 left-10 right-10 z-20">
-          <div className="flex flex-col gap-3">
+        <div className="absolute bottom-12 left-12 right-12 z-20">
+          <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <span className="text-gold font-bold tracking-[0.4em] text-[10px] uppercase">
+              <span className="text-white/60 font-bold tracking-[0.4em] text-[11px] uppercase">
                 {client}
               </span>
             </div>
 
-            <h3 className="text-3xl md:text-5xl font-black font-display text-white leading-none group-hover:tracking-wider transition-all duration-700 ease-premium">
+            <h3 className="text-4xl md:text-6xl font-black font-display text-white leading-[0.9] tracking-tighter group-hover:tracking-tight transition-all duration-700">
               {title}
             </h3>
 

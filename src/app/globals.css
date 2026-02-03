@@ -4,66 +4,41 @@
 /* Tailwind v4 Theme Configuration */
 @theme {
   /* Extend default Tailwind colors */
-  --color-gold: var(--gold-500);
-  --color-gold-50: var(--gold-50);
-  --color-gold-100: var(--gold-100);
-  --color-gold-200: var(--gold-200);
-  --color-gold-300: var(--gold-300);
-  --color-gold-400: var(--gold-400);
-  --color-gold-500: var(--gold-500);
-  --color-gold-600: var(--gold-600);
-  --color-gold-700: var(--gold-700);
-  --color-gold-800: var(--gold-800);
-  --color-gold-900: var(--gold-900);
-
-  --color-sand: var(--sand-500);
-  --color-sand-50: var(--sand-50);
-  --color-sand-100: var(--sand-100);
-  --color-sand-200: var(--sand-200);
-  --color-sand-300: var(--sand-300);
-  --color-sand-400: var(--sand-400);
-  --color-sand-500: var(--sand-500);
-  --color-sand-600: var(--sand-600);
-  --color-sand-700: var(--sand-700);
-  --color-sand-800: var(--sand-800);
-  --color-sand-900: var(--sand-900);
-
-  --color-accent-blue: #1E90FF;
-  --color-accent-emerald: #10B981;
-  --color-accent-rose: #F43F5E;
+  --color-gold: var(--brand-gold);
+  --color-teal: var(--brand-teal);
+  --color-plum: var(--brand-plum);
+  --color-cream: var(--brand-cream);
+  --color-sand: var(--brand-sand);
+  --color-green: var(--brand-green);
 
   /* Dark mode colors */
-  --color-dark-primary: #0A0A0A;
-  --color-dark-secondary: #1A1A1A;
-  --color-light-primary: #FFFFFF;
-  --color-light-secondary: #F5F5F7;
+  --color-dark-primary: var(--neutral-900);
+  --color-dark-secondary: var(--neutral-800);
+
+  /* Base Colors - Premium Organic */
+  --color-dark-primary: var(--neutral-950);
+  --color-dark-secondary: var(--neutral-900);
+  --color-dark-tertiary: var(--neutral-800);
+  --color-light-primary: var(--brand-cream);
+  --color-light-secondary: var(--neutral-100);
+  --color-light-tertiary: var(--neutral-200);
 }
 
-/* UAE-Inspired Color System - CSS Variables */
+/* UAE-Organic Color System - CSS Variables */
 :root {
-  /* Primary Palette - Gold & Desert Tones - ENHANCED for premium feel */
-  --color-gold: #D4AF37;
-  --color-gold-light: #F4E4C1;
-  --color-sand: #E8B44F;
-  --color-desert-dark: #8B6F47;
+  --color-gold: var(--brand-gold);
+  --color-teal: var(--brand-teal);
+  --color-plum: var(--brand-plum);
+  --color-cream: var(--brand-cream);
+  --color-sand: var(--brand-sand);
 
-  /* Base Colors - Premium Dark/Light */
-  --color-dark-primary: #0A0A0A;
-  --color-dark-secondary: #1A1A1A;
-  --color-dark-tertiary: #2A2A2A;
-  --color-light-primary: #FFFFFF;
-  --color-light-secondary: #F5F5F7;
-  --color-light-tertiary: #ECECF1;
-
-  /* Accent Colors */
-  --color-accent-blue: #1E90FF;
-  --color-accent-emerald: #10B981;
-  --color-accent-rose: #F43F5E;
-
-  /* Text Colors */
-  --color-text-primary: #000000;
-  --color-text-secondary: #666666;
-  --color-text-tertiary: #999999;
+  /* Base Colors - Premium Organic */
+  --color-dark-primary: var(--neutral-950);
+  --color-dark-secondary: var(--neutral-900);
+  --color-dark-tertiary: var(--neutral-800);
+  --color-light-primary: var(--brand-cream);
+  --color-light-secondary: var(--neutral-100);
+  --color-light-tertiary: var(--neutral-200);
 
   /* Typography Variables */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -71,10 +46,10 @@
   --font-display: var(--font-outfit), sans-serif;
 
   /* Theme Variables */
-  --background: #ffffff;
-  --foreground: #171717;
-  --muted-bg: #f5f5f5;
-  --border: #e5e5e5;
+  --background: var(--brand-cream);
+  --foreground: var(--neutral-950);
+  --muted-bg: var(--neutral-100);
+  --border: var(--neutral-200);
 }
 
 @media (prefers-color-scheme: dark) {

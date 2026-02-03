@@ -85,7 +85,7 @@ export default function Header() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isVisible ? 'translate-y-0' : '-translate-y-full'
           } ${isScrolled
-            ? 'bg-neutral-950/80 backdrop-blur-xl border-b border-neutral-800/50 shadow-2xl'
+            ? 'bg-cream/80 backdrop-blur-xl border-b border-neutral-200/50 shadow-sm'
             : 'bg-transparent'
           }`}
       >
@@ -111,7 +111,7 @@ export default function Header() {
             >
               <div className="flex items-center gap-1.5">
                 <span
-                  className="font-display font-black text-neutral-100 transition-all duration-300 group-hover:scale-110"
+                  className="font-display font-black text-neutral-900 transition-all duration-300 group-hover:scale-110"
                   style={{ fontSize: '28px' }}
                 >
                   A
@@ -120,14 +120,14 @@ export default function Header() {
                   className="font-display font-black text-gradient-animate bg-clip-text text-transparent transition-all duration-300 group-hover:scale-110"
                   style={{
                     fontSize: '28px',
-                    backgroundImage: 'linear-gradient(90deg, var(--gold-400), var(--sand-400), var(--gold-400))',
+                    backgroundImage: 'linear-gradient(90deg, var(--brand-teal), var(--brand-gold), var(--brand-plum))',
                     backgroundSize: '200% auto'
                   }}
                 >
                   I
                 </span>
                 <span
-                  className="font-display font-black text-neutral-100 transition-all duration-300 group-hover:scale-110"
+                  className="font-display font-black text-neutral-900 transition-all duration-300 group-hover:scale-110"
                   style={{ fontSize: '28px' }}
                 >
                   nar
@@ -165,14 +165,14 @@ export default function Header() {
               {/* Hamburger Menu Button */}
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="p-3 rounded-full transition-all duration-300 hover:bg-gold-500/10 border border-transparent hover:border-gold-500/30 group relative overflow-hidden"
+                className="p-3 rounded-full transition-all duration-300 hover:bg-teal/5 border border-transparent hover:border-teal/20 group relative overflow-hidden"
                 aria-label={isOpen ? 'Close menu' : 'Open menu'}
               >
                 <div className="relative z-10">
                   {isOpen ? (
-                    <X size={24} className="text-neutral-100 transition-transform duration-300 rotate-90" />
+                    <X size={24} className="text-neutral-900 transition-transform duration-300 rotate-90" />
                   ) : (
-                    <Menu size={24} className="text-neutral-400 group-hover:text-gold-400 transition-colors" />
+                    <Menu size={24} className="text-neutral-500 group-hover:text-teal transition-colors" />
                   )}
                 </div>
               </button>

@@ -29,11 +29,11 @@ const VisualFactory = ({ service }: { service: Service }) => {
         <div className="absolute inset-0 overflow-hidden">
           {/* Fallback pattern if no image */}
           <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10" />
-          <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 to-black" />
+          <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 to-cream" />
         </div>
       );
     default:
-      return <div className="absolute inset-0 bg-neutral-900" />;
+      return <div className="absolute inset-0 bg-neutral-100" />;
   }
 };
 
@@ -104,7 +104,7 @@ export default function Services() {
   }, []);
 
   return (
-    <div className="bg-neutral-950 overflow-hidden">
+    <div className="bg-cream overflow-hidden">
       <section
         id="services"
         ref={containerRef}
@@ -117,16 +117,16 @@ export default function Services() {
           className="absolute inset-0 flex flex-col items-center justify-center z-10 text-center px-4"
         >
           <div className="space-y-6">
-            <span className="inline-block text-gold text-xs font-black uppercase tracking-[0.5em] border border-gold/30 px-4 py-2 rounded-full">
+            <span className="inline-block text-teal text-xs font-black uppercase tracking-[0.5em] border border-teal/20 px-6 py-2 rounded-full">
               {language === 'en' ? 'OUR CAPABILITIES' : 'قدراتنا'}
             </span>
-            <h2 className="text-5xl md:text-8xl font-black font-display text-white tracking-tighter leading-none">
+            <h2 className="text-5xl md:text-8xl font-black font-display text-neutral-900 tracking-tighter leading-none">
               {language === 'en' ? 'BEYOND' : 'ما وراء'} <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold via-white to-gold animate-gradient-shift">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal via-plum to-teal animate-gradient-shift">
                 {language === 'en' ? 'BOUNDARIES' : 'الحدود'}
               </span>
             </h2>
-            <p className="max-w-xl mx-auto text-neutral-400 text-sm md:text-base font-medium leading-relaxed">
+            <p className="max-w-xl mx-auto text-neutral-600 text-sm md:text-base font-medium leading-relaxed">
               {language === 'en'
                 ? 'Comprehensive design and technology solutions tailored for the ambitious.'
                 : 'حلول تصميم وتكنولوجيا شاملة مصممة للطموحين.'}
@@ -144,26 +144,26 @@ export default function Services() {
               key={service.id}
               className="relative w-[300px] md:w-[450px] h-full flex-shrink-0 group perspective-1000"
             >
-              <div className="w-full h-full relative rounded-2xl overflow-hidden bg-neutral-900 border border-white/5 transition-transform duration-500 group-hover:scale-[1.02] group-hover:border-gold/30 select-none">
+              <div className="w-full h-full relative rounded-2xl overflow-hidden bg-white border border-neutral-100 transition-transform duration-500 group-hover:scale-[1.02] group-hover:border-teal/30 select-none shadow-sm">
 
                 {/* Background Visual */}
                 <VisualFactory service={service} />
-                <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors duration-500" />
+                <div className="absolute inset-0 bg-white/40 group-hover:bg-white/20 transition-colors duration-500" />
 
                 {/* Content */}
                 <div className="absolute inset-0 p-8 flex flex-col justify-between">
                   <div className="flex justify-between items-start">
-                    <span className="text-4xl font-black text-white/10 group-hover:text-gold/20 transition-colors">0{index + 1}</span>
-                    <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-gold group-hover:text-black transition-all duration-300">
+                    <span className="text-4xl font-black text-neutral-200 group-hover:text-teal/20 transition-colors">0{index + 1}</span>
+                    <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center group-hover:bg-teal group-hover:text-white transition-all duration-300">
                       <MoveRight className="w-4 h-4 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
                     </div>
                   </div>
 
                   <div className="space-y-4 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <h3 className="text-2xl md:text-3xl font-black font-display text-white uppercase leading-none">
+                    <h3 className="text-2xl md:text-3xl font-black font-display text-neutral-900 uppercase leading-none">
                       {language === 'en' ? service.title.en : service.title.ar}
                     </h3>
-                    <p className="text-sm text-neutral-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-3">
+                    <p className="text-sm text-neutral-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-3">
                       {language === 'en' ? service.description.en : service.description.ar}
                     </p>
                   </div>
@@ -174,9 +174,9 @@ export default function Services() {
 
           {/* End Card */}
           <div className="w-[300px] h-full flex flex-col justify-center items-start pl-12">
-            <h3 className="text-4xl font-black font-display text-white leading-tight uppercase">
+            <h3 className="text-4xl font-black font-display text-neutral-900 leading-tight uppercase">
               {language === 'en' ? 'READY TO' : 'مستعد'} <br />
-              <span className="text-gold">{language === 'en' ? 'SCALE?' : 'للتوسع؟'}</span>
+              <span className="text-teal">{language === 'en' ? 'SCALE?' : 'للتوسع؟'}</span>
             </h3>
           </div>
         </div>

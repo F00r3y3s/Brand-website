@@ -33,10 +33,10 @@ export default function CulturalPattern({ className = '' }: { className?: string
     }, []);
 
     return (
-        <div className={`absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-10 mix-blend-overlay ${className}`}>
+        <div className={`absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-20 ${className}`}>
             <svg
                 ref={patternRef}
-                className="w-full h-full text-gold"
+                className="w-full h-full text-teal"
                 viewBox="0 0 100 100"
                 preserveAspectRatio="xMidYMid slice"
                 xmlns="http://www.w3.org/2000/svg"
@@ -70,9 +70,9 @@ export default function CulturalPattern({ className = '' }: { className?: string
                 <rect width="100%" height="100%" fill="url(#mashrabiya-pattern)" />
             </svg>
 
-            {/* Vignette gradients to fade edges */}
-            <div className="absolute inset-0 bg-gradient-to-t from-dark-primary via-transparent to-dark-primary" />
-            <div className="absolute inset-0 bg-gradient-to-r from-dark-primary via-transparent to-dark-primary" />
+            {/* Vignette gradients to fade edges - Adjusted for light theme */}
+            <div className="absolute inset-0 bg-gradient-to-t from-cream via-transparent to-cream opacity-80" />
+            <div className="absolute inset-0 bg-gradient-to-r from-cream via-transparent to-cream opacity-80" />
         </div>
     );
 }

@@ -39,7 +39,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="bg-neutral-950 min-h-screen">
+    <main className="bg-cream min-h-screen">
       <Header />
       <Hero />
       <ProjectShowcase />

@@ -29,11 +29,11 @@ export default function KineticText({
             gsap.fromTo(chars,
                 {
                     opacity: 0,
-                    scale: 0.5,
-                    y: 60,
-                    rotateX: 90,
-                    filter: 'blur(10px)',
-                    transformOrigin: '50% 100%',
+                    scale: 0.8,
+                    y: 100,
+                    rotateX: -45,
+                    filter: 'blur(20px)',
+                    transformOrigin: '50% 50%',
                 },
                 {
                     opacity: 1,
@@ -47,7 +47,8 @@ export default function KineticText({
                     },
                     duration: duration,
                     delay: delay,
-                    ease: 'elastic.out(1, 0.8)'
+                    ease: 'power4.out',
+                    overwrite: true,
                 }
             );
         }, containerRef);
