@@ -40,3 +40,13 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .mcp.json
+
+# Custom Exclusions (Antigravity)
+30 sites/
+AINAR (FZE).pdf
+AINAR_Website_Phase1_Technical_Brief.docx
+DEVELOPMENT_CHECKLIST.md
+.agent/
+implementation plan.md
+task.md
+docs/SPEC-ainar.md

@@ -3,6 +3,10 @@
 
 /* Tailwind v4 Theme Configuration */
 @theme {
+  /* Dark mode strategy - use class-based dark mode */
+  --color-scheme-dark: dark;
+  --color-scheme-light: light;
+  
   /* Extend default Tailwind colors */
   --color-gold: var(--brand-gold);
   --color-teal: var(--brand-teal);
@@ -175,6 +179,27 @@
 
   html.light {
     color-scheme: light;
+  }
+
+  /* Dark mode styles */
+  html.dark {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --muted-bg: #1a1a1a;
+    --border: #333333;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #b0b0b0;
+    --color-text-tertiary: #777777;
+  }
+
+  html:not(.dark) {
+    --background: var(--brand-cream);
+    --foreground: var(--neutral-950);
+    --muted-bg: var(--neutral-100);
+    --border: var(--neutral-200);
+    --color-text-primary: var(--neutral-950);
+    --color-text-secondary: var(--neutral-600);
+    --color-text-tertiary: var(--neutral-400);
   }
 }
 
