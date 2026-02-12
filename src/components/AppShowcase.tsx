@@ -85,7 +85,7 @@ const AppScreenSimulator = () => {
   );
 };
 
-export default function AppShowcase() {
+export default function AppShowcase({ isModal = false }: { isModal?: boolean }) {
   const { language } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
@@ -94,53 +94,74 @@ export default function AppShowcase() {
     if (!containerRef.current || !phoneRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Pin Scroll
-      ScrollTrigger.create({
-        trigger: containerRef.current,
-        start: 'top top',
-        end: '+=150%',
-        pin: true,
-        scrub: 1,
-      });
+      if (isModal) {
+        // Modal Mode: Auto-play animations without ScrollTrigger
+        gsap.to(phoneRef.current, {
+          rotateY: -15,
+          rotateX: 10,
+          scale: 1.1,
+          borderWidth: '2px',
+          borderColor: '#D4AF37',
+          duration: 1.5,
+          ease: 'power2.out',
+          delay: 0.2
+        });
 
-      // Phone Rotation & 3D Effect
-      gsap.to(phoneRef.current, {
-        rotateY: -15,
-        rotateX: 10,
-        scale: 1.1,
-        borderWidth: '2px',
-        borderColor: '#D4AF37', // Gold border glow on scroll
-        scrollTrigger: {
+        gsap.to('.stat-card', {
+          y: -100,
+          opacity: 1,
+          stagger: 0.2,
+          duration: 1,
+          ease: 'power2.out',
+          delay: 0.8
+        });
+      } else {
+        // Scroll Mode: ScrollTrigger animations
+        ScrollTrigger.create({
           trigger: containerRef.current,
           start: 'top top',
           end: '+=150%',
+          pin: true,
           scrub: 1,
-        }
-      });
+        });
 
-      // Floating Statistics Parallax
-      gsap.to('.stat-card', {
-        y: -100,
-        opacity: 1,
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top top',
-          end: '+=100%',
-          scrub: 1,
-        }
-      });
+        gsap.to(phoneRef.current, {
+          rotateY: -15,
+          rotateX: 10,
+          scale: 1.1,
+          borderWidth: '2px',
+          borderColor: '#D4AF37', // Gold border glow on scroll
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top top',
+            end: '+=150%',
+            scrub: 1,
+          }
+        });
+
+        gsap.to('.stat-card', {
+          y: -100,
+          opacity: 1,
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top top',
+            end: '+=100%',
+            scrub: 1,
+          }
+        });
+      }
 
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isModal]);
 
   return (
     <div className="bg-neutral-950 overflow-hidden">
       <section
         ref={containerRef}
-        className="relative h-screen w-full flex items-center justify-center overflow-hidden perspective-2000"
+        className={`relative w-full flex items-center justify-center overflow-hidden perspective-2000 ${isModal ? 'h-full py-8 sm:py-10 md:py-12' : 'h-screen'}`}
       >
         {/* Background Elements */}
         <div className="absolute inset-0 pointer-events-none">
@@ -162,12 +183,12 @@ export default function AppShowcase() {
         </div>
 
         <div className="relative z-10 flex flex-col items-center">
-          <div className="mb-12 text-center">
+          <div className={`text-center ${isModal ? 'mb-6 sm:mb-8 md:mb-10' : 'mb-12'}`}>
             <TextRevealer
               text={language === 'en' ? 'Seamless Experience' : 'تجربة سلسة'}
               className="text-gold text-xs font-black uppercase tracking-[0.4em] mb-4"
             />
-            <h2 className="text-4xl md:text-5xl font-black font-display text-white">
+            <h2 className={`font-black font-display text-white ${isModal ? 'text-3xl sm:text-4xl md:text-5xl' : 'text-4xl md:text-5xl'}`}>
               {language === 'en' ? 'The Future in Your Hand' : 'المستقبل بين يديك'}
             </h2>
           </div>
@@ -175,7 +196,7 @@ export default function AppShowcase() {
           {/* 3D Phone Container */}
           <div
             ref={phoneRef}
-            className="relative w-[300px] h-[600px] rounded-[48px] border-[8px] border-neutral-800 bg-neutral-950 shadow-2xl overflow-hidden transform-style-3d will-change-transform"
+            className={`relative rounded-[48px] border-[8px] border-neutral-800 bg-neutral-950 shadow-2xl overflow-hidden transform-style-3d will-change-transform ${isModal ? 'w-[220px] h-[440px] sm:w-[240px] sm:h-[480px] md:w-[280px] md:h-[560px] lg:w-[300px] lg:h-[600px]' : 'w-[300px] h-[600px]'}`}
             style={{ transform: 'rotateY(0deg) rotateX(0deg)' }}
           >
             {/* Frame Shine */}

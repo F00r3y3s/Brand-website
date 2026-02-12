@@ -29,10 +29,10 @@ export default function KineticText({
             gsap.fromTo(chars,
                 {
                     opacity: 0,
-                    scale: 0.8,
-                    y: 100,
-                    rotateX: -45,
-                    filter: 'blur(20px)',
+                    scale: 0.9,
+                    y: 80,
+                    rotateX: -30,
+                    filter: 'blur(10px)',
                     transformOrigin: '50% 50%',
                 },
                 {
@@ -42,12 +42,12 @@ export default function KineticText({
                     rotateX: 0,
                     filter: 'blur(0px)',
                     stagger: {
-                        amount: text.length * stagger,
+                        amount: text.length * (stagger * 0.8),
                         from: 'start',
                     },
-                    duration: duration,
+                    duration: duration * 0.7,
                     delay: delay,
-                    ease: 'power4.out',
+                    ease: 'power3.out',
                     overwrite: true,
                 }
             );
@@ -63,7 +63,7 @@ export default function KineticText({
         <div ref={containerRef} className={`${className} perspective-1000`}>
             <span className="sr-only">{text}</span>
             {words.map((word, wIndex) => (
-                <span key={wIndex} className="inline-block whitespace-nowrap mr-[0.25em]">
+                <span key={wIndex} className="inline-block whitespace-nowrap mr-[0.3em]">
                     {word.split('').map((char, cIndex) => (
                         <span
                             key={cIndex}

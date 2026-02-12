@@ -27,7 +27,8 @@ export default function GoldParticles({ count = 200 }) {
     const dummy = useMemo(() => new THREE.Object3D(), []);
 
     useFrame((state) => {
-        if (!mesh.current) return;
+        const currentMesh = mesh.current;
+        if (!currentMesh) return;
 
         particles.forEach((particle, i) => {
             let { t, factor, speed, x, y, z } = particle;
@@ -54,10 +55,10 @@ export default function GoldParticles({ count = 200 }) {
             dummy.rotation.set(s * 5, s * 5, s * 5);
             dummy.updateMatrix();
 
-            mesh.current.setMatrixAt(i, dummy.matrix);
+            currentMesh.setMatrixAt(i, dummy.matrix);
         });
 
-        mesh.current.instanceMatrix.needsUpdate = true;
+        currentMesh.instanceMatrix.needsUpdate = true;
     });
 
     return (

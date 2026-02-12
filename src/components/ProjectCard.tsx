@@ -2,8 +2,8 @@
 
 import React, { useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { ArrowUpRight, Sparkles } from 'lucide-react';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
 
 interface ProjectCardProps {
   title: string;
@@ -18,25 +18,23 @@ export default function ProjectCard({
   client,
   services,
   imageUrl,
-  link = '#',
+  link,
 }: ProjectCardProps) {
   const { language } = useLanguage();
-  const cardRef = useRef<HTMLAnchorElement>(null);
+  const cardRef = useRef<HTMLElement | null>(null);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
-  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
-
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['5deg', '-5deg']);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-5deg', '5deg']);
+  // Direct mapping (no spring) to make hover response immediate.
+  const rotateX = useTransform(y, [-0.5, 0.5], ['5deg', '-5deg']);
+  const rotateY = useTransform(x, [-0.5, 0.5], ['-5deg', '5deg']);
 
   // Parallax translation for the image
-  const imgX = useTransform(mouseXSpring, [-0.5, 0.5], ['-15px', '15px']);
-  const imgY = useTransform(mouseYSpring, [-0.5, 0.5], ['-15px', '15px']);
+  const imgX = useTransform(x, [-0.5, 0.5], ['-15px', '15px']);
+  const imgY = useTransform(y, [-0.5, 0.5], ['-15px', '15px']);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (!cardRef.current) return;
 
     const rect = cardRef.current.getBoundingClientRect();
@@ -58,21 +56,8 @@ export default function ProjectCard({
     y.set(0);
   };
 
-  return (
-    <motion.a
-      href={link}
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        rotateX,
-        rotateY,
-        transformStyle: 'preserve-3d',
-      }}
-      whileHover={{ scale: 1.01 }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative block w-full h-full rounded-[2rem] overflow-hidden transition-all duration-500"
-    >
+  const inner = (
+    <>
       {/* Project Image Container */}
       <div className="relative w-full h-full overflow-hidden">
         <motion.img
@@ -83,16 +68,24 @@ export default function ProjectCard({
             y: imgY,
             scale: 1.1,
           }}
-          className="w-full h-full object-cover transition-all duration-1000 brightness-75 group-hover:brightness-90"
+          className="w-full h-full object-cover transition-all duration-75 brightness-75 group-hover:brightness-95 group-hover:saturate-110 group-hover:scale-105"
         />
 
         {/* Cinematic Overlays - Softer for organic feel */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />
 
-        {/* View Case Study pill */}
-        <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-all duration-700 -translate-y-4 group-hover:translate-y-0">
+        {/* Hover CTA */}
+        <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-all duration-75">
           <div className="flex items-center gap-2 px-8 py-4 bg-white text-black font-black text-[10px] uppercase tracking-widest shadow-2xl rounded-full">
-            <span>{language === 'en' ? 'Open Case' : 'فتح الحالة'}</span>
+            <span>
+              {link
+                ? language === 'en'
+                  ? 'Open Case'
+                  : 'فتح الحالة'
+                : language === 'en'
+                  ? 'Open Preview'
+                  : 'فتح المعاينة'}
+            </span>
             <ArrowUpRight size={14} />
           </div>
         </div>
@@ -106,7 +99,7 @@ export default function ProjectCard({
               </span>
             </div>
 
-            <h3 className="text-4xl md:text-6xl font-black font-display text-white leading-[0.9] tracking-tighter group-hover:tracking-tight transition-all duration-700">
+            <h3 className="text-4xl md:text-6xl font-black font-display text-white leading-[0.9] tracking-tighter group-hover:tracking-tight group-hover:-translate-y-1 transition-all duration-75">
               {title}
             </h3>
 
@@ -125,7 +118,50 @@ export default function ProjectCard({
       </div>
 
       {/* Decorative Border Glow */}
-      <div className="absolute inset-0 border-[0.5px] border-white/10 rounded-3xl group-hover:border-gold/40 transition-colors duration-500" />
-    </motion.a>
+      <div className="absolute inset-0 border-[0.5px] border-white/10 rounded-3xl group-hover:border-gold/45 transition-colors duration-75" />
+    </>
+  );
+
+  if (link) {
+    return (
+      <motion.a
+        href={link}
+        ref={(node) => {
+          cardRef.current = node;
+        }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          rotateX,
+          rotateY,
+          transformStyle: 'preserve-3d',
+        }}
+        whileHover={{ scale: 1.03 }}
+        transition={{ duration: 0.05, ease: [0.22, 1, 0.36, 1] }}
+        className="group relative block w-full h-full rounded-[2rem] overflow-hidden transition-all duration-500"
+      >
+        {inner}
+      </motion.a>
+    );
+  }
+
+  return (
+    <motion.div
+      ref={(node) => {
+        cardRef.current = node;
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: 'preserve-3d',
+      }}
+      whileHover={{ scale: 1.03 }}
+      transition={{ duration: 0.05, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative block w-full h-full rounded-[2rem] overflow-hidden transition-all duration-500"
+    >
+      {inner}
+    </motion.div>
   );
 }

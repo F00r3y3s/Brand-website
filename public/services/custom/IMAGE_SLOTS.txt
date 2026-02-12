@@ -1,0 +1,17 @@
+Place the 10 service background images in this folder with these exact filenames:
+
+consultancy-ai.png
+consultancy-sustainability.png
+
+it-network.png
+it-datacenter.png
+
+social-media.png
+social-generative.png
+
+ecommerce-checkout.png
+ecommerce-experience.png
+
+app-development-web.png
+app-development-mobile.png
+

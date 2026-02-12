@@ -2,14 +2,13 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { useTheme } from '@/context/ThemeContext';
-import { Menu, X, Sun, Moon, Globe, Sparkles } from 'lucide-react';
+import { Menu, X, Globe, Sparkles, FileDown } from 'lucide-react';
 import Link from 'next/link';
 import gsap from 'gsap';
+import NavMenu from '@/components/ui/menu-hover-effects';
 
 export default function Header() {
   const { language, setLanguage } = useLanguage();
-  const { theme, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -20,15 +19,12 @@ export default function Header() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
-      // Update scrolled state for styling
       setIsScrolled(currentScrollY > 50);
 
-      // Hide/show header based on scroll direction
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setIsVisible(false); // Scrolling down
+        setIsVisible(false);
       } else {
-        setIsVisible(true); // Scrolling up
+        setIsVisible(true);
       }
 
       setLastScrollY(currentScrollY);
@@ -72,116 +68,122 @@ export default function Header() {
     }
   }, [isOpen]);
 
-  const navItems = [
-    { href: '#home', label: { en: 'Home', ar: 'الرئيسية' } },
-    { href: '#services', label: { en: 'Services', ar: 'الخدمات' } },
-    { href: '#app', label: { en: 'App', ar: 'التطبيق' } },
-    { href: '#team', label: { en: 'Team', ar: 'الفريق' } },
-    { href: '#contact', label: { en: 'Contact', ar: 'اتصل' } },
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setIsOpen(false);
+    if (href === '#top') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  const brandProfileHref = '/downloads/ainar-fze-brand-profile.pdf';
+
+  const desktopNavItems = [
+    { name: language === 'en' ? 'Home' : 'الرئيسية', href: '#top' },
+    { name: language === 'en' ? 'About' : 'نبذة عنا', href: '#manifesto' },
+    { name: language === 'en' ? 'Projects' : 'المشاريع', href: '#projects' },
+    { name: language === 'en' ? 'Services' : 'الخدمات', href: '#services' },
+    { name: language === 'en' ? 'Team' : 'الفريق', href: '#team' },
+    { name: language === 'en' ? 'Contact' : 'تواصل معنا', href: '#footer' },
+    { name: language === 'en' ? 'Download' : 'تحميل', href: brandProfileHref, isDownload: true },
   ];
+
+  const mobileNavItems = [
+    { href: '#home', label: { en: 'Home', ar: 'الرئيسية' } },
+    { href: '#manifesto', label: { en: 'About', ar: 'نبذة عنا' } },
+    { href: '#projects', label: { en: 'Projects', ar: 'المشاريع' } },
+    { href: '#services', label: { en: 'Services', ar: 'الخدمات' } },
+    { href: '#team', label: { en: 'Team', ar: 'الفريق' } },
+    { href: '#footer', label: { en: 'Contact', ar: 'تواصل معنا' } },
+  ];
+
+  const brandMark = (
+    <img
+      src="/ainar-logo-transparent.png"
+      alt="AINAR Logo"
+      className="w-[60px] sm:w-[64px] lg:w-[72px] h-auto"
+    />
+  );
 
   return (
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isVisible ? 'translate-y-0' : '-translate-y-full'
           } ${isScrolled
-            ? 'bg-cream/80 backdrop-blur-xl border-b border-neutral-200/50 shadow-sm'
-            : 'bg-transparent'
+            ? 'bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-lg supports-[backdrop-filter]:bg-white/60'
+            : 'bg-white/5 backdrop-blur-sm border-b border-white/5'
           }`}
       >
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="flex items-center justify-between h-20">
-            {/* Left: Status Indicator */}
-            <div className="hidden lg:flex items-center gap-3">
-              <div className="relative flex items-center gap-2">
+        <div className="w-full pl-4 pr-6 sm:pl-8 sm:pr-12 md:pl-10 md:pr-16 lg:pl-12 lg:pr-24">
+          <div className="flex items-center justify-between h-24">
+            {/* Left: Status Indicator & Brand */}
+            <div className="flex items-center gap-3 lg:-ml-2">
+              {/* Status Indicator */}
+              <div className="hidden lg:flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span
-                  className="text-sm font-medium text-neutral-400"
-                  style={{ fontSize: 'var(--text-body-sm)' }}
-                >
+                <span className="text-xs font-medium text-neutral-900">
                   {language === 'en' ? 'Open for Projects' : 'متاح للمشاريع'}
                 </span>
               </div>
+
+              {/* Brand Logo — Always LTR */}
+              <Link
+                href="/"
+                className="group flex items-center gap-2"
+                dir="ltr"
+              >
+                {brandMark}
+              </Link>
             </div>
 
-            {/* Center: Premium Logo */}
-            <Link
-              href="/"
-              className="group flex items-center gap-2 lg:absolute lg:left-1/2 lg:-translate-x-1/2"
-            >
-              <div className="flex items-center gap-1.5">
-                <span
-                  className="font-display font-black text-neutral-900 transition-all duration-300 group-hover:scale-110"
-                  style={{ fontSize: '28px' }}
-                >
-                  A
-                </span>
-                <span
-                  className="font-display font-black text-gradient-animate bg-clip-text text-transparent transition-all duration-300 group-hover:scale-110"
-                  style={{
-                    fontSize: '28px',
-                    backgroundImage: 'linear-gradient(90deg, var(--brand-teal), var(--brand-gold), var(--brand-plum))',
-                    backgroundSize: '200% auto'
-                  }}
-                >
-                  I
-                </span>
-                <span
-                  className="font-display font-black text-neutral-900 transition-all duration-300 group-hover:scale-110"
-                  style={{ fontSize: '28px' }}
-                >
-                  nar
-                </span>
+            {/* Right: Navigation & Controls */}
+            <div className="flex items-center gap-6 justify-end">
+
+              {/* Desktop Navigation */}
+              <div className="hidden lg:block">
+                <NavMenu items={desktopNavItems} />
               </div>
-            </Link>
 
-            {/* Right: Premium Controls */}
-            <div className="flex items-center gap-2">
-              {/* Language Toggle */}
-              <button
-                onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
-                className="group flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-300 hover:bg-gold-500/10 border border-transparent hover:border-gold-500/30"
-                aria-label="Toggle language"
-              >
-                <Globe size={16} className="text-neutral-400 group-hover:text-gold-400 transition-colors" />
-                <span className="text-sm font-semibold text-neutral-400 group-hover:text-gold-400 transition-colors">
-                  {language.toUpperCase()}
-                </span>
-              </button>
+              <div className="flex items-center gap-3">
 
-              {/* Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className="p-3 rounded-full transition-all duration-300 hover:bg-gold-500/10 border border-transparent hover:border-gold-500/30 group"
-                aria-label="Toggle theme"
-              >
-                {theme === 'dark' ? (
-                  <Sun size={18} className="text-neutral-400 group-hover:text-gold-400 transition-colors" />
-                ) : (
-                  <Moon size={18} className="text-neutral-400 group-hover:text-gold-400 transition-colors" />
-                )}
-              </button>
+                {/* Language Toggle */}
+                <button
+                  onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
+                  className="group flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-300 bg-white/50 backdrop-blur-md border border-white/20 hover:bg-white/80 hover:scale-105 shadow-sm"
+                  aria-label="Toggle language"
+                >
+                  <Globe size={16} className="text-neutral-900 group-hover:text-gold transition-colors" />
+                  <span className="text-sm font-bold text-neutral-900 group-hover:text-gold transition-colors">
+                    {language.toUpperCase()}
+                  </span>
+                </button>
 
-              {/* Hamburger Menu Button */}
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="p-3 rounded-full transition-all duration-300 hover:bg-teal/5 border border-transparent hover:border-teal/20 group relative overflow-hidden"
-                aria-label={isOpen ? 'Close menu' : 'Open menu'}
-              >
-                <div className="relative z-10">
-                  {isOpen ? (
-                    <X size={24} className="text-neutral-900 transition-transform duration-300 rotate-90" />
-                  ) : (
-                    <Menu size={24} className="text-neutral-500 group-hover:text-teal transition-colors" />
-                  )}
-                </div>
-              </button>
+                {/* Hamburger Menu Button */}
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="lg:hidden p-3 rounded-full transition-all duration-300 bg-white/50 backdrop-blur-md border border-white/20 hover:bg-white/80 hover:scale-105 shadow-sm group relative overflow-hidden"
+                  aria-label={isOpen ? 'Close menu' : 'Open menu'}
+                >
+                  <div className="relative z-10">
+                    {isOpen ? (
+                      <X size={24} className="text-neutral-900 transition-transform duration-300 rotate-90" />
+                    ) : (
+                      <Menu size={24} className="text-neutral-900 group-hover:text-teal transition-colors" />
+                    )}
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Premium Full-Screen Navigation Overlay */}
+      {/* Premium Full-Screen Mobile Navigation Overlay */}
       {isOpen && (
         <div
           ref={menuRef}
@@ -191,7 +193,7 @@ export default function Header() {
           <div
             className="absolute top-1/3 left-1/3 w-[800px] h-[800px] liquid-morph opacity-10 blur-3xl pointer-events-none"
             style={{
-              background: 'radial-gradient(circle, var(--gold-500) 0%, var(--rose-500) 50%, transparent 70%)'
+              background: 'radial-gradient(circle, var(--gold-500) 0%, var(--brand-plum) 50%, transparent 70%)'
             }}
           />
 
@@ -202,12 +204,12 @@ export default function Header() {
             {/* Navigation Links */}
             <nav className="mb-20">
               <div className="space-y-4">
-                {navItems.map((item, index) => (
-                  <Link
+                {mobileNavItems.map((item) => (
+                  <a
                     key={item.href}
                     href={item.href}
                     className="menu-item group block relative"
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => handleNavClick(e, item.href)}
                   >
                     <div className="relative overflow-hidden py-3">
                       <span
@@ -230,13 +232,12 @@ export default function Header() {
                         {language === 'en' ? item.label.en : item.label.ar}
                       </span>
 
-                      {/* Hover underline */}
                       <div
-                        className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-gold-400 to-sand-400 transform origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
+                        className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-gold to-sand transform origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
                         style={{ width: '200px' }}
                       />
                     </div>
-                  </Link>
+                  </a>
                 ))}
               </div>
             </nav>
@@ -249,11 +250,11 @@ export default function Header() {
                   style={{ color: 'var(--gold-400)' }}
                 >
                   <Sparkles size={14} />
-                  {language === 'en' ? 'Email' : 'البريد'}
+                  {language === 'en' ? 'Email' : 'البريد الإلكتروني'}
                 </h4>
                 <a
                   href="mailto:hello@ainar.ae"
-                  className="text-lg font-medium text-neutral-300 hover:text-gold-400 transition-colors"
+                  className="text-lg font-medium text-neutral-300 hover:text-gold transition-colors"
                 >
                   hello@ainar.ae
                 </a>
@@ -269,7 +270,7 @@ export default function Header() {
                 </h4>
                 <a
                   href="tel:+97144000000"
-                  className="text-lg font-medium text-neutral-300 hover:text-gold-400 transition-colors"
+                  className="text-lg font-medium text-neutral-300 hover:text-gold transition-colors"
                 >
                   +971 4 XXX XXXX
                 </a>
@@ -284,9 +285,20 @@ export default function Header() {
                   {language === 'en' ? 'Location' : 'الموقع'}
                 </h4>
                 <p className="text-lg font-medium text-neutral-300">
-                  Dubai, UAE 🇦🇪
+                  {language === 'en' ? 'Dubai, UAE 🇦🇪' : 'دبي، الإمارات 🇦🇪'}
                 </p>
               </div>
+            </div>
+
+            <div className="mt-8 contact-item">
+              <a
+                href={brandProfileHref}
+                download="AINAR-FZE-Brand-Profile.pdf"
+                className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-5 py-3 text-sm font-bold text-gold hover:bg-gold/20 transition-colors"
+              >
+                <FileDown size={16} />
+                {language === 'en' ? 'Download Brand Profile' : 'تحميل ملف العلامة'}
+              </a>
             </div>
 
             {/* Status Indicator (Mobile) */}

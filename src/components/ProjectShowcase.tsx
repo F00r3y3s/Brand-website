@@ -1,216 +1,169 @@
 'use client';
 
-/**
- * ProjectShowcase - Scroll-pinned stacking cards
- * 
- * Animation: Cards stack on top of each other as user scrolls
- * - Section pins when it enters viewport
- * - Each card slides up from below and stacks on previous
- * - After all cards shown, section unpins and page continues
- */
-
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Image from 'next/image';
 import ProjectCard from './ProjectCard';
 import TextRevealer from './common/TextRevealer';
-import { ArrowRight } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
+import { X } from 'lucide-react';
+import AppShowcase from './AppShowcase';
 
 export default function ProjectShowcase() {
   const { language } = useLanguage();
-  const sectionRef = useRef<HTMLElement>(null);
-  const cardsContainerRef = useRef<HTMLDivElement>(null);
-
-  const projects = [
-    {
-      title: language === 'en' ? 'EcoMetric Analytics' : 'إحصائيات إيكومتريك',
-      client: language === 'en' ? 'Global Energy Corp' : 'مؤسسة الطاقة العالمية',
-      services:
-        language === 'en'
-          ? ['AI Advisory', 'Sustainability', 'UX Design']
-          : ['استشارات الذكاء الاصطناعي', 'الاستدامة', 'تصميم تجربة المستخدم'],
-      imageUrl: '/projects/sustainability.png',
-      color: 'var(--brand-teal)'
-    },
-    {
-      title: language === 'en' ? 'AURUM Luxury App' : 'تطبيق أوروم الفاخر',
-      client: language === 'en' ? 'High-End Fashion House' : 'دار أزياء فاخرة',
-      services:
-        language === 'en'
-          ? ['Mobile App', 'Branding', 'Digital Strategy']
-          : ['تطبيق الجوال', 'العلامة التجارية', 'الاستراتيجية الرقمية'],
-      imageUrl: '/projects/fashion.png',
-      color: 'var(--brand-plum)'
-    },
-    {
-      title: language === 'en' ? 'AI Core Visualizer' : 'مصور جوهر الذكاء الاصطناعي',
-      client: language === 'en' ? 'Tech Innovators Group' : 'مجموعة المبتكرين التقنيين',
-      services:
-        language === 'en'
-          ? ['Generative AI', 'Web Development', 'Future Labs']
-          : ['الذكاء الاصطناعي التوليدي', 'تطوير الويب', 'مختبرات المستقبل'],
-      imageUrl: '/projects/ai.png',
-      color: 'var(--brand-green)'
-    },
-    {
-      title: language === 'en' ? 'Aetheled Brand' : 'علامة أيثليد التجارية',
-      client: language === 'en' ? 'Ultra-Luxury Hotel' : 'فندق فائق الفخامة',
-      services:
-        language === 'en'
-          ? ['Brand Identity', '3D Visuals', 'Hospitality']
-          : ['هوية العلامة التجارية', 'رسومات ثلاثية الأبعاد', 'الضيافة'],
-      imageUrl: '/projects/hospitality.png',
-      color: 'var(--brand-gold)'
-    },
-  ];
-
-  // All items including CTA
-  const totalCards = projects.length + 1; // 4 projects + 1 CTA = 5
+  const [cardWidth, setCardWidth] = useState(900);
+  const [cardHeight, setCardHeight] = useState(530);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeCard, setActiveCard] = useState<1 | 2>(1);
 
   useEffect(() => {
-    if (!sectionRef.current || !cardsContainerRef.current) return;
-
-    const cards = gsap.utils.toArray<HTMLElement>('.project-card');
-
-    // Kill any existing ScrollTriggers to prevent conflicts
-    ScrollTrigger.getAll().forEach(trigger => {
-      if (trigger.vars.id?.startsWith('project')) {
-        trigger.kill();
+    const updateSize = () => {
+      const vw = window.innerWidth;
+      if (vw < 640) {
+        setCardWidth(Math.max(300, vw - 44));
+        setCardHeight(360);
+      } else if (vw < 1024) {
+        setCardWidth(Math.min(760, vw - 80));
+        setCardHeight(440);
+      } else {
+        setCardWidth(900);
+        setCardHeight(530);
       }
-    });
+    };
 
-    const ctx = gsap.context(() => {
-      // Create a timeline that we'll scrub through
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          // End after scrolling through all cards (1 viewport per card)
-          end: `+=${window.innerHeight * totalCards}`,
-          pin: true,
-          scrub: 1,
-          id: 'project-showcase',
-        }
-      });
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
 
-      // Animate each card (except first which is already visible)
-      cards.forEach((card, index) => {
-        if (index === 0) {
-          // First card is already in position
-          gsap.set(card, { y: 0 });
-          return;
-        }
+  const ongoingProject = {
+    title: language === 'en' ? 'The Seamless Experience' : 'التجربة السلسة',
+    client: language === 'en' ? 'Ongoing Project' : 'مشروع جاري',
+    services: [
+      language === 'en' ? 'Mobile App' : 'تطبيق جوال',
+      language === 'en' ? 'In Progress' : 'قيد التنفيذ',
+    ],
+    imageUrl: '/projects/phone-mockup.png',
+  };
 
-        // Set initial position: below the viewport
-        gsap.set(card, { y: '100%' });
-
-        // Add to timeline: slide up into view
-        // Each card takes 1 unit of timeline, spaced evenly
-        tl.to(card, {
-          y: 0,
-          duration: 1,
-          ease: 'power2.out',
-        }, index - 1); // Start at timeline position (index-1)
-
-        // Optionally dim previous card when new one arrives
-        if (index > 0) {
-          tl.to(cards[index - 1], {
-            scale: 0.95,
-            filter: 'brightness(0.7)',
-            duration: 1,
-            ease: 'power2.out',
-          }, index - 1); // Same time as card slides in
-        }
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, [totalCards]);
+  const sideOffset = Math.max(78, Math.round(cardWidth * 0.22));
+  const inactiveScale = 0.94;
+  const inactiveY = 12;
+  const card1Offset = activeCard === 1 ? 0 : -sideOffset;
+  const card2Offset = activeCard === 2 ? 0 : sideOffset;
 
   return (
     <div className="bg-neutral-50 relative">
-
-      {/* Header - Scrolls with page */}
-      <div className="py-24 px-6 md:px-24 flex flex-col items-center justify-center text-center pb-0">
+      <div className="py-24 text-center">
         <TextRevealer
-          text={language === 'en' ? 'SELECTED WORKS' : 'أعمال مختارة'}
-          className="text-teal text-[10px] font-black uppercase tracking-[0.5em]"
+          text={language === 'en' ? 'OUR PROJECTS' : 'مشاريعنا'}
+          className="text-teal text-xs font-black tracking-widest mb-4"
         />
-        <h2 className="text-4xl md:text-5xl font-black font-display text-neutral-900 tracking-tighter leading-none mb-12">
+        <h2 className="text-5xl font-black font-display text-neutral-900 tracking-tighter">
           {language === 'en' ? 'CASE STUDIES' : 'دراسات الحالة'}
         </h2>
       </div>
 
-      {/* Pinned Section */}
       <section
-        ref={sectionRef}
-        className="relative h-screen w-full flex flex-col items-center justify-start overflow-hidden pt-12"
+        id="projects"
+        className="relative w-full flex flex-col items-center justify-center py-16 min-h-[80vh]"
       >
-        {/* Counter indicator */}
-        <div className="hidden md:flex flex-col items-end gap-2 text-right absolute top-12 right-12 z-20">
-          <span className="text-plum text-sm font-bold tracking-widest leading-none">01 — 0{totalCards}</span>
-          <span className="text-neutral-500 text-[10px] uppercase tracking-[0.3em]">Scroll to Explore</span>
-        </div>
-
-        {/* Cards Container */}
-        <div
-          ref={cardsContainerRef}
-          className="relative w-full max-w-[1000px] h-[60vh] md:h-[70vh]"
-        >
-          {/* Project Cards */}
-          {projects.map((project, index) => (
+        <div className="w-full max-w-6xl px-4">
+          <div className="relative mx-auto" style={{ width: cardWidth, height: cardHeight + 24 }}>
+            {/* Card 1: Ongoing */}
             <div
-              key={index}
-              className="project-card absolute inset-0 w-full h-full p-4 md:p-0"
-              style={{ zIndex: index + 10 }}
+              onClick={() => {
+                if (activeCard === 1) setIsModalOpen(true);
+                else setActiveCard(1);
+              }}
+              className="absolute top-0 left-1/2 cursor-pointer"
+              style={{
+                width: cardWidth,
+                height: cardHeight,
+                zIndex: activeCard === 1 ? 30 : 20,
+                transform: `translateX(-50%) translateX(${card1Offset}px) translateY(${activeCard === 1 ? 0 : inactiveY}px) scale(${activeCard === 1 ? 1 : inactiveScale})`,
+                transition: 'transform 220ms ease, z-index 220ms ease',
+              }}
             >
-              <div
-                className="w-full h-full relative rounded-[2rem] overflow-hidden shadow-2xl border border-black/5 group"
-                style={{ backgroundColor: project.color }}
-              >
-                <ProjectCard {...project} />
-
-                {/* Overlay Index */}
-                <div className="absolute top-8 left-8 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-1000">
-                  <span className="text-[120px] font-black text-white/10 leading-none font-display pointer-events-none">
-                    0{index + 1}
-                  </span>
+              <div className="w-full h-full relative rounded-[2rem] overflow-hidden border border-white/10 shadow-xl">
+                <div className="absolute top-6 left-6 z-30 pointer-events-none">
+                  <div className="rounded-2xl border border-white/70 bg-white/80 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.35)] px-3 py-2">
+                    <Image
+                      src="/ainar-logo-transparent.png"
+                      alt="AINAR Logo"
+                      width={180}
+                      height={90}
+                      className="w-[72px] md:w-[96px] h-auto opacity-100 contrast-125 drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]"
+                    />
+                  </div>
                 </div>
+                <ProjectCard
+                  title={ongoingProject.title}
+                  client={ongoingProject.client}
+                  services={ongoingProject.services}
+                  imageUrl={ongoingProject.imageUrl}
+                />
               </div>
             </div>
-          ))}
 
-          {/* CTA Card - Last in stack */}
-          <div
-            className="project-card absolute inset-0 w-full h-full flex items-center justify-center p-4 md:p-0"
-            style={{ zIndex: projects.length + 20 }}
-          >
-            <div className="w-full h-full bg-plum rounded-[2rem] flex flex-col items-center justify-center text-center shadow-2xl relative overflow-hidden">
-              <div className="relative z-10 flex flex-col items-center gap-10">
-                <h3 className="text-4xl md:text-7xl font-black text-white tracking-tighter uppercase leading-none font-display">
-                  {language === 'en' ? 'YOUR VISION' : 'رؤيتك'}
-                  <br />
-                  <span className="text-teal">
-                    {language === 'en' ? 'STARTS HERE' : 'تبدأ هنا'}
-                  </span>
+            {/* Card 2: Coming Soon */}
+            <div
+              onClick={() => setActiveCard(2)}
+              className="absolute top-0 left-1/2 cursor-pointer"
+              style={{
+                width: cardWidth,
+                height: cardHeight,
+                zIndex: activeCard === 2 ? 30 : 20,
+                transform: `translateX(-50%) translateX(${card2Offset}px) translateY(${activeCard === 2 ? 0 : inactiveY}px) scale(${activeCard === 2 ? 1 : inactiveScale})`,
+                transition: 'transform 220ms ease, z-index 220ms ease',
+              }}
+            >
+              <div className="group w-full h-full rounded-[2rem] bg-neutral-950 relative overflow-hidden border border-white/10 flex flex-col items-center justify-center text-center px-8 transition-all duration-200 hover:scale-[1.01] hover:border-gold/45 shadow-xl">
+                <div className="rounded-3xl border border-white/75 bg-white/90 backdrop-blur-xl shadow-[0_18px_44px_rgba(0,0,0,0.45)] px-6 py-4 mb-6 transition-transform duration-200 group-hover:scale-105 group-hover:shadow-[0_24px_56px_rgba(0,0,0,0.55)]">
+                  <Image
+                    src="/ainar-logo-transparent.png"
+                    alt="AINAR Logo"
+                    width={320}
+                    height={160}
+                    className="w-[190px] md:w-[240px] h-auto opacity-100 contrast-125 drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]"
+                  />
+                </div>
+                <h3 className="text-2xl md:text-4xl font-black text-white font-display uppercase tracking-tight leading-none transition-colors duration-200 group-hover:text-gold">
+                  {language === 'en' ? 'Coming Soon' : 'قريباً'}
                 </h3>
-                <button className="px-12 py-6 bg-gold text-black rounded-full font-bold uppercase tracking-[0.2em] hover:scale-110 active:scale-95 transition-all duration-500 shadow-xl flex items-center gap-4 group/btn">
-                  {language === 'en' ? 'Start Project' : 'ابدأ المشروع'}
-                  <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-2 transition-transform" />
-                </button>
+                <p className="mt-5 text-xs md:text-sm text-white/65 tracking-[0.18em] uppercase">
+                  {language === 'en' ? 'New Project Coming Soon' : 'مشروع جديد قريباً'}
+                </p>
+                <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-gold/20 to-transparent rounded-bl-full" />
+                <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-white/8 to-transparent rounded-tr-full" />
               </div>
-              {/* Background glow */}
-              <div className="absolute inset-0 bg-gold/10 blur-3xl rounded-full scale-150 animate-pulse pointer-events-none" />
             </div>
           </div>
         </div>
-
-        {/* Background Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-teal/5 blur-[150px] rounded-full pointer-events-none -z-10" />
       </section>
+
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-6xl h-[90vh] mx-4 md:mx-6 bg-neutral-950 rounded-[2rem] overflow-hidden shadow-2xl border border-white/10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-5 right-5 z-20 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 transition-all flex items-center justify-center"
+              aria-label="Close modal"
+            >
+              <X className="w-5 h-5 text-white" />
+            </button>
+
+            <div className="w-full h-full overflow-hidden">
+              <AppShowcase isModal />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

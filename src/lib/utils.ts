@@ -1,12 +1,11 @@
-/**
- * Utility helper functions for the AInar website
- */
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
 
 /**
  * Combine class names conditionally
  */
-export function cn(...classes: (string | undefined | null | boolean)[]): string {
-  return classes.filter((cls) => typeof cls === 'string').join(' ');
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 }
 
 /**

@@ -4,8 +4,13 @@ import React, { useEffect, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowUpRight } from 'lucide-react';
+import { MailIcon, PhoneIcon, MapPinIcon } from 'lucide-react';
 import TextRevealer from './common/TextRevealer';
+import { ContactCard } from '@/components/ui/contact-card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -65,18 +70,57 @@ export default function CTA() {
             : "علامتك التجارية تنتمي إلى الأضواء. شارك مع استوديو الخاص بنا لسد الفجوة بين الخيال والتنفيذ."}
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-8 justify-center items-center pt-8">
-          <button className="group relative px-12 py-8 rounded-full bg-gold text-black font-black uppercase tracking-widest text-sm hover:scale-105 transition-all duration-500 overflow-hidden">
-            <span className="relative z-10 flex items-center gap-3">
-              {language === 'en' ? 'Start Your Project' : 'ابدأ مشروعك'}
-              <ArrowUpRight size={18} className="group-hover:rotate-45 transition-transform duration-500" />
-            </span>
-            <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 opacity-20" />
-          </button>
-
-          <button className="px-10 py-6 text-white font-bold uppercase tracking-widest text-xs hover:text-gold transition-colors duration-300">
-            {language === 'en' ? 'Download Capabilities' : 'تحميل الإمكانيات'}
-          </button>
+        <div className="pt-10 w-full text-left">
+          <ContactCard
+            title={language === 'en' ? 'Get in touch' : 'تواصل معنا'}
+            description={language === 'en'
+              ? 'If you have any questions about our services or want to start a project, drop us a message. We respond within 1 business day.'
+              : 'إذا كان لديك أي استفسار حول خدماتنا أو ترغب في بدء مشروع، أرسل لنا رسالة. نرد خلال يوم عمل واحد.'}
+            contactInfo={[
+              {
+                icon: MailIcon,
+                label: language === 'en' ? 'Email' : 'البريد الإلكتروني',
+                value: 'hello@ainar.ai',
+              },
+              {
+                icon: PhoneIcon,
+                label: language === 'en' ? 'Phone' : 'الهاتف',
+                value: '+971 50 123 4567',
+              },
+              {
+                icon: MapPinIcon,
+                label: language === 'en' ? 'Address' : 'العنوان',
+                value: 'Dubai, UAE',
+                className: 'col-span-2',
+              }
+            ]}
+          >
+            <form
+              action=""
+              className="w-full space-y-4"
+              onSubmit={(e) => e.preventDefault()}
+            >
+              <div className="flex flex-col gap-2">
+                <Label>{language === 'en' ? 'Name' : 'الاسم'}</Label>
+                <Input type="text" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>{language === 'en' ? 'Email' : 'البريد الإلكتروني'}</Label>
+                <Input type="email" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>{language === 'en' ? 'Phone' : 'الهاتف'}</Label>
+                <Input type="tel" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>{language === 'en' ? 'Message' : 'رسالة'}</Label>
+                <Textarea />
+              </div>
+              <Button className="w-full" type="submit">
+                {language === 'en' ? 'Submit' : 'إرسال'}
+              </Button>
+            </form>
+          </ContactCard>
         </div>
 
         {/* Stats Grid - Minimalist */}

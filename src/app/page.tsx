@@ -4,10 +4,13 @@ import React, { useEffect } from 'react';
 import Lenis from 'lenis';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
+import Manifesto from '@/components/Manifesto';
+import WhoWeAre from '@/components/WhoWeAre';
 import ProjectShowcase from '@/components/ProjectShowcase';
 import Services from '@/components/Services';
-import AppShowcase from '@/components/AppShowcase';
+import Testimonials from '@/components/Testimonials';
 import Team from '@/components/Team';
+import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
 import CookiesConsent from '@/components/CookiesConsent';
 import FloatingCTA from '@/components/FloatingCTA';
@@ -42,10 +45,13 @@ export default function Home() {
     <main className="bg-cream min-h-screen">
       <Header />
       <Hero />
+      <Manifesto />
+      <WhoWeAre />
       <ProjectShowcase />
       <Services />
       <Team />
-      <AppShowcase />
+      <Testimonials />
+      <FAQ />
       <Footer />
       <FloatingCTA />
       <CookiesConsent />

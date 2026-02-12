@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="320" viewBox="0 0 920 320" fill="none">
+  <g fill="#000">
+    <!-- Accent strokes -->
+    <rect x="56" y="214" width="118" height="20" transform="rotate(-46 56 214)" />
+    <rect x="334" y="236" width="50" height="14" transform="rotate(-28 334 236)" />
+    <rect x="346" y="266" width="50" height="14" transform="rotate(-28 346 266)" />
+
+    <!-- Arabic-inspired monogram block -->
+    <rect x="188" y="48" width="28" height="156" />
+    <rect x="188" y="178" width="166" height="24" />
+    <rect x="262" y="178" width="26" height="64" />
+    <rect x="314" y="48" width="24" height="126" />
+    <rect x="232" y="98" width="60" height="20" transform="rotate(-30 232 98)" />
+
+    <!-- Wordmark -->
+    <text x="272" y="152" font-size="116" font-family="Arial, Helvetica, sans-serif" font-weight="500" letter-spacing="0.3">AInar</text>
+  </g>
+</svg>

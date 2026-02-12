@@ -6,7 +6,7 @@
   /* Dark mode strategy - use class-based dark mode */
   --color-scheme-dark: dark;
   --color-scheme-light: light;
-  
+
   /* Extend default Tailwind colors */
   --color-gold: var(--brand-gold);
   --color-teal: var(--brand-teal);
@@ -14,6 +14,13 @@
   --color-cream: var(--brand-cream);
   --color-sand: var(--brand-sand);
   --color-green: var(--brand-green);
+
+  /* New theme colors for About / FAQ / Footer */
+  --color-primary: #0D7377;
+  --color-secondary: #C9A227;
+  --color-dark: #0A1628;
+  --color-light: #FAF8F5;
+  --color-accent: #C65D3B;
 
   /* Dark mode colors */
   --color-dark-primary: var(--neutral-900);
@@ -26,6 +33,10 @@
   --color-light-primary: var(--brand-cream);
   --color-light-secondary: var(--neutral-100);
   --color-light-tertiary: var(--neutral-200);
+
+  /* Font families for new components */
+  --font-display: var(--font-outfit);
+  --font-sans: var(--font-inter);
 }
 
 /* UAE-Organic Color System - CSS Variables */
@@ -50,21 +61,57 @@
   --font-display: var(--font-outfit), sans-serif;
 
   /* Theme Variables */
-  --background: var(--brand-cream);
-  --foreground: var(--neutral-950);
-  --muted-bg: var(--neutral-100);
-  --border: var(--neutral-200);
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --muted-bg: #1a1a1a;
-    --border: #333333;
-    --color-text-primary: #ffffff;
-    --color-text-secondary: #b0b0b0;
-    --color-text-tertiary: #777777;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+
+  section {
+    padding-bottom: 20vh;
+    /* Increased spacer for section separation */
   }
 }
 
@@ -182,25 +229,7 @@
   }
 
   /* Dark mode styles */
-  html.dark {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --muted-bg: #1a1a1a;
-    --border: #333333;
-    --color-text-primary: #ffffff;
-    --color-text-secondary: #b0b0b0;
-    --color-text-tertiary: #777777;
-  }
 
-  html:not(.dark) {
-    --background: var(--brand-cream);
-    --foreground: var(--neutral-950);
-    --muted-bg: var(--neutral-100);
-    --border: var(--neutral-200);
-    --color-text-primary: var(--neutral-950);
-    --color-text-secondary: var(--neutral-600);
-    --color-text-tertiary: var(--neutral-400);
-  }
 }
 
 /* Respect prefers-reduced-motion */
@@ -410,6 +439,94 @@
     animation: gradient-shift 3s linear infinite;
   }
 
+  .hero-particle-hue {
+    animation: hero-hue 6s linear infinite;
+    filter: hue-rotate(0deg);
+  }
+
+  .hero-brand-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    gap: 2px;
+  }
+
+  .hero-brand-block {
+    position: relative;
+    height: 100%;
+  }
+
+  .hero-brand-a {
+    width: 120px;
+  }
+
+  .hero-brand-nar {
+    width: 360px;
+  }
+
+  .hero-ainar-i-inline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    pointer-events: none;
+    position: relative;
+    overflow: visible;
+  }
+
+  .hero-ainar-i-inline-text {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 120px;
+    line-height: 1;
+    background-image: linear-gradient(90deg, var(--brand-teal), var(--brand-gold), var(--brand-plum));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    color: transparent;
+    transform-origin: 50% 80%;
+    animation: gradient-shift 3s linear infinite, hero-i-rotate 8s ease-in-out infinite;
+  }
+
+  .hero-butterfly-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 16px;
+    width: 56px;
+    height: 56px;
+    transform: translate(-50%, -100%);
+    pointer-events: none;
+    z-index: 20;
+    opacity: 1;
+  }
+
+  .hero-butterfly-flip {
+    width: 100%;
+    height: 100%;
+    transform-origin: center;
+  }
+
+  .hero-butterfly-flapping {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.25));
+    opacity: 0.9;
+    transform-origin: center;
+    animation: hero-butterfly-flap 0.22s ease-in-out infinite;
+  }
+
+  .hero-butterfly-static {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.35));
+    opacity: 0.95;
+    transform-origin: bottom center;
+    animation: hero-butterfly-breathe 2s ease-in-out infinite alternate;
+  }
+
   @keyframes gradient-shift {
     0% {
       background-position: 0% center;
@@ -417,6 +534,54 @@
 
     100% {
       background-position: 200% center;
+    }
+  }
+
+  @keyframes hero-hue {
+    0% {
+      filter: hue-rotate(0deg);
+    }
+
+    100% {
+      filter: hue-rotate(360deg);
+    }
+  }
+
+  @keyframes hero-i-rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    50% {
+      transform: rotate(4deg);
+    }
+
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  @keyframes hero-butterfly-flap {
+    0% {
+      transform: rotate(-4deg) scale(1);
+    }
+
+    50% {
+      transform: rotate(4deg) scale(0.96, 1.02);
+    }
+
+    100% {
+      transform: rotate(-2deg) scale(1);
+    }
+  }
+
+  @keyframes hero-butterfly-breathe {
+    from {
+      transform: scale(1);
+    }
+
+    to {
+      transform: scale(0.95);
     }
   }
 
@@ -566,4 +731,5 @@
   .transform-style-3d {
     transform-style: preserve-3d;
   }
+
 }

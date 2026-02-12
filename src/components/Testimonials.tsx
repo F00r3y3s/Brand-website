@@ -1,115 +1,110 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
+import { CircularTestimonials } from '@/components/ui/circular-testimonials';
 import { useLanguage } from '@/context/LanguageContext';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Star } from 'lucide-react';
-import TextRevealer from './common/TextRevealer';
 
-gsap.registerPlugin(ScrollTrigger);
-
-interface Testimonial {
-  id: string;
-  author: { en: string; ar: string };
-  company: { en: string; ar: string };
-  content: { en: string; ar: string };
-}
-
-const testimonials: Testimonial[] = [
+const testimonials = [
   {
-    id: '1',
-    author: { en: 'Ali Al-Suwaidi', ar: 'علي السويدي' },
-    company: { en: 'TechVision Dubai', ar: 'رؤية التكنولوجيا دبي' },
-    content: {
-      en: 'AInar transformed our entire digital presence. The team delivered an award-winning website.',
-      ar: 'غيرت AInar وجودنا الرقمي بالكامل. قدم الفريق موقعًا ويب حائزًا على جوائز.',
-    },
+    quote:
+      "I was impressed by the creativity and execution! They truly understood our brand vision and translated it into a digital experience that stands out. Highly recommended!",
+    name: "Sarah Jenkins",
+    designation: "Marketing Director",
+    src: "/ainar-logo-transparent.png",
+    imageMode: "contain" as const,
+    cardBackground: "linear-gradient(135deg, #0D7377 0%, #0A1628 100%)",
   },
   {
-    id: '2',
-    author: { en: 'Hana Al-Dhaheri', ar: 'هنا الظاهري' },
-    company: { en: 'Sustainable Futures', ar: 'المستقبل المستدام' },
-    content: {
-      en: 'Working with AInar on our app was a game-changer. Their expertise in AI is unmatched.',
-      ar: 'إن العمل مع AInar على تطبيقنا غير قواعد اللعبة. خبرتهم في الذكاء الاصطناعي لا مثيل لها.',
-    },
+    quote:
+      "The team exceeded all expectations. The attention to detail in the animation and UI interactions is world-class. Our user engagement has doubled since the launch.",
+    name: "Michael Chen",
+    designation: "Product Lead",
+    src: "/ainar-logo-transparent.png",
+    imageMode: "contain" as const,
+    cardBackground: "linear-gradient(135deg, #1F2937 0%, #111827 100%)",
   },
   {
-    id: '3',
-    author: { en: 'Fatima Al-Hosani', ar: 'فاطمة الحوسني' },
-    company: { en: 'Eco Ventures', ar: 'إيكو فينتشرز' },
-    content: {
-      en: 'Pure excellence in craft and execution. Best partner for high-end digital products.',
-      ar: 'تميز نقي في الحرفية والتنفيذ. أفضل شريك للمنتجات الرقمية الراقية.',
-    }
-  }
+    quote:
+      "A seamless collaboration from start to finish. Their technical expertise combined with design intuition resulted in a product that is both beautiful and performant.",
+    name: "Emily Rodriguez",
+    designation: "CTO, TechFlow",
+    src: "/ainar-logo-transparent.png",
+    imageMode: "contain" as const,
+    cardBackground: "linear-gradient(135deg, #C9A227 0%, #5A4A0F 100%)",
+  },
+];
+
+const testimonialsAr = [
+  {
+    quote:
+      "لقد أذهلني الإبداع والتنفيذ! لقد فهموا حقاً رؤية علامتنا التجارية وترجموها إلى تجربة رقمية متميزة. ينصح به بشدة!",
+    name: "سارة وجدي",
+    designation: "مديرة التسويق",
+    src: "/ainar-logo-transparent.png",
+    imageMode: "contain" as const,
+    cardBackground: "linear-gradient(135deg, #0D7377 0%, #0A1628 100%)",
+  },
+  {
+    quote:
+      "فريق العمل تجاوز كل التوقعات. الاهتمام بالتفاصيل في الرسوم المتحركة وتفاعلات واجهة المستخدم عالمي المستوى. تضاعف تفاعل مستخدمينا منذ الإطلاق.",
+    name: "مايكل تشن",
+    designation: "قائد المنتج",
+    src: "/ainar-logo-transparent.png",
+    imageMode: "contain" as const,
+    cardBackground: "linear-gradient(135deg, #1F2937 0%, #111827 100%)",
+  },
+  {
+    quote:
+      "تعاون سلس من البداية إلى النهاية. خبرتهم التقنية جنباً إلى جنب مع الحداقة في التصميم أسفرت عن منتج جميل وعالي الأداء.",
+    name: "إيميلي رودريغيز",
+    designation: "الرئيس التقني، تك فلو",
+    src: "/ainar-logo-transparent.png",
+    imageMode: "contain" as const,
+    cardBackground: "linear-gradient(135deg, #C9A227 0%, #5A4A0F 100%)",
+  },
 ];
 
 export default function Testimonials() {
   const { language } = useLanguage();
-  const marqueeRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!marqueeRef.current) return;
-
-    const marquee = marqueeRef.current;
-    const content = marquee.querySelector('.marquee-content');
-    if (!content) return;
-
-    // Duplicate content for seamless loop
-    const clone = content.cloneNode(true) as HTMLElement;
-    marquee.appendChild(clone);
-
-    const speed = 50; // pixels per second
-    const totalWidth = content.scrollWidth;
-    const duration = totalWidth / speed;
-
-    gsap.to([content, clone], {
-      x: -totalWidth,
-      duration: duration,
-      ease: 'none',
-      repeat: -1,
-    });
-  }, []);
+  const data = language === 'en' ? testimonials : testimonialsAr;
 
   return (
-    <section className="py-32 bg-black overflow-hidden border-y border-white/5">
-      <div className="max-w-7xl mx-auto px-6 mb-20">
-        <TextRevealer
-          text={language === 'en' ? 'VOICES OF TRUST' : 'أصوات الثقة'}
-          className="text-gold text-xs font-bold uppercase tracking-[0.5em] mb-4"
-        />
-        <TextRevealer
-          text={language === 'en' ? 'KIND WORDS FROM CLIENTS' : 'كلمات طيبة من العملاء'}
-          className="text-4xl md:text-6xl font-black font-display text-white tracking-tighter"
-          type="words"
-        />
-      </div>
-
-      <div ref={marqueeRef} className="flex gap-8 cursor-grab active:cursor-grabbing">
-        <div className="marquee-content flex gap-8">
-          {[...testimonials, ...testimonials].map((t, i) => (
-            <div
-              key={`${t.id}-${i}`}
-              className="w-[400px] md:w-[600px] flex-shrink-0 p-12 rounded-[40px] bg-neutral-900/50 border border-white/5 space-y-8"
-            >
-              <div className="flex gap-1">
-                {[1, 2, 3, 4, 5].map(star => (
-                  <Star key={star} size={14} className="fill-gold text-gold" />
-                ))}
-              </div>
-              <p className="text-2xl font-medium text-white leading-relaxed">
-                "{language === 'en' ? t.content.en : t.content.ar}"
-              </p>
-              <div className="flex flex-col">
-                <span className="text-white font-bold">{language === 'en' ? t.author.en : t.author.ar}</span>
-                <span className="text-neutral-500 text-sm">{language === 'en' ? t.company.en : t.company.ar}</span>
-              </div>
-            </div>
-          ))}
+    <section className="bg-neutral-950 py-24 min-h-screen flex items-center justify-center relative overflow-hidden">
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="mx-auto mb-12 max-w-4xl text-center">
+          <h2 className="text-4xl md:text-6xl font-display font-bold tracking-tight text-white">
+            {language === 'en' ? 'What Our Clients Think of Us' : 'ماذا يقول عملاؤنا عنا'}
+          </h2>
+          <p className="mt-4 text-base md:text-lg text-zinc-300">
+            {language === 'en'
+              ? 'Feedback from partners who trusted us to design and build their digital growth.'
+              : 'آراء الشركاء الذين وثقوا بنا لتصميم وبناء نموهم الرقمي.'}
+          </p>
+        </div>
+        <div className="flex justify-center">
+          <CircularTestimonials
+            testimonials={data}
+            autoplay={true}
+            colors={{
+              name: "#f7f7ff",
+              designation: "#a1a1aa", // neutral-400
+              testimony: "#f1f1f7",
+              arrowBackground: "#D4AF37", // Gold
+              arrowForeground: "#141414",
+              arrowHoverBackground: "#f7f7ff",
+            }}
+            fontSizes={{
+              name: "28px",
+              designation: "16px",
+              quote: "20px",
+            }}
+          />
         </div>
       </div>
+
+      {/* Background Ambience */}
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-gold/5 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-gradient-to-t from-gold/5 to-transparent pointer-events-none" />
     </section>
   );
 }
