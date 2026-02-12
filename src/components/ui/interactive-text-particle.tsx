@@ -18,6 +18,8 @@ interface Particle {
   ov: number;
   f: number;
   rgb: number[];
+  draw(): void;
+  move(interactionRadius: number, hasPointer: boolean): boolean | void;
 }
 
 interface TextBox {

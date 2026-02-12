@@ -42,7 +42,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="bg-cream min-h-screen">
+    <main id="main-content" className="bg-cream min-h-screen">
       <Header />
       <Hero />
       <Manifesto />

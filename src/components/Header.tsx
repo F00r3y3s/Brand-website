@@ -37,34 +37,38 @@ export default function Header() {
   // Animate menu items when opened
   useEffect(() => {
     if (isOpen && menuRef.current) {
-      const menuItems = menuRef.current.querySelectorAll('.menu-item');
-      const contactItems = menuRef.current.querySelectorAll('.contact-item');
+      const ctx = gsap.context(() => {
+        const menuItems = menuRef.current!.querySelectorAll('.menu-item');
+        const contactItems = menuRef.current!.querySelectorAll('.contact-item');
 
-      gsap.fromTo(
-        menuItems,
-        { opacity: 0, y: 60, rotationX: -20 },
-        {
-          opacity: 1,
-          y: 0,
-          rotationX: 0,
-          duration: 0.8,
-          stagger: 0.08,
-          ease: 'power3.out',
-        }
-      );
+        gsap.fromTo(
+          menuItems,
+          { opacity: 0, y: 60, rotationX: -20 },
+          {
+            opacity: 1,
+            y: 0,
+            rotationX: 0,
+            duration: 0.8,
+            stagger: 0.08,
+            ease: 'power3.out',
+          }
+        );
 
-      gsap.fromTo(
-        contactItems,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          delay: 0.4,
-          stagger: 0.1,
-          ease: 'power2.out',
-        }
-      );
+        gsap.fromTo(
+          contactItems,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            delay: 0.4,
+            stagger: 0.1,
+            ease: 'power2.out',
+          }
+        );
+      }, menuRef);
+
+      return () => ctx.revert();
     }
   }, [isOpen]);
 

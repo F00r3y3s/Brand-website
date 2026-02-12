@@ -1,20 +1,15 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { X } from 'lucide-react';
 
 export default function CookiesConsent() {
   const { language } = useLanguage();
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    // Check if user has already accepted cookies
-    const cookiesAccepted = localStorage.getItem('cookies-consent');
-    if (!cookiesAccepted) {
-      setIsVisible(true);
-    }
-  }, []);
+  const [isVisible, setIsVisible] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return !localStorage.getItem('cookies-consent');
+  });
 
   const handleAccept = () => {
     localStorage.setItem('cookies-consent', 'accepted');

@@ -41,9 +41,6 @@ export default function Footer() {
     return () => ctx.revert()
   }, [])
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
   const brandProfileHref = '/downloads/ainar-fze-brand-profile.pdf'
 
   return (
@@ -152,6 +149,7 @@ export default function Footer() {
                 <input
                   type="email"
                   placeholder={language === 'en' ? 'Enter your email' : 'أدخل بريدك الإلكتروني'}
+                  aria-label={language === 'en' ? 'Email for newsletter' : 'البريد الإلكتروني للنشرة الإخبارية'}
                   className="flex-1 bg-light/5 border border-light/10 rounded-full px-6 py-4 text-light placeholder:text-light/30 focus:outline-none focus:border-secondary transition-colors"
                 />
                 <button className="bg-light text-dark px-8 py-4 rounded-full font-medium hover:bg-secondary transition-colors duration-300">

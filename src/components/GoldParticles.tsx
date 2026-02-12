@@ -8,16 +8,23 @@ export default function GoldParticles({ count = 200 }) {
     const mesh = useRef<THREE.InstancedMesh>(null);
     const lightRef = useRef<THREE.PointLight>(null);
 
-    // Generate random particles
+    // Pre-generate random values once (stored in ref to avoid re-render issues)
+    const seedRef = useRef<number[]>(
+        Array.from({ length: count * 7 }, () => Math.random())
+    );
+
+    // Generate random particles from pre-computed seeds
     const particles = useMemo(() => {
+        const seeds = seedRef.current!;
         const temp = [];
         for (let i = 0; i < count; i++) {
-            const t = Math.random() * 100;
-            const factor = 20 + Math.random() * 100;
-            const speed = 0.01 + Math.random() / 200;
-            const x = Math.random() * 100 - 50;
-            const y = Math.random() * 100 - 50;
-            const z = Math.random() * 100 - 50;
+            const si = i * 7;
+            const t = seeds[si] * 100;
+            const factor = 20 + seeds[si + 1] * 100;
+            const speed = 0.01 + seeds[si + 2] / 200;
+            const x = seeds[si + 3] * 100 - 50;
+            const y = seeds[si + 4] * 100 - 50;
+            const z = seeds[si + 5] * 100 - 50;
 
             temp.push({ t, factor, speed, x, y, z, mx: 0, my: 0 });
         }
