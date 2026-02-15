@@ -12,27 +12,103 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const menuRef = useRef<HTMLDivElement>(null);
+  const lastScrollYRef = useRef(0);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isVisibleRef = useRef(true);
+  const hiddenFromYRef = useRef(0);
+
+  const toggleMenu = () => {
+    setIsOpen((prev) => {
+      const next = !prev;
+      if (next) {
+        isVisibleRef.current = true;
+        setIsVisible(true);
+        if (hideTimerRef.current) {
+          clearTimeout(hideTimerRef.current);
+          hideTimerRef.current = null;
+        }
+      }
+      return next;
+    });
+  };
 
   // Enhanced scroll behavior - hide on scroll down, show on scroll up
   useEffect(() => {
+    const setHeaderVisible = (visible: boolean) => {
+      if (isVisibleRef.current !== visible) {
+        isVisibleRef.current = visible;
+        setIsVisible(visible);
+      }
+    };
+
+    const clearHideTimer = () => {
+      if (hideTimerRef.current) {
+        clearTimeout(hideTimerRef.current);
+        hideTimerRef.current = null;
+      }
+    };
+
+    const scheduleHide = () => {
+      clearHideTimer();
+      hideTimerRef.current = setTimeout(() => {
+        if (window.scrollY > 100 && !isOpen) {
+          hiddenFromYRef.current = window.scrollY;
+          setHeaderVisible(false);
+        }
+      }, 1600);
+    };
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       setIsScrolled(currentScrollY > 50);
+      const lastScrollY = lastScrollYRef.current;
+      const revealThreshold = Math.max(220, window.innerHeight * 0.5);
 
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
+      if (currentScrollY <= 60) {
+        setHeaderVisible(true);
+        hiddenFromYRef.current = currentScrollY;
+        clearHideTimer();
+        lastScrollYRef.current = currentScrollY;
+        return;
       }
 
-      setLastScrollY(currentScrollY);
+      if (currentScrollY > lastScrollY) {
+        // Scrolling down: hide quickly and reset anchor for future reveal distance.
+        hiddenFromYRef.current = currentScrollY;
+        if (currentScrollY > 100 && !isOpen) {
+          setHeaderVisible(false);
+        }
+        clearHideTimer();
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up: only reveal after meaningful upward distance.
+        const upwardDistance = hiddenFromYRef.current - currentScrollY;
+        if (isOpen || upwardDistance >= revealThreshold) {
+          setHeaderVisible(true);
+        }
+
+        if (isVisibleRef.current && currentScrollY > 100 && !isOpen) {
+          scheduleHide();
+        } else {
+          clearHideTimer();
+        }
+      } else {
+        if (currentScrollY > 100 && !isOpen) {
+          scheduleHide();
+        } else {
+          clearHideTimer();
+        }
+      }
+
+      lastScrollYRef.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearHideTimer();
+    };
+  }, [isOpen]);
 
   // Animate menu items when opened
   useEffect(() => {
@@ -94,7 +170,12 @@ export default function Header() {
     { name: language === 'en' ? 'Services' : 'الخدمات', href: '#services' },
     { name: language === 'en' ? 'Team' : 'الفريق', href: '#team' },
     { name: language === 'en' ? 'Contact' : 'تواصل معنا', href: '#footer' },
-    { name: language === 'en' ? 'Download' : 'تحميل', href: brandProfileHref, isDownload: true },
+    {
+      name: language === 'en' ? 'Download' : 'تحميل',
+      expandedName: language === 'en' ? 'Download Brand Profile' : 'تحميل ملف العلامة',
+      href: brandProfileHref,
+      isDownload: true
+    },
   ];
 
   const mobileNavItems = [
@@ -123,8 +204,8 @@ export default function Header() {
             : 'bg-white/5 backdrop-blur-sm border-b border-white/5'
           }`}
       >
-        <div className="w-full pl-4 pr-6 sm:pl-8 sm:pr-12 md:pl-10 md:pr-16 lg:pl-12 lg:pr-24">
-          <div className="flex items-center justify-between h-24">
+        <div className="w-full px-4 sm:px-8 lg:pl-12 lg:pr-24 max-w-[100vw] overflow-hidden">
+          <div className="flex items-center justify-between h-20 md:h-24">
             {/* Left: Status Indicator & Brand */}
             <div className="flex items-center gap-3 lg:-ml-2">
               {/* Status Indicator */}
@@ -163,13 +244,13 @@ export default function Header() {
                 >
                   <Globe size={16} className="text-neutral-900 group-hover:text-gold transition-colors" />
                   <span className="text-sm font-bold text-neutral-900 group-hover:text-gold transition-colors">
-                    {language.toUpperCase()}
+                    {language === 'en' ? 'AR' : 'EN'}
                   </span>
                 </button>
 
                 {/* Hamburger Menu Button */}
                 <button
-                  onClick={() => setIsOpen(!isOpen)}
+                  onClick={toggleMenu}
                   className="lg:hidden p-3 rounded-full transition-all duration-300 bg-white/50 backdrop-blur-md border border-white/20 hover:bg-white/80 hover:scale-105 shadow-sm group relative overflow-hidden"
                   aria-label={isOpen ? 'Close menu' : 'Open menu'}
                 >

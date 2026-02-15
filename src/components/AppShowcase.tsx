@@ -117,11 +117,13 @@ export default function AppShowcase({ isModal = false }: { isModal?: boolean }) 
         });
       } else {
         // Scroll Mode: ScrollTrigger animations
+        const isMobile = window.innerWidth < 768;
+
         ScrollTrigger.create({
           trigger: containerRef.current,
           start: 'top top',
           end: '+=150%',
-          pin: true,
+          pin: !isMobile,
           scrub: 1,
         });
 
@@ -161,7 +163,7 @@ export default function AppShowcase({ isModal = false }: { isModal?: boolean }) 
     <div className="bg-neutral-950 overflow-hidden">
       <section
         ref={containerRef}
-        className={`relative w-full flex items-center justify-center overflow-hidden perspective-2000 ${isModal ? 'h-full py-8 sm:py-10 md:py-12' : 'h-screen'}`}
+        className={`relative w-full flex items-center justify-center overflow-hidden perspective-2000 ${isModal ? 'h-full py-8 sm:py-10 md:py-12' : 'min-h-screen py-16 md:h-screen md:py-0'}`}
       >
         {/* Background Elements */}
         <div className="absolute inset-0 pointer-events-none">

@@ -69,15 +69,15 @@ export default function Testimonials() {
   const data = language === 'en' ? testimonials : testimonialsAr;
 
   return (
-    <section className="bg-neutral-950 py-24 min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section className="bg-neutral-950 py-16 md:py-24 min-h-screen flex items-center justify-center relative overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
         <div className="mx-auto mb-12 max-w-4xl text-center">
-          <h2 className="text-4xl md:text-6xl font-display font-bold tracking-tight text-white">
-            {language === 'en' ? 'What Our Clients Think of Us' : 'ماذا يقول عملاؤنا عنا'}
+          <h2 className="text-3xl md:text-4xl lg:text-6xl font-display font-bold tracking-tight text-white">
+            {language === 'en' ? 'Trusted by Leaders' : 'ماذا يقول عملاؤنا عنا'}
           </h2>
           <p className="mt-4 text-base md:text-lg text-zinc-300">
             {language === 'en'
-              ? 'Feedback from partners who trusted us to design and build their digital growth.'
+              ? 'Feedback from partners who chose AINAR to drive transformation, sustainability, and growth.'
               : 'آراء الشركاء الذين وثقوا بنا لتصميم وبناء نموهم الرقمي.'}
           </p>
         </div>
@@ -94,9 +94,9 @@ export default function Testimonials() {
               arrowHoverBackground: "#f7f7ff",
             }}
             fontSizes={{
-              name: "28px",
-              designation: "16px",
-              quote: "20px",
+              name: "clamp(1.25rem, 3vw, 28px)",
+              designation: "clamp(0.875rem, 2vw, 16px)",
+              quote: "clamp(1rem, 2.5vw, 20px)",
             }}
           />
         </div>

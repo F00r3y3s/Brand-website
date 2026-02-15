@@ -12,28 +12,22 @@ const teamMembers = [
     roleDescription: "Dr. Hamidi leads AINAR with a vision to merge sustainability with advanced intelligence."
   },
   {
-    name: "James Chen",
-    role: "Chief AI Architect",
-    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1887&auto=format&fit=crop",
-    roleDescription: "James architects the neural frameworks that power our green AI solutions."
-  },
-  {
-    name: "Sarah Al-Fayed",
-    role: "Sustainability Lead",
+    name: "Fatima Moussa Sy",
+    role: "Assistant & Business Coordinator",
     image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=1964&auto=format&fit=crop",
-    roleDescription: "Sarah ensures every algorithm and strategy aligns with global eco-goals."
+    roleDescription: "Coordinates daily operations, communications, and executive follow-through across business initiatives."
   },
   {
-    name: "Marcus Thorn",
-    role: "Creative Director",
+    name: "Abdul Jabbar",
+    role: "Lead IT / Technical Advisor",
+    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1887&auto=format&fit=crop",
+    roleDescription: "Leads IT and technical direction, advising on architecture, implementation quality, and delivery standards."
+  },
+  {
+    name: "Syed Faruk Ahmed",
+    role: "Senior Growth & Strategic Advisory Partner",
     image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=800&auto=format&fit=crop",
-    roleDescription: "Marcus crafts the visual language that communicates our mission to the world."
-  },
-  {
-    name: "Elena Rodriguez",
-    role: "Head of Operations",
-    image: "https://images.unsplash.com/photo-1598550832205-d5b5fe4d0333?q=80&w=800&auto=format&fit=crop",
-    roleDescription: "Elena orchestrates our global teams to deliver impact at scale."
+    roleDescription: "Drives growth strategy, strategic partnerships, and long-term advisory planning across markets."
   }
 ]
 
@@ -43,7 +37,7 @@ export default function Team() {
   return (
     <section
       id="team"
-      className="py-32 bg-light relative overflow-hidden cursor-default"
+      className="h-screen min-h-[840px] bg-light relative overflow-hidden cursor-default pt-[8vh]"
     >
       <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -56,48 +50,48 @@ export default function Team() {
         </svg>
       </div>
 
-      <div className="max-w-[90vw] mx-auto relative z-10">
-        <div className="mb-24 flex flex-col md:flex-row justify-between items-end">
+      <div className="max-w-[90vw] mx-auto relative z-10 w-full">
+        <div className="mb-4 md:mb-5 text-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.75 }}
           >
-            <h2 className="text-6xl md:text-8xl font-display font-bold text-dark mb-6 tracking-tight leading-[0.92]">
-              Core <br />
-              <span className="block text-primary text-6xl md:text-8xl font-black not-italic tracking-tight leading-[0.92]">Team</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-display mb-2 text-dark leading-none tracking-tight">
+              Core{" "}
+              <span className="text-primary [font-size:inherit] [line-height:inherit]">Team</span>
             </h2>
-            <p className="text-xl font-light text-dark/70 max-w-xl">
-              A multidisciplinary collective of minds dedicated to engineering the future.
+            <p className="text-[1.02rem] md:text-[1.32rem] font-medium text-dark/82 max-w-3xl mx-auto">
+              Much talented, deciplined and dedicated members.
             </p>
           </motion.div>
         </div>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col mt-16 md:mt-20">
           {teamMembers.map((member, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group relative border-t border-dark/10 py-10 md:py-14 hover:px-4 transition-all duration-300 cursor-pointer overflow-visible"
+              transition={{ duration: 0.45, delay: index * 0.08 }}
+              className="group relative border-t border-dark/10 py-[1.2rem] md:py-[1.45rem] hover:px-3 transition-all duration-300 cursor-pointer overflow-visible"
               onMouseEnter={() => setHoveredMember(index)}
               onMouseLeave={() => setHoveredMember(null)}
             >
-              <div className="flex flex-col md:flex-row md:items-center justify-between relative z-10 text-dark group-hover:text-primary transition-colors duration-300 gap-4">
-                <h3 className="text-4xl md:text-7xl font-display font-bold uppercase tracking-tight group-hover:translate-x-4 transition-transform duration-500 ease-out">
+              <div className="relative z-10 text-dark group-hover:text-primary transition-colors duration-300 lg:pr-[23rem] xl:pr-[26rem]">
+                <h3 className="text-[1.75rem] md:text-[2.1rem] lg:text-[2.45rem] font-display font-bold uppercase tracking-tight group-hover:translate-x-2 transition-transform duration-500 ease-out leading-[0.95]">
                   {member.name}
                 </h3>
-                <div className="flex flex-col md:items-end gap-2">
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm md:text-lg font-mono uppercase tracking-widest opacity-60 group-hover:opacity-100">
+                <div className="mt-2 md:mt-3 flex flex-col gap-1.5">
+                  <div className="inline-flex items-center gap-2.5 w-fit">
+                    <span className="text-[13px] md:text-[1rem] font-mono uppercase tracking-[0.18em] opacity-85 group-hover:opacity-100">
                       {member.role}
                     </span>
-                    <ArrowUpRight className="w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform group-hover:translate-x-2 group-hover:-translate-y-2 md:block hidden" />
+                    <ArrowUpRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform group-hover:translate-x-1.5 group-hover:-translate-y-1.5 block" />
                   </div>
-                  <span className="text-sm font-light opacity-0 group-hover:opacity-70 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0 max-w-xs text-right hidden md:block">
+                  <span className="text-[12px] md:text-[13px] font-light opacity-78 group-hover:opacity-96 transition-opacity duration-300 max-w-[42rem] text-left block leading-snug">
                     {member.roleDescription}
                   </span>
                 </div>
@@ -106,31 +100,31 @@ export default function Team() {
               <AnimatePresence>
                 {hoveredMember === index && (
                   <motion.div
-                    className="hidden lg:block absolute right-[13rem] xl:right-[16rem] top-1/2 -translate-y-1/2 w-[280px] h-[340px] pointer-events-none z-20 overflow-hidden shadow-2xl bg-white rounded-lg"
+                    className="hidden lg:block absolute right-4 xl:right-8 top-1/2 -translate-y-1/2 w-[190px] xl:w-[210px] h-[230px] xl:h-[260px] pointer-events-none z-20 overflow-hidden shadow-2xl bg-white rounded-lg"
                     initial={{
                       opacity: 0,
-                      scale: 0.9,
+                      scale: 0.92,
                       y: "-45%",
                     }}
                     animate={{
                       opacity: 1,
                       scale: 1,
                       y: "-50%",
-                      transition: { duration: 0.35, ease: "easeOut" }
+                      transition: { duration: 0.3, ease: "easeOut" }
                     }}
                     exit={{
                       opacity: 0,
-                      scale: 0.9,
+                      scale: 0.92,
                       y: "-45%",
-                      transition: { duration: 0.22, ease: "easeInOut" }
+                      transition: { duration: 0.2, ease: "easeInOut" }
                     }}
                   >
                     <motion.img
                       src={member.image}
                       alt={member.name}
                       className="w-full h-full object-cover"
-                      initial={{ scale: 1.08 }}
-                      animate={{ scale: 1, transition: { duration: 0.45, ease: "easeOut" } }}
+                      initial={{ scale: 1.05 }}
+                      animate={{ scale: 1, transition: { duration: 0.35, ease: "easeOut" } }}
                     />
                     <div className="absolute inset-0 bg-primary/10 mix-blend-overlay" />
                   </motion.div>

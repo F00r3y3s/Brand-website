@@ -2,23 +2,43 @@
 
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Send } from 'lucide-react';
+import { X, Send, ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ServiceInquiryModalProps {
     isOpen: boolean;
     onClose: () => void;
     serviceTitle: string;
+    mainTitle?: string;
+    enableServiceSelection?: boolean;
+    availableServices?: { title: string }[];
 }
 
-export default function ServiceInquiryModal({ isOpen, onClose, serviceTitle }: ServiceInquiryModalProps) {
+export default function ServiceInquiryModal({
+    isOpen,
+    onClose,
+    serviceTitle,
+    mainTitle = "Build Whats Next",
+    enableServiceSelection = false,
+    availableServices = []
+}: ServiceInquiryModalProps) {
     const [formData, setFormData] = useState({
         name: '',
         organization: '',
         email: '',
-        message: ''
+        contactNumber: '',
+        linkedin: '',
+        message: '',
+        selectedService: serviceTitle
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            setFormData(prev => ({ ...prev, selectedService: serviceTitle }));
+        }
+    }, [isOpen, serviceTitle]);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -50,7 +70,7 @@ export default function ServiceInquiryModal({ isOpen, onClose, serviceTitle }: S
         setTimeout(() => {
             setIsSuccess(false);
             onClose();
-            setFormData({ name: '', organization: '', email: '', message: '' });
+            setFormData({ name: '', organization: '', email: '', contactNumber: '', linkedin: '', message: '', selectedService: '' });
         }, 2000);
     };
 
@@ -85,25 +105,42 @@ export default function ServiceInquiryModal({ isOpen, onClose, serviceTitle }: S
                                     </div>
                                     <span className="text-[11px] font-black uppercase tracking-[0.25em] text-teal/80">Contact Form</span>
                                 </div>
-                                <h2 className="text-4xl md:text-5xl font-black font-display text-white mb-4 leading-[0.95]">
-                                    <span className="block text-white">Start a</span>
-                                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-teal via-white to-teal">
-                                        Project
-                                    </span>
+                                <h2 className="text-[0.95rem] md:text-base font-black uppercase tracking-[0.05em] text-white mb-4 leading-none">
+                                    {mainTitle}
                                 </h2>
                                 <p className="text-neutral-100 text-base md:text-lg max-w-xl leading-relaxed">
-                                    Tell us what you are building and we will follow up with a tailored plan.
+                                    Tell us what you are building and we will follow up with a custom roadmap.
                                 </p>
                             </header>
 
                             <form onSubmit={handleSubmit} className="space-y-5">
-                                <div className="rounded-2xl border border-teal/45 bg-teal/14 px-5 py-4">
-                                    <p className="text-xs font-black uppercase tracking-[0.18em] text-teal/90 mb-1">
+                                <div className="rounded-2xl border border-white/25 bg-neutral-900/65 px-5 py-4">
+                                    <p className="text-xs font-black uppercase tracking-[0.18em] text-neutral-200 mb-1">
                                         Selected Service
                                     </p>
-                                    <p className="text-white text-lg md:text-xl font-semibold leading-snug">
-                                        {serviceTitle || 'General Inquiry'}
-                                    </p>
+                                    {enableServiceSelection ? (
+                                        <div className="relative">
+                                            <select
+                                                required
+                                                value={formData.selectedService}
+                                                onChange={e => setFormData({ ...formData, selectedService: e.target.value })}
+                                                className="w-full bg-transparent text-white text-lg md:text-xl font-semibold leading-snug focus:outline-none appearance-none cursor-pointer"
+                                            >
+                                                <option value="" disabled className="bg-neutral-900 text-neutral-400">Select a service...</option>
+                                                {availableServices.filter(s => !s.title.toLowerCase().includes('coming soon')).map((service, idx) => (
+                                                    <option key={idx} value={service.title} className="bg-neutral-900 text-white">
+                                                        {service.title}
+                                                    </option>
+                                                ))}
+                                                <option value="Other" className="bg-neutral-900 text-white">Other</option>
+                                            </select>
+                                            <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 text-white pointer-events-none" size={20} />
+                                        </div>
+                                    ) : (
+                                        <p className="text-white text-lg md:text-xl font-semibold leading-snug drop-shadow-[0_1px_8px_rgba(0,0,0,0.35)]">
+                                            {serviceTitle || 'General Inquiry'}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -132,15 +169,39 @@ export default function ServiceInquiryModal({ isOpen, onClose, serviceTitle }: S
                                     </div>
                                 </div>
 
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-[0.16em] text-neutral-200 ml-1">Email</label>
+                                        <input
+                                            required
+                                            type="email"
+                                            value={formData.email}
+                                            onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                            className="w-full bg-white/14 border border-white/35 rounded-2xl px-5 py-4 text-base text-white focus:outline-none focus:border-teal/70 focus:bg-white/18 transition-all placeholder:text-neutral-300"
+                                            placeholder="name@company.com"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-[0.16em] text-neutral-200 ml-1">Contact Number</label>
+                                        <input
+                                            type="tel"
+                                            value={formData.contactNumber}
+                                            onChange={e => setFormData({ ...formData, contactNumber: e.target.value })}
+                                            className="w-full bg-white/14 border border-white/35 rounded-2xl px-5 py-4 text-base text-white focus:outline-none focus:border-teal/70 focus:bg-white/18 transition-all placeholder:text-neutral-300"
+                                            placeholder="+971 50 123 4567"
+                                        />
+                                    </div>
+                                </div>
+
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black uppercase tracking-[0.16em] text-neutral-200 ml-1">Email</label>
+                                    <label className="text-xs font-black uppercase tracking-[0.16em] text-neutral-200 ml-1">LinkedIn</label>
                                     <input
-                                        required
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                        type="url"
+                                        value={formData.linkedin}
+                                        onChange={e => setFormData({ ...formData, linkedin: e.target.value })}
                                         className="w-full bg-white/14 border border-white/35 rounded-2xl px-5 py-4 text-base text-white focus:outline-none focus:border-teal/70 focus:bg-white/18 transition-all placeholder:text-neutral-300"
-                                        placeholder="name@company.com"
+                                        placeholder="https://linkedin.com/in/yourprofile"
                                     />
                                 </div>
 

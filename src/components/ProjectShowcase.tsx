@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import Image from 'next/image';
 import ProjectCard from './ProjectCard';
-import TextRevealer from './common/TextRevealer';
 import { X } from 'lucide-react';
 import AppShowcase from './AppShowcase';
 
@@ -53,21 +52,22 @@ export default function ProjectShowcase() {
 
   return (
     <div className="bg-neutral-50 relative">
-      <div className="py-24 text-center">
-        <TextRevealer
-          text={language === 'en' ? 'OUR PROJECTS' : 'مشاريعنا'}
-          className="text-teal text-xs font-black tracking-widest mb-4"
-        />
-        <h2 className="text-5xl font-black font-display text-neutral-900 tracking-tighter">
-          {language === 'en' ? 'CASE STUDIES' : 'دراسات الحالة'}
-        </h2>
+      <div className="pt-6 pb-4 text-center">
+        <div className="w-full max-w-5xl mx-auto flex flex-col items-center gap-5">
+          <span className="inline-flex items-center justify-center text-teal text-base md:text-lg font-black uppercase tracking-[0.34em] border-2 border-teal/35 bg-white/88 px-9 py-3 rounded-full shadow-[0_12px_28px_rgba(0,0,0,0.1)]">
+            {language === 'en' ? 'OUR PROJECTS' : 'مشاريعنا'}
+          </span>
+          <h2 className="text-[1.85rem] md:text-[3.2rem] lg:text-[3.4rem] font-black font-display text-neutral-900 leading-[1.04] tracking-tight lg:whitespace-nowrap">
+            {language === 'en' ? 'CASE STUDIES' : 'دراسات الحالة'}
+          </h2>
+        </div>
       </div>
 
       <section
         id="projects"
-        className="relative w-full flex flex-col items-center justify-center py-16 min-h-[80vh]"
+        className="relative w-full flex flex-col items-center justify-start pt-0 pb-24 lg:pb-28 min-h-[74vh]"
       >
-        <div className="w-full max-w-6xl px-4">
+        <div className="w-full max-w-6xl px-4 pb-6 lg:pb-8">
           <div className="relative mx-auto" style={{ width: cardWidth, height: cardHeight + 24 }}>
             {/* Card 1: Ongoing */}
             <div

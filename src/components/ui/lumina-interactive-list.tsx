@@ -133,20 +133,18 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 uniform float uGlassRefractionStrength, uGlassChromaticAberration, uGlassBubbleClarity, uGlassEdgeGlow, uGlassLiquidFlow;
                 varying vec2 vUv;
 
-                vec2 getCoverUV(vec2 uv, vec2 textureSize) {
+                vec2 getContainUV(vec2 uv, vec2 textureSize) {
                     vec2 s = uResolution / textureSize;
-                    float scale = max(s.x, s.y);
+                    float scale = min(s.x, s.y);
                     vec2 scaledSize = textureSize * scale;
-                    // Bias composition toward the right because the generated artwork often
-                    // places the subject on the right edge.
-                    vec2 offset = (uResolution - scaledSize) * vec2(0.82, 0.5);
+                    vec2 offset = (uResolution - scaledSize) * 0.5;
                     return (uv * uResolution - offset) / scaledSize;
                 }
                 
                 vec4 glassEffect(vec2 uv, float progress) {
                     float time = progress * 5.0 * uSpeedMultiplier;
-                    vec2 uv1 = getCoverUV(uv, uTexture1Size); 
-                    vec2 uv2 = getCoverUV(uv, uTexture2Size);
+                    vec2 uv1 = getContainUV(uv, uTexture1Size); 
+                    vec2 uv2 = getContainUV(uv, uTexture2Size);
                     
                     // Circular reveal from center
                     float maxR = length(uResolution) * 0.85; 
@@ -210,59 +208,46 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 }
             };
 
-            const splitText = (text: string) => {
-                return text.split('').map(char => `<span style="display: inline-block; opacity: 0;">${char === ' ' ? '&nbsp;' : char}</span>`).join('');
-            };
-
             const updateContent = (idx: number) => {
                 const titleEl = container.querySelector('#mainTitle');
+                const subtitleEl = container.querySelector('#mainSubtitle');
                 const descEl = container.querySelector('#mainDesc');
-                if (titleEl && descEl) {
-                    // Animate out
-                    gsap.to(titleEl.children, { y: -20, opacity: 0, duration: 0.5, stagger: 0.02, ease: "power2.in" });
-                    gsap.to(descEl, { y: -10, opacity: 0, duration: 0.4, ease: "power2.in" });
+                const comingSoonLogo = container.querySelector('#comingSoonLogoGlass');
+                const ctaLabelEl = container.querySelector('#mainCtaLabel');
+                const ctaButtonEl = container.querySelector('#mainCtaButton');
+                const isComingSoon = String(slides[idx]?.title || '').toLowerCase().includes('coming soon');
+                if (titleEl && subtitleEl && descEl) {
+                    titleEl.textContent = slides[idx].title;
+                    (subtitleEl as HTMLElement).textContent = slides[idx].subtitle || '';
+                    if (ctaLabelEl) ctaLabelEl.textContent = isComingSoon ? 'Available Soon' : 'Build Whats Next';
+                    if (ctaButtonEl instanceof HTMLElement) {
+                        ctaButtonEl.classList.toggle('is-disabled', isComingSoon);
+                        ctaButtonEl.setAttribute('aria-disabled', isComingSoon ? 'true' : 'false');
+                    }
 
-                    setTimeout(() => {
-                        // Set new content
-                        titleEl.innerHTML = splitText(slides[idx].title);
-                        (descEl as HTMLElement).textContent = slides[idx].description;
-
-                        // Reset state
-                        gsap.set(titleEl.children, { opacity: 0 });
-                        gsap.set(descEl, { y: 20, opacity: 0 });
-
-                        // Different animations based on slide index
-                        const children = titleEl.children;
-                        const animIndex = idx % 5;
-
-                        switch (animIndex) {
-                            case 0: // Stagger Up
-                                gsap.set(children, { y: 20 });
-                                gsap.to(children, { y: 0, opacity: 1, duration: 0.8, stagger: 0.03, ease: "power3.out" });
-                                break;
-                            case 1: // Stagger Down
-                                gsap.set(children, { y: -20 });
-                                gsap.to(children, { y: 0, opacity: 1, duration: 0.8, stagger: 0.03, ease: "back.out(1.7)" });
-                                break;
-                            case 2: // Blur Reveal
-                                gsap.set(children, { filter: "blur(10px)", scale: 1.5, y: 0 });
-                                gsap.to(children, { filter: "blur(0px)", scale: 1, opacity: 1, duration: 1, stagger: { amount: 0.5, from: "random" }, ease: "power2.out" });
-                                break;
-                            case 3: // Scale In
-                                gsap.set(children, { scale: 0, y: 0 });
-                                gsap.to(children, { scale: 1, opacity: 1, duration: 0.6, stagger: 0.05, ease: "back.out(1.5)" });
-                                break;
-                            case 4: // Rotate X (Flip)
-                                gsap.set(children, { rotationX: 90, y: 0, transformOrigin: "50% 50%" });
-                                gsap.to(children, { rotationX: 0, opacity: 1, duration: 0.8, stagger: 0.04, ease: "power2.out" });
-                                break;
-                            default:
-                                gsap.set(children, { y: 20 });
-                                gsap.to(children, { y: 0, opacity: 1, duration: 0.8, stagger: 0.03, ease: "power3.out" });
+                    if (comingSoonLogo) {
+                        gsap.to(comingSoonLogo, {
+                            autoAlpha: isComingSoon ? 1 : 0,
+                            scale: isComingSoon ? 1 : 0.92,
+                            duration: 0.45,
+                            ease: "power2.out"
+                        });
+                    }
+                    gsap.killTweensOf(descEl);
+                    gsap.to(descEl, {
+                        y: -8,
+                        opacity: 0,
+                        duration: 0.2,
+                        ease: "power1.in",
+                        onComplete: () => {
+                            (descEl as HTMLElement).textContent = slides[idx].description;
+                            gsap.fromTo(
+                                descEl,
+                                { y: 10, opacity: 0 },
+                                { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }
+                            );
                         }
-
-                        gsap.to(descEl, { y: 0, opacity: 1, duration: 0.8, delay: 0.2, ease: "power3.out" });
-                    }, 500);
+                    });
                 }
             };
 
@@ -481,13 +466,26 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
 
             // Init text content - FORCE index 0
             const tEl = container.querySelector('#mainTitle');
+            const sEl = container.querySelector('#mainSubtitle');
             const dEl = container.querySelector('#mainDesc');
-            if (tEl && dEl) {
-                tEl.innerHTML = splitText(slides[0].title);
+            const csLogoEl = container.querySelector('#comingSoonLogoGlass');
+            const ctaLabelEl = container.querySelector('#mainCtaLabel');
+            const ctaButtonEl = container.querySelector('#mainCtaButton');
+            if (tEl && sEl && dEl) {
+                tEl.textContent = slides[0].title;
+                (sEl as HTMLElement).textContent = slides[0].subtitle || '';
                 (dEl as HTMLElement).textContent = slides[0].description;
-                // Animate initial in
-                gsap.fromTo(tEl.children, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 0.03, ease: "power3.out", delay: 0.5 });
-                gsap.fromTo(dEl, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out", delay: 0.8 });
+                const initialIsComingSoon = String(slides[0]?.title || '').toLowerCase().includes('coming soon');
+                if (ctaLabelEl) ctaLabelEl.textContent = initialIsComingSoon ? 'Available Soon' : 'Build Whats Next';
+                if (ctaButtonEl instanceof HTMLElement) {
+                    ctaButtonEl.classList.toggle('is-disabled', initialIsComingSoon);
+                    ctaButtonEl.setAttribute('aria-disabled', initialIsComingSoon ? 'true' : 'false');
+                }
+                if (csLogoEl) {
+                    gsap.set(csLogoEl, { autoAlpha: 0, scale: 0.92 });
+                }
+                // Keep the title static and only animate paragraph copy.
+                gsap.fromTo(dEl, { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power2.out", delay: 0.5 });
             }
 
             initRenderer();
@@ -539,22 +537,35 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
             <span className="slide-total" id="slideTotal">{String(items.length).padStart(2, '0')}</span>
             <div className="readability-overlay" aria-hidden="true"></div>
 
+            <div id="comingSoonLogoGlass" className="coming-soon-logo-glass" aria-hidden="true">
+                <div className="coming-soon-logo-glass-inner">
+                    <div className="coming-soon-logo-plate">
+                        <img src="/ainar-logo-transparent.png" alt="" className="coming-soon-logo-image" />
+                    </div>
+                </div>
+            </div>
             <div className="slide-content">
                 <h1 className="slide-title" id="mainTitle"></h1>
+                <p className="slide-subtitle" id="mainSubtitle"></p>
                 <p className="slide-description" id="mainDesc"></p>
                 <div className="mt-8">
                     <button
+                        id="mainCtaButton"
                         className="cta-button group"
                         onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
+                            const currentIdx = (window as any).__luminaGetCurrentIndex ? (window as any).__luminaGetCurrentIndex() : 0;
+                            const currentSlide = items[currentIdx];
+                            const isComingSoon = String(currentSlide?.title || '').toLowerCase().includes('coming soon');
+                            if (isComingSoon) return;
                             if ((window as any).__onServiceCtaClick) {
                                 (window as any).__onServiceCtaClick();
                             }
                         }}
-                        style={{ pointerEvents: 'auto', position: 'relative', zIndex: 100 }}
+                        style={{ position: 'relative', zIndex: 100 }}
                     >
-                        <span className="relative z-10">Start Project</span>
+                        <span id="mainCtaLabel" className="relative z-10">Build Whats Next</span>
                         <div className="absolute inset-0 bg-white group-hover:bg-neutral-200 transition-colors z-0"></div>
                     </button>
                 </div>
@@ -566,6 +577,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 .slider-wrapper {
                     position: relative;
                     width: 100%;
+                    max-width: 100vw;
                     height: 100%;
                     overflow: hidden;
                     background: #0a0a0a;
@@ -582,10 +594,15 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                     right: 0;
                     bottom: 0;
                     left: auto;
-                    width: 65%;
+                    width: 100%;
                     height: 100%;
                     z-index: 0;
                     display: block;
+                }
+                @media (min-width: 1024px) {
+                    .webgl-canvas {
+                        width: 65%;
+                    }
                 }
                 .slide-number {
                     position: absolute;
@@ -593,9 +610,14 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                     left: 2rem;
                     z-index: 10;
                     font-family: var(--font-mono, monospace);
-                    font-size: 2rem;
+                    font-size: 1.2rem;
                     font-weight: bold;
                     opacity: 0.7;
+                }
+                @media (min-width: 1024px) {
+                    .slide-number {
+                        font-size: 2rem;
+                    }
                 }
                 .slide-total {
                     position: absolute;
@@ -619,22 +641,74 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                         radial-gradient(110% 95% at 16% 78%, rgba(2, 6, 16, 0.62) 0%, rgba(2, 6, 16, 0.4) 40%, rgba(2, 6, 16, 0.08) 72%, rgba(2, 6, 16, 0) 100%),
                         linear-gradient(180deg, rgba(2, 6, 16, 0.2) 0%, rgba(2, 6, 16, 0.35) 100%);
                 }
+                .coming-soon-logo-glass {
+                    position: absolute;
+                    top: 50%;
+                    right: clamp(2.4rem, 11vw, 11rem);
+                    transform: translateY(-50%);
+                    z-index: 12;
+                    width: clamp(190px, 23vw, 300px);
+                    padding: clamp(0.65rem, 0.95vw, 0.8rem);
+                    border-radius: 1rem;
+                    border: 1px solid rgba(255, 255, 255, 0.26);
+                    background: linear-gradient(145deg, rgba(22, 34, 52, 0.44), rgba(22, 34, 52, 0.28));
+                    backdrop-filter: blur(14px) saturate(135%);
+                    -webkit-backdrop-filter: blur(14px) saturate(135%);
+                    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                    opacity: 0;
+                    visibility: hidden;
+                    transform-origin: center center;
+                }
+                .coming-soon-logo-glass-inner {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 100%;
+                    min-height: clamp(105px, 12.5vw, 156px);
+                    border-radius: 0.75rem;
+                    border: 1px solid rgba(255, 255, 255, 0.24);
+                    background: linear-gradient(160deg, rgba(250, 252, 255, 0.22), rgba(255, 255, 255, 0.1));
+                    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                }
+                .coming-soon-logo-plate {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 92%;
+                    min-height: clamp(92px, 10.8vw, 136px);
+                    border-radius: 0.7rem;
+                    border: 1px solid rgba(255, 255, 255, 0.78);
+                    background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(244, 248, 255, 0.9));
+                    box-shadow: 0 10px 26px rgba(2, 10, 24, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+                }
+                .coming-soon-logo-image {
+                    width: clamp(122px, 15vw, 208px);
+                    height: auto;
+                    object-fit: contain;
+                    opacity: 1;
+                    filter: contrast(1.16) brightness(0.5);
+                }
+                @media (max-width: 1023px) {
+                    .coming-soon-logo-glass {
+                        display: none;
+                    }
+                }
                 .slide-content {
                     position: absolute;
                     bottom: clamp(6rem, 12vh, 9rem);
                     left: clamp(1rem, 3.8vw, 4rem);
                     z-index: 10;
-                    width: min(760px, calc(100% - 2rem));
+                    width: min(860px, calc(100% - 2rem));
                     pointer-events: auto;
                     text-align: left;
                     transform: none;
-                    padding: clamp(1.4rem, 2.4vw, 3rem);
-                    background: linear-gradient(145deg, rgba(8, 12, 20, 0.78), rgba(8, 12, 20, 0.58));
-                    backdrop-filter: blur(26px) saturate(145%);
-                    -webkit-backdrop-filter: blur(26px) saturate(145%);
-                    border-radius: 1.6rem;
-                    border: 1px solid rgba(255, 255, 255, 0.24);
-                    box-shadow: 0 28px 58px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+                    padding: clamp(1.5rem, 2.6vw, 3.1rem);
+                    background: linear-gradient(125deg, rgba(5, 9, 19, 0.76) 0%, rgba(5, 9, 19, 0.68) 52%, rgba(10, 26, 40, 0.56) 100%);
+                    backdrop-filter: blur(24px) saturate(155%);
+                    -webkit-backdrop-filter: blur(24px) saturate(155%);
+                    border-radius: 1.8rem;
+                    border: 1px solid rgba(255, 255, 255, 0.26);
+                    box-shadow: 0 28px 58px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
                 }
                 @media (min-width: 1024px) {
                     .slide-content {
@@ -642,26 +716,48 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                         bottom: auto;
                         transform: translateY(-50%);
                         left: clamp(1rem, 3vw, 3.5rem);
-                        width: min(560px, calc(35% - 2.5rem));
+                        width: min(980px, 72vw);
                     }
                 }
                 .slide-title {
-                    font-size: clamp(2.25rem, 6.1vw, 5.6rem);
+                    font-size: clamp(1.45rem, 2.6vw, 2.45rem);
                     font-weight: 900;
-                    margin-bottom: 1.2rem;
+                    margin-bottom: 1rem;
                     text-transform: uppercase;
-                    line-height: 0.95;
+                    line-height: 1.06;
                     letter-spacing: -0.015em;
                     color: #ffffff;
-                    text-shadow: 0 5px 22px rgba(0, 0, 0, 0.62);
+                    text-shadow: 0 8px 26px rgba(0, 0, 0, 0.66);
+                    max-width: 100%;
                 }
                 .slide-description {
-                    font-size: clamp(1.05rem, 2.1vw, 1.48rem);
-                    font-weight: 500;
+                    font-size: clamp(1.2rem, 1.9vw, 1.5rem);
+                    font-weight: 520;
                     opacity: 1;
-                    line-height: 1.62;
+                    line-height: 1.68;
                     color: rgba(248, 251, 255, 0.97);
                     text-shadow: 0 3px 16px rgba(0, 0, 0, 0.5);
+                    text-align: justify;
+                    text-justify: inter-word;
+                    text-align-last: left;
+                    hyphens: auto;
+                    text-wrap: pretty;
+                    max-width: 100%;
+                }
+                .slide-subtitle {
+                    font-size: clamp(0.98rem, 1.25vw, 1.12rem);
+                    font-weight: 780;
+                    text-transform: uppercase;
+                    letter-spacing: 0.08em;
+                    color: rgba(209, 249, 244, 0.96);
+                    margin-bottom: 0.95rem;
+                    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+                    max-width: 100%;
+                }
+                @media (min-width: 1024px) {
+                    .slide-title {
+                        white-space: nowrap;
+                    }
                 }
                 .cta-button {
                     position: relative;
@@ -672,6 +768,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                     font-size: 0.9rem;
                     text-transform: uppercase;
                     letter-spacing: 0.05em;
+                    white-space: nowrap;
                     color: #000;
                     cursor: pointer;
                     transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -684,11 +781,20 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 .cta-button:active {
                     transform: translateY(0);
                 }
+                .cta-button.is-disabled {
+                    cursor: default;
+                    opacity: 0.8;
+                    pointer-events: none;
+                    transform: none;
+                }
+                .cta-button.is-disabled:hover {
+                    transform: none;
+                }
 
                 .slides-navigation {
                     position: absolute;
-                    left: 1rem;
-                    right: 1rem;
+                    left: 0;
+                    right: 0;
                     bottom: 1.1rem;
                     z-index: 20;
                     display: flex;
@@ -696,28 +802,40 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                     gap: 0.7rem;
                     align-items: center;
                     justify-content: flex-start;
-                    width: auto;
+                    width: 100%;
+                    max-width: 100vw;
                     overflow-x: auto;
                     overflow-y: hidden;
                     scrollbar-width: none;
-                    padding: 0.1rem;
+                    padding: 0 1rem;
                     background: transparent;
+                    box-sizing: border-box;
+                    -webkit-overflow-scrolling: touch;
                 }
                 .slides-navigation::-webkit-scrollbar { display: none; }
                 .slide-nav-item {
                     cursor: pointer;
                     display: flex;
                     flex-direction: column;
-                    align-items: flex-start;
+                    align-items: center;
                     gap: 0.45rem;
-                    opacity: 0.42;
+                    opacity: 0.76;
                     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-                    padding: 0.78rem 0.95rem;
+                    padding: 0.82rem 1.08rem;
                     border-radius: 999px;
-                    background: rgba(2, 8, 18, 0.45);
-                    border: 1px solid rgba(255, 255, 255, 0.14);
-                    min-width: 165px;
-                    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+                    background: rgba(3, 11, 24, 0.74);
+                    border: 1px solid rgba(255, 255, 255, 0.24);
+                    min-width: 175px;
+                    width: 175px;
+                    white-space: nowrap;
+                    flex-shrink: 0;
+                    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                }
+                @media (min-width: 1024px) {
+                    .slide-nav-item {
+                        min-width: 220px;
+                        width: 220px;
+                    }
                 }
                 .slide-nav-item:hover, .slide-nav-item.active {
                     opacity: 1;
@@ -731,16 +849,23 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                     font-family: var(--font-display, "Outfit", sans-serif);
                     text-transform: uppercase;
                     letter-spacing: 0.13em;
-                    font-size: 0.58rem;
-                    font-weight: 600;
+                    font-size: 0.6rem;
+                    font-weight: 700;
                     white-space: nowrap;
-                    color: rgba(255, 255, 255, 0.9);
+                    color: rgba(255, 255, 255, 0.98);
                     transition: color 0.3s ease;
+                    text-align: center;
+                    width: 100%;
+                }
+                @media (min-width: 1024px) {
+                    .slide-nav-title {
+                        font-size: 0.68rem;
+                    }
                 }
                 .slide-progress-line {
                     width: 100%;
-                    height: 3px;
-                    background: rgba(255, 255, 255, 0.16);
+                    height: 4px;
+                    background: rgba(255, 255, 255, 0.2);
                     position: relative;
                     border-radius: 4px;
                     overflow: hidden;
