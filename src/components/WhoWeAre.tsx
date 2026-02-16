@@ -172,7 +172,7 @@ export default function WhoWeAre() {
                                 alt="AINAR Logo"
                                 className="who-main-logo w-[115px] md:w-[155px] lg:w-[185px] h-auto mb-5 md:mb-6"
                             />
-                            <p className="who-main-copy text-lg md:text-2xl lg:text-[1.8rem] text-dark/85 leading-[1.25] max-w-4xl">
+                            <p className="who-main-copy text-lg md:text-2xl lg:text-[1.8rem] text-dark/85 leading-[1.22] max-w-full lg:max-w-[72rem]">
                                 {MANIFESTO.join(' ')}
                             </p>
                             <div className="who-founder-row mt-6 md:mt-10 flex flex-wrap items-center gap-4">

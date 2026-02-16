@@ -296,9 +296,9 @@ export default function Manifesto() {
             </h2>
 
             {/* Title Badge */}
-            <div ref={titleBadgeRef} className="inline-flex">
+            <div ref={titleBadgeRef} className="inline-flex mt-1 lg:mt-2">
               <TextRevealer
-                text={language === 'en' ? 'OUR VALUE - SUSTAINABLE GROWTH' : 'قيمتنا - النمو المستدام'}
+                text={language === 'en' ? 'OUR VALUE | SUSTAINABLE GROWTH' : 'قيمتنا | النمو المستدام'}
                 className="text-sm sm:text-base font-bold uppercase text-neutral-900 bg-white/90 px-5 py-2 tracking-[0.08em] rounded-sm"
                 type="words"
               />
@@ -307,7 +307,7 @@ export default function Manifesto() {
             {/* Paragraph */}
             <div
               ref={paragraphRef}
-              className="space-y-5 max-w-[44rem]"
+              className="mt-3 lg:mt-4 space-y-5 max-w-[44rem]"
             >
               {paragraphs.map((paragraph) => (
                 <p
@@ -324,7 +324,7 @@ export default function Manifesto() {
               {values.map((item) => (
                 <div
                   key={item.title}
-                  className="manifesto-value-card bg-white/95 text-neutral-950 rounded-sm px-4 py-3 shadow-[0_8px_24px_rgba(0,0,0,0.25)]"
+                  className="manifesto-value-card bg-white/95 text-neutral-950 rounded-sm px-5 py-3 shadow-[0_8px_24px_rgba(0,0,0,0.25)]"
                 >
                   <div className="flex items-start gap-3">
                     <item.Icon className="w-6 h-6 shrink-0 mt-0.5" strokeWidth={2} />
@@ -354,20 +354,18 @@ export default function Manifesto() {
       </div>
 
       {/* Desktop Value Cards */}
-      <div ref={desktopValuesRef} className="hidden lg:block pointer-events-none absolute bottom-6 left-0 right-0 z-30 px-4 lg:px-10 xl:px-14">
-        <div className="grid grid-cols-3 gap-4">
+      <div ref={desktopValuesRef} className="hidden lg:block pointer-events-none absolute bottom-28 left-0 right-0 z-30 px-5 lg:px-12 xl:px-16 pb-6">
+        <div className="flex justify-between gap-7 max-w-[92rem] mx-auto items-stretch">
           {values.map((item) => (
             <div
               key={item.title}
-              className="manifesto-value-card bg-white/95 text-neutral-950 rounded-sm px-5 py-4 shadow-[0_10px_28px_rgba(0,0,0,0.28)]"
+              className="manifesto-value-card h-full flex-1 min-w-0 bg-white/95 text-neutral-950 rounded-2xl px-6 pt-3.5 pb-3 shadow-[0_10px_28px_rgba(0,0,0,0.28)]"
             >
-              <div className="flex items-start gap-3">
-                <item.Icon className="w-8 h-8 shrink-0 mt-0.5" strokeWidth={2} />
-                <div>
-                  <h3 className="text-[1.65rem] font-bold leading-[1.05]">{item.title}</h3>
-                  <p className="mt-1 text-[1.22rem] leading-tight text-neutral-700">{item.description}</p>
-                </div>
+              <div className="flex items-start gap-2.5 mb-1.5">
+                <item.Icon className="w-6 h-6 shrink-0 mt-0.5" strokeWidth={2} />
+                <h3 className="text-[1.48rem] font-bold leading-[1.08]">{item.title}</h3>
               </div>
+              <p className="px-1 text-[1rem] leading-tight text-neutral-700 whitespace-nowrap">{item.description}</p>
             </div>
           ))}
         </div>

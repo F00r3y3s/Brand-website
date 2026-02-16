@@ -93,13 +93,20 @@ export default function Footer() {
             <div className="lg:col-span-7">
               <div className={`mb-4 md:mb-5 ${isArabic ? 'text-right' : ''}`}>
                 {language === 'en' ? (
-                  <div className="inline-flex items-center gap-4 lg:gap-5">
-                    <div className="hidden md:flex h-[11.6rem] lg:h-[14.6rem] w-10 lg:w-12 items-center justify-center">
-                      <span className="-rotate-90 origin-center whitespace-nowrap text-[1.95rem] lg:text-[2.2rem] font-black uppercase tracking-[0.13em] leading-none">
-                        <span className="text-light">SUSTAI</span>
-                        <span className="text-secondary">NABLE</span>
-                      </span>
+                  // Main Heading Group
+                  <div className="flex flex-row items-stretch gap-1 lg:gap-2 text-left">
+                    {/* Sustainable Label - Spans exact height of heading */}
+                    <div className="hidden md:flex flex-col justify-between items-center py-1.5 lg:py-2 select-none h-auto">
+                      {'SUSTAINABLE'.split('').reverse().map((char, i) => (
+                        <span
+                          key={i}
+                          className="-rotate-90 text-[0.9rem] lg:text-[1.1rem] font-black uppercase text-light leading-none origin-center"
+                        >
+                          {char}
+                        </span>
+                      ))}
                     </div>
+
                     <h2 className="text-3xl md:text-[5.2rem] lg:text-[6.4rem] font-display text-light leading-[0.86]">
                       Let&apos;s Build the <br />
                       <span className="text-[3.2rem] md:text-[6.4rem] lg:text-[7.6rem] text-secondary font-sans font-extrabold not-italic tracking-tight leading-none">
@@ -116,18 +123,13 @@ export default function Footer() {
                   </h2>
                 )}
               </div>
-              <p className={`text-light/62 text-[1.02rem] md:text-[1.16rem] max-w-[58rem] font-sans mb-7 leading-[1.5] ${isArabic ? 'text-right' : 'md:pl-[3.5rem] lg:pl-[4.25rem]'}`}>
+              <p className={`text-light/62 text-[1.02rem] md:text-[1.16rem] font-sans mb-7 leading-[1.5] ${isArabic ? 'text-right max-w-[58rem]' : 'text-left max-w-none md:whitespace-nowrap'}`}>
                 {language === 'en'
-                  ? (
-                    <>
-                      <span className="block">We empower individuals, businesses, and communities</span>
-                      <span className="block">by providing innovative, sustainable digital solutions.</span>
-                    </>
-                  )
+                  ? 'We empower individuals, businesses, and communities by providing innovative, sustainable digital solutions.'
                   : 'نمكن الأفراد والشركات والمجتمعات من خلال تقديم حلول رقمية مبتكرة ومستدامة.'}
               </p>
 
-              <div className={`flex flex-wrap gap-4 ${isArabic ? '' : 'md:pl-[3.5rem] lg:pl-[4.25rem]'}`}>
+              <div className={`flex flex-wrap gap-4 ${isArabic ? 'justify-end' : ''}`}>
                 <a
                   href="mailto:meryem.ham@gmail.com"
                   className="flex items-center gap-2 px-7 py-3.5 bg-light text-dark rounded-full font-medium hover:bg-secondary transition-colors duration-300"

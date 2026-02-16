@@ -18,7 +18,7 @@ export default function ServiceInquiryModal({
     isOpen,
     onClose,
     serviceTitle,
-    mainTitle = "Build Whats Next",
+    mainTitle = "Build What's Next",
     enableServiceSelection = false,
     availableServices = []
 }: ServiceInquiryModalProps) {

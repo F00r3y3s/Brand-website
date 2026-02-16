@@ -215,11 +215,13 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 const comingSoonLogo = container.querySelector('#comingSoonLogoGlass');
                 const ctaLabelEl = container.querySelector('#mainCtaLabel');
                 const ctaButtonEl = container.querySelector('#mainCtaButton');
-                const isComingSoon = String(slides[idx]?.title || '').toLowerCase().includes('coming soon');
+                const isComingSoon =
+                    Boolean(slides[idx]?.isComingSoon) ||
+                    String(slides[idx]?.title || '').toLowerCase().includes('coming soon');
                 if (titleEl && subtitleEl && descEl) {
                     titleEl.textContent = slides[idx].title;
                     (subtitleEl as HTMLElement).textContent = slides[idx].subtitle || '';
-                    if (ctaLabelEl) ctaLabelEl.textContent = isComingSoon ? 'Available Soon' : 'Build Whats Next';
+                    if (ctaLabelEl) ctaLabelEl.textContent = isComingSoon ? 'Available Soon' : "Build What's Next";
                     if (ctaButtonEl instanceof HTMLElement) {
                         ctaButtonEl.classList.toggle('is-disabled', isComingSoon);
                         ctaButtonEl.setAttribute('aria-disabled', isComingSoon ? 'true' : 'false');
@@ -475,8 +477,10 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 tEl.textContent = slides[0].title;
                 (sEl as HTMLElement).textContent = slides[0].subtitle || '';
                 (dEl as HTMLElement).textContent = slides[0].description;
-                const initialIsComingSoon = String(slides[0]?.title || '').toLowerCase().includes('coming soon');
-                if (ctaLabelEl) ctaLabelEl.textContent = initialIsComingSoon ? 'Available Soon' : 'Build Whats Next';
+                const initialIsComingSoon =
+                    Boolean(slides[0]?.isComingSoon) ||
+                    String(slides[0]?.title || '').toLowerCase().includes('coming soon');
+                if (ctaLabelEl) ctaLabelEl.textContent = initialIsComingSoon ? 'Available Soon' : "Build What's Next";
                 if (ctaButtonEl instanceof HTMLElement) {
                     ctaButtonEl.classList.toggle('is-disabled', initialIsComingSoon);
                     ctaButtonEl.setAttribute('aria-disabled', initialIsComingSoon ? 'true' : 'false');
@@ -557,7 +561,9 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                             e.stopPropagation();
                             const currentIdx = (window as any).__luminaGetCurrentIndex ? (window as any).__luminaGetCurrentIndex() : 0;
                             const currentSlide = items[currentIdx];
-                            const isComingSoon = String(currentSlide?.title || '').toLowerCase().includes('coming soon');
+                            const isComingSoon =
+                                Boolean(currentSlide?.isComingSoon) ||
+                                String(currentSlide?.title || '').toLowerCase().includes('coming soon');
                             if (isComingSoon) return;
                             if ((window as any).__onServiceCtaClick) {
                                 (window as any).__onServiceCtaClick();
@@ -565,7 +571,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                         }}
                         style={{ position: 'relative', zIndex: 100 }}
                     >
-                        <span id="mainCtaLabel" className="relative z-10">Build Whats Next</span>
+                        <span id="mainCtaLabel" className="relative z-10">{"Build What's Next"}</span>
                         <div className="absolute inset-0 bg-white group-hover:bg-neutral-200 transition-colors z-0"></div>
                     </button>
                 </div>
@@ -821,7 +827,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                     gap: 0.45rem;
                     opacity: 0.76;
                     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-                    padding: 0.82rem 1.08rem;
+                    padding: 1rem 1.25rem;
                     border-radius: 999px;
                     background: rgba(3, 11, 24, 0.74);
                     border: 1px solid rgba(255, 255, 255, 0.24);
@@ -833,8 +839,10 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 }
                 @media (min-width: 1024px) {
                     .slide-nav-item {
-                        min-width: 220px;
-                        width: 220px;
+                        min-width: 0;
+                        width: auto;
+                        flex: 1 1 0;
+                        max-width: none;
                     }
                 }
                 .slide-nav-item:hover, .slide-nav-item.active {
@@ -848,9 +856,9 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 .slide-nav-title {
                     font-family: var(--font-display, "Outfit", sans-serif);
                     text-transform: uppercase;
-                    letter-spacing: 0.13em;
-                    font-size: 0.6rem;
-                    font-weight: 700;
+                    letter-spacing: 0.1em;
+                    font-size: 0.68rem;
+                    font-weight: 780;
                     white-space: nowrap;
                     color: rgba(255, 255, 255, 0.98);
                     transition: color 0.3s ease;
@@ -859,7 +867,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 }
                 @media (min-width: 1024px) {
                     .slide-nav-title {
-                        font-size: 0.68rem;
+                        font-size: 0.9rem;
                     }
                 }
                 .slide-progress-line {
@@ -892,9 +900,12 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                     .slides-navigation {
                         left: 50%;
                         right: auto;
-                        bottom: 1.4rem;
+                        bottom: clamp(5.6rem, 9.5vh, 7.8rem);
                         transform: translateX(-50%);
-                        justify-content: center;
+                        justify-content: space-between;
+                        width: min(1490px, calc(100% - 1.75rem));
+                        padding: 0;
+                        gap: 1.1rem;
                         overflow: visible;
                     }
                 }

@@ -19,6 +19,8 @@ import FloatingCTA from '@/components/FloatingCTA';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const FAQ_STICKY_TEST_VH = 400
+
 export default function Home() {
   const heroParallaxRef = useRef<HTMLDivElement>(null);
   const whoParallaxRef = useRef<HTMLDivElement>(null);
@@ -89,8 +91,7 @@ export default function Home() {
         id: 'faqParallaxPin',
         trigger: faqParallaxRef.current,
         start: 'top top',
-        endTrigger: footerParallaxRef.current,
-        end: 'bottom bottom',
+        end: () => `+=${Math.round(window.innerHeight * (FAQ_STICKY_TEST_VH / 100))}`,
         pin: true,
         pinSpacing: false,
         anticipatePin: 1,

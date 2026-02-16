@@ -46,7 +46,9 @@ export default function Services() {
         const idx = luminaRef.current.getCurrentIndex();
         const service = servicesData[idx];
         if (service) {
-          const isComingSoon = service.title.toLowerCase().includes('coming soon');
+          const isComingSoon =
+            Boolean(service.isComingSoon) ||
+            service.title.toLowerCase().includes('coming soon');
           if (isComingSoon) return;
           setActiveService(service.title);
           setIsModalOpen(true);
@@ -230,18 +232,18 @@ export default function Services() {
         >
           <div
             ref={introRef}
-            className="absolute inset-0 flex flex-col items-center justify-start z-20 text-center px-4 bg-[#F3F2EF] pt-[7vh] md:pt-[8.5vh]"
+            className="absolute inset-0 flex flex-col items-center justify-center z-20 text-center px-4 bg-[#F3F2EF] py-[5vh] md:py-[6vh]"
           >
             <div className="relative z-10 space-y-8 w-full max-w-5xl">
               <span className="inline-flex items-center justify-center text-teal text-base md:text-lg font-black uppercase tracking-[0.34em] border-2 border-teal/35 bg-white/88 px-9 py-3 rounded-full shadow-[0_12px_28px_rgba(0,0,0,0.1)]">
                 {language === 'en' ? 'OUR CAPABILITIES' : 'قدراتنا'}
               </span>
 
-              <h2 className="text-[1.85rem] md:text-[3.2rem] lg:text-[3.4rem] font-black font-display text-neutral-900 leading-[1.04] tracking-tight lg:whitespace-nowrap">
+              <h2 className="w-full max-w-4xl mx-auto text-left text-[1.75rem] md:text-[2.85rem] lg:text-[3rem] font-black font-display text-neutral-900 leading-[1.04] tracking-tight lg:whitespace-nowrap">
                 {language === 'en' ? 'FROM VISION TO TRANSFORMATION' : 'من الرؤية إلى التحول'}
               </h2>
 
-              <p className="max-w-3xl mx-auto text-[#2f7f8a] text-[1.45rem] md:text-[2.15rem] font-extrabold leading-[1.18]">
+              <p className="w-full max-w-4xl mx-auto text-left text-[#2f7f8a] text-[1.2rem] md:text-[1.6rem] lg:text-[1.75rem] font-extrabold leading-[1.18] lg:whitespace-nowrap">
                 {language === 'en'
                   ? 'Real change does not begin with policies. It begins with people.'
                   : 'التغيير الحقيقي لا يبدأ بالسياسات. بل يبدأ بالناس.'}

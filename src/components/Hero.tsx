@@ -222,7 +222,7 @@ export default function Hero() {
                 <div
                   className="hero-letter-a absolute left-[2%] bottom-0 w-[74%] h-[88%] drop-shadow-[0_6px_16px_rgba(10,22,40,0.18)]"
                   style={{
-                    backgroundImage: 'linear-gradient(112deg, #D6B03A 0%, #D6B03A 50%, #0D7377 50%, #0D7377 100%)',
+                    backgroundColor: '#000000',
                     WebkitMaskImage: 'url(/hero-assets/letter-a.png)',
                     maskImage: 'url(/hero-assets/letter-a.png)',
                     WebkitMaskRepeat: 'no-repeat',
@@ -236,7 +236,7 @@ export default function Hero() {
                 <div
                   className="hero-letter-alif absolute left-[61.5%] top-[8%] w-[14.5%] h-[60%] drop-shadow-[0_5px_14px_rgba(10,22,40,0.18)]"
                   style={{
-                    backgroundImage: 'linear-gradient(112deg, #0D7377 0%, #0D7377 50%, #D6B03A 50%, #D6B03A 100%)',
+                    backgroundColor: '#000000',
                     WebkitMaskImage: 'url(/hero-assets/letter-alif.png)',
                     maskImage: 'url(/hero-assets/letter-alif.png)',
                     WebkitMaskRepeat: 'no-repeat',

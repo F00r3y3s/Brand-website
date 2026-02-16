@@ -25,8 +25,9 @@ export const servicesData = [
   },
   {
     title: "Coming Soon",
-    subtitle: "Coming Soon",
+    subtitle: "Launching Soon",
     description: "A new capability is currently in development and will be announced soon.",
+    isComingSoon: true,
     media: ["/services/custom/coming-soon-plain.svg", "/services/custom/coming-soon-plain.svg"]
   }
 ];
