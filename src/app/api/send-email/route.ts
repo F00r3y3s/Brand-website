@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export async function POST(req: NextRequest) {
     try {
         const apiKey = process.env.RESEND_API_KEY;
@@ -10,8 +13,6 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const { Resend } = await import('resend');
-        const resend = new Resend(apiKey);
         const body = await req.json();
         const { type, data } = body;
 
@@ -51,15 +52,28 @@ export async function POST(req: NextRequest) {
       `;
         }
 
-        const { error } = await resend.emails.send({
-            from: 'Ainar Web <onboarding@resend.dev>',
-            to: 'saqib.sahili@gmail.com',
-            subject: subject,
-            html: html,
+        const resendResponse = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                from: 'Ainar Web <onboarding@resend.dev>',
+                to: ['saqib.sahili@gmail.com'],
+                subject: subject,
+                html: html,
+            }),
         });
 
-        if (error) {
-            return NextResponse.json({ error }, { status: 400 });
+        if (!resendResponse.ok) {
+            let errorPayload: unknown = 'Failed to send email.';
+            try {
+                errorPayload = await resendResponse.json();
+            } catch {
+                errorPayload = await resendResponse.text();
+            }
+            return NextResponse.json({ error: errorPayload }, { status: resendResponse.status });
         }
 
         return NextResponse.json({ success: true });
