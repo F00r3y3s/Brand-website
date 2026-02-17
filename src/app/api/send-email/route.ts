@@ -1,4 +1,3 @@
-import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -11,6 +10,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        const { Resend } = await import('resend');
         const resend = new Resend(apiKey);
         const body = await req.json();
         const { type, data } = body;
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
         }
 
         return NextResponse.json({ success: true });
-    } catch (err) {
+    } catch {
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
