@@ -60,18 +60,32 @@ export default function ServiceInquiryModal({
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        try {
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: 'inquiry',
+                    data: formData
+                }),
+            });
 
-        setIsSubmitting(false);
-        setIsSuccess(true);
+            if (!response.ok) throw new Error('Failed to send inquiry');
 
-        // Close after success
-        setTimeout(() => {
-            setIsSuccess(false);
-            onClose();
-            setFormData({ name: '', organization: '', email: '', contactNumber: '', linkedin: '', message: '', selectedService: '' });
-        }, 2000);
+            setIsSubmitting(false);
+            setIsSuccess(true);
+
+            // Close after success
+            setTimeout(() => {
+                setIsSuccess(false);
+                onClose();
+                setFormData({ name: '', organization: '', email: '', contactNumber: '', linkedin: '', message: '', selectedService: serviceTitle });
+            }, 2000);
+        } catch (error) {
+            console.error('Submission error:', error);
+            setIsSubmitting(false);
+            alert('Something went wrong. Please try again later.');
+        }
     };
 
     if (!isOpen || typeof document === 'undefined') return null;

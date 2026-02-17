@@ -25,24 +25,46 @@ const notoSansArabic = Noto_Sans_Arabic({
 });
 
 export const metadata: Metadata = {
-  title: "AInar - Premium Brand Agency",
+  metadataBase: new URL('https://ainar.ae'),
+  title: {
+    default: "AInar - Premium Brand Agency | Sustainability & AI",
+    template: "%s | AINAR"
+  },
   description:
-    "A premium brand agency specializing in sustainability, AI advisory, and digital transformation. Based in UAE.",
+    "AInar is a premium UAE brand agency specializing in sustainability and AI advisory to empower businesses with innovative digital solutions.",
   keywords: [
-    "Brand Agency",
-    "Sustainability",
-    "AI Advisory",
-    "UAE",
+    "Brand Agency UAE",
+    "Sustainability Advisor",
+    "AI Advisory Dubai",
     "Digital Transformation",
-    "Web Development",
+    "Sustainable Growth",
+    "AINAR",
   ],
   authors: [{ name: "AInar" }],
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: "AInar - Premium Brand Agency",
-    description: "A premium brand agency specializing in sustainability and AI.",
-    type: "website",
+    title: "AInar - Premium Brand Agency | Sustainability & AI",
+    description: "Empowering businesses through sustainability and AI-driven digital transformation in the UAE.",
+    url: 'https://ainar.ae',
+    siteName: 'AINAR',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'AINAR - Sustainability and AI Advisory',
+      },
+    ],
     locale: "en_US",
-    alternateLocale: ["ar_AE"],
+    type: "website",
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "AInar - Premium Brand Agency | Sustainability & AI",
+    description: "Empowering businesses through sustainability and AI-driven digital transformation in the UAE.",
+    images: ['/og-image.png'],
   },
 };
 
@@ -60,6 +82,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${inter.variable} ${outfit.variable} ${notoSansArabic.variable} antialiased`}
+        suppressHydrationWarning={true}
       >
         <a
           href="#main-content"

@@ -1,25 +1,4 @@
-# Allow all search engines to crawl the site
 User-agent: *
 Allow: /
 
-# Specific rules for Google
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 0
-
-# Specific rules for Bing
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-# Disallow crawling of admin and private sections
-Disallow: /admin/
-Disallow: /private/
-Disallow: /.env
-Disallow: /node_modules/
-
-# Sitemap location
-Sitemap: https://ainar.ae/sitemap.xml
-
-# Request rate (for crawlers that support it)
-Request-rate: 1/5
+Sitemap: https://brand-website-pied.vercel.app/sitemap.xml

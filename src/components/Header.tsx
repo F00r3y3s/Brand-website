@@ -190,13 +190,15 @@ export default function Header() {
   const brandMark = (
     <img
       src="/ainar-logo-transparent.png"
-      alt="AINAR Logo"
+      alt="AINAR corporate logo"
+      width={72}
+      height={18}
       className="w-[60px] sm:w-[64px] lg:w-[72px] h-auto"
     />
   );
 
   return (
-    <>
+    <div className="header-wrapper">
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isVisible ? 'translate-y-0' : '-translate-y-full'
           } ${isScrolled
@@ -221,6 +223,7 @@ export default function Header() {
                 href="/"
                 className="group flex items-center gap-2"
                 dir="ltr"
+                aria-label="AINAR Homepage"
               >
                 {brandMark}
               </Link>
@@ -240,10 +243,10 @@ export default function Header() {
                 <button
                   onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
                   className="group flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-300 bg-white/50 backdrop-blur-md border border-white/20 hover:bg-white/80 hover:scale-105 shadow-sm"
-                  aria-label="Toggle language"
+                  aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
                 >
                   <Globe size={16} className="text-neutral-900 group-hover:text-gold transition-colors" />
-                  <span className="text-sm font-bold text-neutral-900 group-hover:text-gold transition-colors">
+                  <span className="text-sm font-bold text-neutral-900 group-hover:text-gold transition-colors" aria-hidden="true">
                     {language === 'en' ? 'AR' : 'EN'}
                   </span>
                 </button>
@@ -396,6 +399,6 @@ export default function Header() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

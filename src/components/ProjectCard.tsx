@@ -63,6 +63,8 @@ export default function ProjectCard({
         <motion.img
           src={imageUrl}
           alt={title}
+          width={1200}
+          height={800}
           style={{
             x: imgX,
             y: imgY,
@@ -80,11 +82,11 @@ export default function ProjectCard({
             <span>
               {link
                 ? language === 'en'
-                  ? 'Open Case'
-                  : 'فتح الحالة'
+                  ? `Explore ${title} Case`
+                  : `استكشف حالة ${title}`
                 : language === 'en'
-                  ? 'Open Preview'
-                  : 'فتح المعاينة'}
+                  ? `View ${title} Preview`
+                  : `عرض معاينة ${title}`}
             </span>
             <ArrowUpRight size={14} />
           </div>

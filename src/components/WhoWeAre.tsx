@@ -169,10 +169,12 @@ export default function WhoWeAre() {
                         <div className="relative z-10">
                             <img
                                 src="/ainar-logo-transparent.png"
-                                alt="AINAR Logo"
+                                alt="AINAR company brand logo"
+                                width={185}
+                                height={46}
                                 className="who-main-logo w-[115px] md:w-[155px] lg:w-[185px] h-auto mb-5 md:mb-6"
                             />
-                            <p className="who-main-copy text-lg md:text-2xl lg:text-[1.8rem] text-dark/85 leading-[1.22] max-w-full lg:max-w-[72rem]">
+                            <p className="who-main-copy text-[clamp(1.1rem,2.2vw,1.8rem)] text-dark/85 leading-relaxed max-w-full lg:max-w-[72rem]">
                                 {MANIFESTO.join(' ')}
                             </p>
                             <div className="who-founder-row mt-6 md:mt-10 flex flex-wrap items-center gap-4">
@@ -181,6 +183,7 @@ export default function WhoWeAre() {
                                     href="https://www.linkedin.com/in/meryemhamidi/"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    aria-label={language === 'en' ? 'Founded by Dr. Meryem Hamidi - View LinkedIn profile' : 'تأسست بواسطة د. مريم حميدي - عرض الملف الشخصي على لينكد إن'}
                                     className="rounded-full border border-dark/15 bg-gradient-to-b from-white to-[#eae7e1] px-4 py-2 text-base md:text-lg font-semibold italic text-dark/90 font-serif shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_4px_14px_rgba(0,0,0,0.14)] transition-all duration-300 hover:-translate-y-[1px] hover:bg-gradient-to-b hover:from-white hover:to-[#e4e0d8] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_8px_18px_rgba(0,0,0,0.18)]"
                                 >
                                     {language === 'en' ? 'Founded by Dr. Meryem Hamidi' : 'تأسست بواسطة د. مريم حميدي'}

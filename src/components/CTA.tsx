@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MailIcon, PhoneIcon, MapPinIcon } from 'lucide-react';
+import { MailIcon, PhoneIcon, MapPinIcon, CheckCircle, Loader2 } from 'lucide-react';
 import TextRevealer from './common/TextRevealer';
 import { ContactCard } from '@/components/ui/contact-card';
 import { Input } from '@/components/ui/input';
@@ -17,6 +17,9 @@ gsap.registerPlugin(ScrollTrigger);
 export default function CTA() {
   const { language } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -36,6 +39,33 @@ export default function CTA() {
 
     return () => ctx.revert();
   }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'contact',
+          data: formData
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to send message');
+
+      setIsSuccess(true);
+      setFormData({ name: '', email: '', phone: '', message: '' });
+      setTimeout(() => setIsSuccess(false), 5000);
+    } catch (error) {
+      console.error('CTA submission error:', error);
+      alert('Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section
@@ -96,28 +126,62 @@ export default function CTA() {
             ]}
           >
             <form
-              action=""
               className="w-full space-y-4"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSubmit}
             >
               <div className="flex flex-col gap-2">
-                <Label>{language === 'en' ? 'Name' : 'الاسم'}</Label>
-                <Input type="text" />
+                <Label htmlFor="cta-name">{language === 'en' ? 'Name' : 'الاسم'}</Label>
+                <Input
+                  id="cta-name"
+                  required
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
               </div>
               <div className="flex flex-col gap-2">
-                <Label>{language === 'en' ? 'Email' : 'البريد الإلكتروني'}</Label>
-                <Input type="email" />
+                <Label htmlFor="cta-email">{language === 'en' ? 'Email' : 'البريد الإلكتروني'}</Label>
+                <Input
+                  id="cta-email"
+                  required
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                />
               </div>
               <div className="flex flex-col gap-2">
-                <Label>{language === 'en' ? 'Phone' : 'الهاتف'}</Label>
-                <Input type="tel" />
+                <Label htmlFor="cta-phone">{language === 'en' ? 'Phone' : 'الهاتف'}</Label>
+                <Input
+                  id="cta-phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                />
               </div>
               <div className="flex flex-col gap-2">
-                <Label>{language === 'en' ? 'Message' : 'رسالة'}</Label>
-                <Textarea />
+                <Label htmlFor="cta-message">{language === 'en' ? 'Message' : 'رسالة'}</Label>
+                <Textarea
+                  id="cta-message"
+                  required
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                />
               </div>
-              <Button className="w-full" type="submit">
-                {language === 'en' ? 'Submit' : 'إرسال'}
+              <Button
+                className="w-full"
+                type="submit"
+                disabled={isSubmitting || isSuccess}
+              >
+                {isSubmitting ? (
+                  <Loader2 className="animate-spin" size={18} />
+                ) : isSuccess ? (
+                  <>
+                    <CheckCircle size={18} />
+                    {language === 'en' ? 'Sent!' : 'تم الإرسال!'}
+                  </>
+                ) : (
+                  language === 'en' ? 'Submit' : 'إرسال'
+                )}
               </Button>
             </form>
           </ContactCard>

@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useRef, type MouseEvent } from 'react'
+import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Linkedin, Mail, FileDown } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
+import LegalModal from './LegalModal'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -20,6 +21,10 @@ export default function Footer() {
   const circleRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const isArabic = language === 'ar'
+  const [legalModal, setLegalModal] = useState<{ isOpen: boolean; type: 'terms' | 'privacy' | null }>({
+    isOpen: false,
+    type: null,
+  })
 
   const handleNavClick = (selector: string, serviceIndex?: number) => (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault()
@@ -141,6 +146,7 @@ export default function Footer() {
                   href="https://www.linkedin.com/in/meryemhamidi/"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Visit our LinkedIn profile"
                   className="w-14 h-14 rounded-full border border-light/20 flex items-center justify-center text-light hover:bg-primary transition-all duration-300 shadow-xl"
                 >
                   <Linkedin size={24} />
@@ -233,22 +239,39 @@ export default function Footer() {
             <div className="flex items-center justify-center">
               <img
                 src="/ainar-logo-transparent.png"
-                alt="AINAR logo"
+                alt="AINAR brand logo for footer"
+                width={180}
+                height={44}
                 className="h-10 md:h-11 w-auto object-contain brightness-0 invert opacity-95"
               />
             </div>
 
             <div className="flex gap-8 text-light/90 text-sm md:text-[0.95rem] font-semibold">
-              <span className="hover:text-light cursor-pointer transition-colors">
+              <button
+                onClick={() => setLegalModal({ isOpen: true, type: 'privacy' })}
+                className="hover:text-light cursor-pointer transition-colors"
+              >
                 {language === 'en' ? 'Privacy Policy' : 'سياسة الخصوصية'}
-              </span>
-              <span className="hover:text-light cursor-pointer transition-colors">
+              </button>
+              <button
+                onClick={() => setLegalModal({ isOpen: true, type: 'terms' })}
+                className="hover:text-light cursor-pointer transition-colors"
+              >
                 {language === 'en' ? 'Terms of Service' : 'شروط الخدمة'}
-              </span>
+              </button>
             </div>
           </div>
         </div>
       </footer >
+
+      {/* Legal Modal */}
+      {legalModal.type && (
+        <LegalModal
+          isOpen={legalModal.isOpen}
+          onClose={() => setLegalModal({ isOpen: false, type: null })}
+          type={legalModal.type}
+        />
+      )}
     </div >
   )
 }

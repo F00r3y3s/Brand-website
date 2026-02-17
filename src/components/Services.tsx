@@ -228,34 +228,36 @@ export default function Services() {
         <section
           id="services"
           ref={containerRef}
-          className="relative h-screen w-full flex flex-col justify-center overflow-hidden bg-[#F3F2EF]"
+          className="relative min-h-screen w-full flex flex-col justify-center overflow-hidden bg-[#F3F2EF]"
         >
           <div
             ref={introRef}
-            className="absolute inset-0 flex flex-col items-center justify-center z-20 text-center px-4 bg-[#F3F2EF] py-[5vh] md:py-[6vh]"
+            className="absolute inset-0 flex flex-col items-center justify-center z-20 text-center px-6 md:px-12 bg-[#F3F2EF] py-20 lg:py-32"
           >
-            <div className="relative z-10 space-y-8 w-full max-w-5xl">
-              <span className="inline-flex items-center justify-center text-teal text-base md:text-lg font-black uppercase tracking-[0.34em] border-2 border-teal/35 bg-white/88 px-9 py-3 rounded-full shadow-[0_12px_28px_rgba(0,0,0,0.1)]">
-                {language === 'en' ? 'OUR CAPABILITIES' : 'قدراتنا'}
-              </span>
+            <div className="relative z-10 space-y-6 md:space-y-10 w-full max-w-6xl">
+              <div className="inline-flex">
+                <span className="inline-flex items-center justify-center text-teal text-[clamp(0.8rem,1.2vw,1rem)] font-black uppercase tracking-[0.34em] border-2 border-teal/35 bg-white/88 px-6 py-2.5 md:px-9 md:py-3 rounded-full shadow-[0_12px_28px_rgba(0,0,0,0.1)]">
+                  {language === 'en' ? 'OUR CAPABILITIES' : 'قدراتنا'}
+                </span>
+              </div>
 
-              <h2 className="w-full max-w-4xl mx-auto text-left text-[1.75rem] md:text-[2.85rem] lg:text-[3rem] font-black font-display text-neutral-900 leading-[1.04] tracking-tight lg:whitespace-nowrap">
+              <h2 className="w-full max-w-5xl mx-auto text-left text-[clamp(1.75rem,4.5vw,3.5rem)] font-black font-display text-neutral-900 leading-[1.1] tracking-tight">
                 {language === 'en' ? 'FROM VISION TO TRANSFORMATION' : 'من الرؤية إلى التحول'}
               </h2>
 
-              <p className="w-full max-w-4xl mx-auto text-left text-[#2f7f8a] text-[1.2rem] md:text-[1.6rem] lg:text-[1.75rem] font-extrabold leading-[1.18] lg:whitespace-nowrap">
+              <p className="w-full max-w-5xl mx-auto text-left text-[#2f7f8a] text-[clamp(1.2rem,2.5vw,1.8rem)] font-extrabold leading-snug">
                 {language === 'en'
                   ? 'Real change does not begin with policies. It begins with people.'
                   : 'التغيير الحقيقي لا يبدأ بالسياسات. بل يبدأ بالناس.'}
               </p>
 
-              <div className="max-w-4xl mx-auto space-y-6 pt-2">
-                <p className="text-neutral-700 text-[1.25rem] md:text-[1.55rem] font-medium leading-[1.62] text-justify [text-justify:inter-word] [text-align-last:left] hyphens-auto text-pretty">
+              <div className="max-w-5xl mx-auto space-y-6 md:space-y-8 pt-4">
+                <p className="text-neutral-700 text-[clamp(1.1rem,1.8vw,1.45rem)] font-medium leading-relaxed text-justify [text-justify:inter-word] [text-align-last:left] hyphens-auto text-pretty">
                   {language === 'en'
                     ? 'At AINAR, we believe you cannot transform a country without transforming behavior, and you cannot build sustainable growth without redesigning the systems that shape decisions.'
                     : 'في AINAR، نؤمن بأنك لا تستطيع تحويل دولة دون تحويل السلوك، ولا يمكنك بناء نمو مستدام دون إعادة تصميم الأنظمة التي تشكل القرارات.'}
                 </p>
-                <p className="text-neutral-700 text-[1.25rem] md:text-[1.55rem] font-medium leading-[1.62] text-justify [text-justify:inter-word] [text-align-last:left] hyphens-auto text-pretty">
+                <p className="text-neutral-700 text-[clamp(1.1rem,1.8vw,1.45rem)] font-medium leading-relaxed text-justify [text-justify:inter-word] [text-align-last:left] hyphens-auto text-pretty">
                   {language === 'en'
                     ? 'AINAR turns ambition into measurable impact by combining human expertise, sustainability strategy, intelligent systems, and AI to create real, lasting transformation. We strengthen performance today while building long-term value for tomorrow.'
                     : 'تحوّل AINAR الطموح إلى أثر قابل للقياس من خلال الجمع بين الخبرة البشرية واستراتيجية الاستدامة والأنظمة الذكية والذكاء الاصطناعي لصناعة تحول حقيقي ودائم. نعزز الأداء اليوم مع بناء قيمة طويلة المدى للغد.'}

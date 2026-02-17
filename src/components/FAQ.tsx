@@ -100,13 +100,27 @@ export default function FAQ() {
 
     return (
         <section ref={sectionRef} id="faq" className="relative min-h-[300vh] bg-[#F3F2EF]">
-            <div className="sticky top-0 h-screen flex items-start pt-[9vh] md:pt-[11vh] overflow-hidden">
-                <div className="max-w-6xl mx-auto px-4 md:px-6 w-full">
-                    <div className="mb-8 md:mb-10 text-center">
-                        <span className="inline-flex items-center justify-center px-4 md:px-5 py-1.5 rounded-full border border-primary/45 bg-primary/10 text-primary text-[0.76rem] md:text-[0.93rem] font-mono font-black uppercase tracking-[0.28em] shadow-[0_8px_22px_rgba(18,131,145,0.18)] mb-4 md:mb-5">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "VideoObject",
+                        "name": "AINAR FAQ Support Avatar",
+                        "description": "An interactive digital avatar representing AINAR's AI-driven support and sustainability expertise.",
+                        "thumbnailUrl": "https://brand-website-pied.vercel.app/FAQ-Avatar-Thumbnail.png",
+                        "uploadDate": "2026-02-17T02:00:00+04:00",
+                        "contentUrl": "https://brand-website-pied.vercel.app/FAQ Avatar.webm",
+                    })
+                }}
+            />
+            <div className="sticky top-0 min-h-screen flex items-start pt-24 md:pt-32 pb-12 overflow-hidden">
+                <div className="max-w-6xl mx-auto px-6 md:px-8 w-full">
+                    <div className="mb-8 md:mb-12 text-center">
+                        <span className="inline-flex items-center justify-center px-4 py-1.5 rounded-full border border-primary/45 bg-primary/10 text-primary text-[clamp(0.7rem,1vw,0.85rem)] font-mono font-black uppercase tracking-[0.28em] shadow-[0_8px_22px_rgba(18,131,145,0.18)] mb-5">
                             {language === 'en' ? 'F.A.Q' : 'الأسئلة الشائعة'}
                         </span>
-                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-display mb-4 text-dark leading-none">
+                        <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-display mb-4 text-dark leading-tight">
                             {language === 'en' ? (
                                 <>Common <span className="text-primary italic [font-size:inherit] [line-height:inherit]">Inquiries</span></>
                             ) : (
@@ -115,18 +129,18 @@ export default function FAQ() {
                         </h2>
                     </div>
 
-                    <div className="flex flex-col max-h-[41vh] md:max-h-[43vh] overflow-y-auto pr-1">
+                    <div className="flex flex-col max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
                         {FAQS.map((faq, index) => (
                             <div key={index} className="border-b border-dark/10 last:border-none">
                                 <button
                                     onClick={() => setActiveIndex(activeIndex === index ? null : index)}
-                                    className="w-full py-3 md:py-4 flex items-center justify-between group text-left"
+                                    className="w-full py-4 md:py-6 flex items-center justify-between group text-left"
                                 >
-                                    <span className={`text-base md:text-xl lg:text-2xl font-display transition-colors duration-300 ${activeIndex === index ? 'text-primary' : 'text-dark group-hover:text-primary/70'}`}>
+                                    <span className={`text-[clamp(1.1rem,2vw,1.6rem)] font-display transition-colors duration-300 ${activeIndex === index ? 'text-primary' : 'text-dark group-hover:text-primary/70'} leading-tight`}>
                                         {faq.question}
                                     </span>
-                                    <div className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-300 flex-shrink-0 ml-4 ${activeIndex === index ? 'bg-primary border-primary text-white' : 'border-dark/20 text-dark group-hover:border-primary group-hover:text-primary'}`}>
-                                        {activeIndex === index ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full border flex items-center justify-center transition-all duration-300 flex-shrink-0 ml-4 ${activeIndex === index ? 'bg-primary border-primary text-white' : 'border-dark/20 text-dark group-hover:border-primary group-hover:text-primary'}`}>
+                                        {activeIndex === index ? <Minus className="w-4 h-4 md:w-5 md:h-5" /> : <Plus className="w-4 h-4 md:w-5 md:h-5" />}
                                     </div>
                                 </button>
 
@@ -139,7 +153,7 @@ export default function FAQ() {
                                             transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
                                             className="overflow-hidden"
                                         >
-                                            <div className="pb-4 md:pb-5 text-sm md:text-base text-dark/60 leading-relaxed font-light max-w-3xl">
+                                            <div className="pb-6 md:pb-8 text-[clamp(0.95rem,1.2vw,1.1rem)] text-dark/65 leading-relaxed font-light max-w-4xl">
                                                 {faq.answer}
                                             </div>
                                         </motion.div>
@@ -149,7 +163,7 @@ export default function FAQ() {
                         ))}
                     </div>
 
-                    <div className="relative mt-8 md:mt-10 -mx-8 md:-mx-14 lg:-mx-20 px-8 md:px-12 py-5 md:py-7 bg-dark rounded-[1.6rem] z-20 border border-white/12 shadow-[0_22px_48px_rgba(1,7,18,0.45)] overflow-hidden">
+                    <div className="relative mt-10 md:mt-14 -mx-4 md:-mx-10 px-8 py-8 md:py-10 bg-dark rounded-[2.5rem] z-20 border border-white/12 shadow-[0_22px_48px_rgba(1,7,18,0.45)] overflow-hidden">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_120%_at_88%_24%,rgba(25,181,196,0.14),transparent_70%),linear-gradient(140deg,rgba(2,8,24,0.12),rgba(2,8,24,0.36))]" />
 
                         <div className={`relative z-10 flex flex-col lg:flex-row items-stretch justify-between gap-6 md:gap-8 min-h-[170px] md:min-h-[190px] ${isArabic ? 'lg:flex-row-reverse' : ''}`}>
@@ -162,7 +176,10 @@ export default function FAQ() {
                                         ? "We're here to help you navigate your sustainability journey."
                                         : 'نحن هنا لمساعدتكم في مسيرة الاستدامة الخاصة بكم.'}
                                 </p>
-                                <button className={`group inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 rounded-full bg-white text-dark font-semibold border border-white shadow-[0_10px_28px_rgba(0,0,0,0.28)] hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 ${isArabic ? 'self-end' : 'self-start'}`}>
+                                <button
+                                    className={`group inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 rounded-full bg-white text-dark font-semibold border border-white shadow-[0_10px_28px_rgba(0,0,0,0.28)] hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 ${isArabic ? 'self-end' : 'self-start'}`}
+                                    aria-label={language === 'en' ? 'Contact Support - Reach out to our team' : 'تواصل مع الدعم - تواصل مع فريقنا'}
+                                >
                                     {language === 'en' ? 'Contact Support' : 'تواصل مع فريق الدعم'}
                                     <motion.span
                                         animate={{ x: [0, 8, 0], scale: [1, 1.1, 1] }}
@@ -179,6 +196,7 @@ export default function FAQ() {
                                     <video
                                         ref={videoRef}
                                         src="/FAQ Avatar.webm"
+                                        poster="/FAQ-Avatar-Thumbnail.png"
                                         className="w-full h-full object-cover scale-[1.12]"
                                         muted
                                         playsInline

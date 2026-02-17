@@ -34,7 +34,7 @@ export default function Newsletter() {
     return () => ctx.revert();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
@@ -50,14 +50,30 @@ export default function Newsletter() {
       return;
     }
 
-    // Success
-    setIsSubmitted(true);
-    setEmail('');
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'newsletter',
+          data: { email }
+        }),
+      });
 
-    // Reset after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-    }, 3000);
+      if (!response.ok) throw new Error('Failed to subscribe');
+
+      // Success
+      setIsSubmitted(true);
+      setEmail('');
+
+      // Reset after 3 seconds
+      setTimeout(() => {
+        setIsSubmitted(false);
+      }, 3000);
+    } catch (err) {
+      console.error('Newsletter error:', err);
+      setError(language === 'en' ? 'Something went wrong. Try again.' : 'حدث خطأ ما. حاول مرة أخرى.');
+    }
   };
 
   return (
@@ -105,11 +121,10 @@ export default function Newsletter() {
             <button
               type="submit"
               disabled={isSubmitted}
-              className={`px-8 py-4 rounded-lg font-semibold transition-all duration-300 whitespace-nowrap flex items-center justify-center gap-2 ${
-                isSubmitted
+              className={`px-8 py-4 rounded-lg font-semibold transition-all duration-300 whitespace-nowrap flex items-center justify-center gap-2 ${isSubmitted
                   ? 'bg-accent-emerald text-white'
                   : 'bg-gold hover:bg-sand text-dark-primary'
-              }`}
+                }`}
             >
               {isSubmitted ? (
                 <>

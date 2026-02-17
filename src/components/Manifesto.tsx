@@ -101,8 +101,8 @@ export default function Manifesto() {
       if (canvasRef.current) {
         canvasRef.current.width = canvasRef.current.offsetWidth;
         canvasRef.current.height = canvasRef.current.offsetHeight;
-        // Trigger generic redraw by forcing update if needed, but progress dependency handles it usually
       }
+      ScrollTrigger.refresh();
     };
     window.addEventListener('resize', handleResize);
     handleResize();
@@ -281,16 +281,16 @@ export default function Manifesto() {
     <section
       id="manifesto"
       ref={containerRef}
-      className="relative w-full h-screen flex items-center bg-neutral-950 overflow-hidden pb-0"
+      className="relative w-full min-h-screen flex items-center bg-neutral-950 overflow-hidden"
     >
-      <div className="w-full h-full flex flex-col lg:flex-row">
+      <div className="w-full flex flex-col lg:flex-row relative">
 
         {/* Left Column: Text Content */}
-        <div className="w-full lg:w-[48%] h-[60vh] lg:h-full flex flex-col justify-start px-4 lg:px-10 xl:px-14 lg:-ml-4 z-20 relative pt-8 lg:pt-16 lg:pb-44">
-          <div className="flex flex-col items-start gap-4 max-w-[44rem]">
+        <div className="w-full lg:w-[48%] min-h-[60vh] lg:min-h-screen flex flex-col justify-start px-4 lg:px-10 xl:px-14 lg:-ml-4 z-20 relative pt-12 lg:pt-20 pb-12 lg:pb-40">
+          <div className="flex flex-col items-start gap-4 max-w-[44rem] flex-grow">
             <h2
               ref={sectionLabelRef}
-              className="text-[clamp(1.8rem,3.8vw,3rem)] font-display font-black uppercase tracking-[0.08em] text-white/95 leading-none drop-shadow-[0_1px_0_rgba(0,0,0,0.45)]"
+              className="text-[clamp(1.6rem,4vw,3rem)] font-display font-black uppercase tracking-[0.08em] text-white/95 leading-tight drop-shadow-[0_1px_0_rgba(0,0,0,0.45)]"
             >
               {language === 'en' ? 'WHAT WE DO' : 'ماذا نفعل'}
             </h2>
@@ -299,7 +299,7 @@ export default function Manifesto() {
             <div ref={titleBadgeRef} className="inline-flex mt-1 lg:mt-2">
               <TextRevealer
                 text={language === 'en' ? 'OUR VALUE | SUSTAINABLE GROWTH' : 'قيمتنا | النمو المستدام'}
-                className="text-sm sm:text-base font-bold uppercase text-neutral-900 bg-white/90 px-5 py-2 tracking-[0.08em] rounded-sm"
+                className="text-xs sm:text-sm md:text-base font-bold uppercase text-neutral-900 bg-white/90 px-4 py-1.5 md:px-5 md:py-2 tracking-[0.08em] rounded-sm"
                 type="words"
               />
             </div>
@@ -307,12 +307,12 @@ export default function Manifesto() {
             {/* Paragraph */}
             <div
               ref={paragraphRef}
-              className="mt-3 lg:mt-4 space-y-5 max-w-[44rem]"
+              className="mt-4 lg:mt-6 space-y-5 max-w-[44rem]"
             >
               {paragraphs.map((paragraph) => (
                 <p
                   key={paragraph}
-                  className="text-[1.8rem] md:text-[2rem] lg:text-[2.15rem] font-semibold leading-[1.25] tracking-normal text-white text-justify [text-justify:inter-word] [text-align-last:left] hyphens-auto text-pretty"
+                  className="text-[clamp(1.25rem,2.2vw,2rem)] font-semibold leading-relaxed tracking-normal text-white text-justify [text-justify:inter-word] [text-align-last:left] hyphens-auto text-pretty"
                 >
                   {paragraph}
                 </p>
@@ -320,11 +320,11 @@ export default function Manifesto() {
             </div>
 
             {/* Mobile Value Cards */}
-            <div ref={mobileValuesRef} className="grid grid-cols-1 gap-2 w-full lg:hidden mt-3">
+            <div ref={mobileValuesRef} className="grid grid-cols-1 gap-3 w-full lg:hidden mt-8">
               {values.map((item) => (
                 <div
                   key={item.title}
-                  className="manifesto-value-card bg-white/95 text-neutral-950 rounded-sm px-5 py-3 shadow-[0_8px_24px_rgba(0,0,0,0.25)]"
+                  className="manifesto-value-card bg-white/95 text-neutral-950 rounded-sm px-5 py-4 shadow-[0_8px_24px_rgba(0,0,0,0.25)]"
                 >
                   <div className="flex items-start gap-3">
                     <item.Icon className="w-6 h-6 shrink-0 mt-0.5" strokeWidth={2} />
@@ -340,36 +340,42 @@ export default function Manifesto() {
         </div>
 
         {/* Right Column: Video Sequence */}
-        <div className="w-full lg:w-[52%] h-[40vh] lg:h-full relative">
+        <div className="w-full lg:w-[52%] h-[40vh] lg:h-screen sticky top-0 relative overflow-hidden">
           <canvas
             ref={canvasRef}
             className="w-full h-full object-cover"
             width={1920}
             height={1080}
           />
-          {/* Gradient overlay for better text contrast if needed or edge blending */}
-          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-neutral-950 to-transparent pointer-events-none" />
+          {/* Gradient overlay for better text contrast */}
+          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-neutral-950 to-transparent pointer-events-none hidden lg:block" />
         </div>
 
-      </div>
-
-      {/* Desktop Value Cards */}
-      <div ref={desktopValuesRef} className="hidden lg:block pointer-events-none absolute bottom-28 left-0 right-0 z-30 px-5 lg:px-12 xl:px-16 pb-6">
-        <div className="flex justify-between gap-7 max-w-[92rem] mx-auto items-stretch">
-          {values.map((item) => (
-            <div
-              key={item.title}
-              className="manifesto-value-card h-full flex-1 min-w-0 bg-white/95 text-neutral-950 rounded-2xl px-6 pt-3.5 pb-3 shadow-[0_10px_28px_rgba(0,0,0,0.28)]"
-            >
-              <div className="flex items-start gap-2.5 mb-1.5">
-                <item.Icon className="w-6 h-6 shrink-0 mt-0.5" strokeWidth={2} />
-                <h3 className="text-[1.48rem] font-bold leading-[1.08]">{item.title}</h3>
+        {/* Desktop Value Cards - Refactored for Flex Flow and zoom safety */}
+        <div
+          ref={desktopValuesRef}
+          className="hidden lg:flex pointer-events-none absolute bottom-12 left-0 right-0 z-30 px-5 lg:px-10 xl:px-14"
+        >
+          <div className="flex justify-between gap-6 w-full max-w-[92rem] mx-auto items-stretch">
+            {values.map((item) => (
+              <div
+                key={item.title}
+                className="manifesto-value-card h-full flex-1 min-w-0 bg-white/95 text-neutral-950 rounded-2xl p-5 shadow-[0_12px_32px_rgba(0,0,0,0.3)] backdrop-blur-sm"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-neutral-100 rounded-lg">
+                    <item.Icon className="w-5 h-5 shrink-0" strokeWidth={2.5} />
+                  </div>
+                  <h3 className="text-[clamp(1.1rem,1.5vw,1.4rem)] font-bold leading-tight line-clamp-1">{item.title}</h3>
+                </div>
+                <p className="text-[clamp(0.85rem,1vw,0.95rem)] leading-snug text-neutral-700">{item.description}</p>
               </div>
-              <p className="px-1 text-[1rem] leading-tight text-neutral-700 whitespace-nowrap">{item.description}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+
       </div>
     </section>
+
   );
 }

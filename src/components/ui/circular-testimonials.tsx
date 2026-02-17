@@ -193,6 +193,8 @@ export const CircularTestimonials = ({
                             <img
                                 src={testimonial.src}
                                 alt={testimonial.name}
+                                width={400}
+                                height={400}
                                 className={`testimonial-image ${testimonial.imageMode === "contain" ? "contain" : "cover"}`}
                             />
                         </div>

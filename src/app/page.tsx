@@ -61,7 +61,7 @@ export default function Home() {
         id: 'heroParallaxPin',
         trigger: heroParallaxRef.current,
         start: 'top top',
-        end: '+=150%',
+        end: '+=180%', // Increased for more scroll room
         pin: true,
         pinSpacing: false,
         anticipatePin: 1,
@@ -71,7 +71,7 @@ export default function Home() {
         id: 'whoParallaxPin',
         trigger: whoParallaxRef.current,
         start: 'top top',
-        end: '+=150%',
+        end: '+=180%', // Increased for more scroll room
         pin: true,
         pinSpacing: false,
         anticipatePin: 1,
@@ -110,13 +110,13 @@ export default function Home() {
         <Hero />
       </div>
 
-      <div className="h-[50vh] bg-cream" aria-hidden />
+      <div className="h-[65vh] bg-cream" aria-hidden />
 
       <div ref={whoParallaxRef} className="relative z-10 bg-[#F3F2EF]">
         <WhoWeAre />
       </div>
 
-      <div className="h-[26vh] bg-[#F3F2EF]" aria-hidden />
+      <div className="h-[35vh] bg-[#F3F2EF]" aria-hidden />
 
       <div className="relative z-[15]">
         <Manifesto />

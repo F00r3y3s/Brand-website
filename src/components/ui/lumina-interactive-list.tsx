@@ -164,7 +164,6 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                          vec2 dir = (d > 0.0) ? (p - c) / d : vec2(0.0);
                          vec2 distUV = uv2 - dir * ro;
                          
-                         // Liquid flow animation
                          distUV += vec2(sin(time + nd * 10.0), cos(time * 0.8 + nd * 8.0)) * 0.015 * uGlassLiquidFlow * uSpeedMultiplier * nd * param;
                          
                          // Chromatic aberration
@@ -221,7 +220,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 if (titleEl && subtitleEl && descEl) {
                     titleEl.textContent = slides[idx].title;
                     (subtitleEl as HTMLElement).textContent = slides[idx].subtitle || '';
-                    if (ctaLabelEl) ctaLabelEl.textContent = isComingSoon ? 'Available Soon' : "Build What's Next";
+                    if (ctaLabelEl) ctaLabelEl.textContent = isComingSoon ? 'Available Soon' : `Inquire about ${slides[idx].title}`;
                     if (ctaButtonEl instanceof HTMLElement) {
                         ctaButtonEl.classList.toggle('is-disabled', isComingSoon);
                         ctaButtonEl.setAttribute('aria-disabled', isComingSoon ? 'true' : 'false');
@@ -480,7 +479,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 const initialIsComingSoon =
                     Boolean(slides[0]?.isComingSoon) ||
                     String(slides[0]?.title || '').toLowerCase().includes('coming soon');
-                if (ctaLabelEl) ctaLabelEl.textContent = initialIsComingSoon ? 'Available Soon' : "Build What's Next";
+                if (ctaLabelEl) ctaLabelEl.textContent = initialIsComingSoon ? 'Available Soon' : `Inquire about ${slides[0].title}`;
                 if (ctaButtonEl instanceof HTMLElement) {
                     ctaButtonEl.classList.toggle('is-disabled', initialIsComingSoon);
                     ctaButtonEl.setAttribute('aria-disabled', initialIsComingSoon ? 'true' : 'false');
@@ -535,7 +534,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
     }));
 
     return (
-        <main className="slider-wrapper" ref={containerRef}>
+        <div className="lumina-wrapper" ref={containerRef}>
             <canvas className="webgl-canvas"></canvas>
             <span className="slide-number" id="slideNumber">01</span>
             <span className="slide-total" id="slideTotal">{String(items.length).padStart(2, '0')}</span>
@@ -544,14 +543,14 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
             <div id="comingSoonLogoGlass" className="coming-soon-logo-glass" aria-hidden="true">
                 <div className="coming-soon-logo-glass-inner">
                     <div className="coming-soon-logo-plate">
-                        <img src="/ainar-logo-transparent.png" alt="" className="coming-soon-logo-image" />
+                        <img src="/ainar-logo-transparent.png" alt="AINAR transparent brand logo" className="coming-soon-logo-image" />
                     </div>
                 </div>
             </div>
             <div className="slide-content">
-                <h1 className="slide-title" id="mainTitle"></h1>
-                <p className="slide-subtitle" id="mainSubtitle"></p>
-                <p className="slide-description" id="mainDesc"></p>
+                <h2 className="slide-title" id="mainTitle">{items[0]?.title}</h2>
+                <p className="slide-subtitle" id="mainSubtitle">{items[0]?.subtitle}</p>
+                <p className="slide-description" id="mainDesc">{items[0]?.description}</p>
                 <div className="mt-8">
                     <button
                         id="mainCtaButton"
@@ -571,7 +570,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                         }}
                         style={{ position: 'relative', zIndex: 100 }}
                     >
-                        <span id="mainCtaLabel" className="relative z-10">{"Build What's Next"}</span>
+                        <span id="mainCtaLabel" className="relative z-10">Get Started</span>
                         <div className="absolute inset-0 bg-white group-hover:bg-neutral-200 transition-colors z-0"></div>
                     </button>
                 </div>
@@ -910,7 +909,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                     }
                 }
             `}</style>
-        </main>
+        </div>
     );
 });
 

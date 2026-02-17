@@ -19,13 +19,13 @@ export default function ProjectShowcase() {
       const vw = window.innerWidth;
       if (vw < 640) {
         setCardWidth(Math.max(300, vw - 44));
-        setCardHeight(360);
+        setCardHeight(420); // Increased for zoom overhead
       } else if (vw < 1024) {
         setCardWidth(Math.min(760, vw - 80));
-        setCardHeight(440);
+        setCardHeight(480); // Increased for zoom overhead
       } else {
-        setCardWidth(900);
-        setCardHeight(530);
+        setCardWidth(Math.min(900, vw - 120));
+        setCardHeight(580); // Increased for zoom overhead
       }
     };
 
@@ -89,7 +89,7 @@ export default function ProjectShowcase() {
                   <div className="rounded-2xl border border-white/70 bg-white/80 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.35)] px-3 py-2">
                     <Image
                       src="/ainar-logo-transparent.png"
-                      alt="AINAR Logo"
+                      alt="AINAR brand logo for ongoing project showcase"
                       width={180}
                       height={90}
                       className="w-[72px] md:w-[96px] h-auto opacity-100 contrast-125 drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]"
@@ -121,7 +121,7 @@ export default function ProjectShowcase() {
                 <div className="rounded-3xl border border-white/75 bg-white/90 backdrop-blur-xl shadow-[0_18px_44px_rgba(0,0,0,0.45)] px-6 py-4 mb-6 transition-transform duration-200 group-hover:scale-105 group-hover:shadow-[0_24px_56px_rgba(0,0,0,0.55)]">
                   <Image
                     src="/ainar-logo-transparent.png"
-                    alt="AINAR Logo"
+                    alt="AINAR brand logo for upcoming projects"
                     width={320}
                     height={160}
                     className="w-[190px] md:w-[240px] h-auto opacity-100 contrast-125 drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]"

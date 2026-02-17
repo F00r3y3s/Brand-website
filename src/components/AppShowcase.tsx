@@ -173,12 +173,12 @@ export default function AppShowcase({ isModal = false }: { isModal?: boolean }) 
         {/* Text Content - Absolute Left/Right or Behind */}
         <div className="absolute z-0 w-full flex justify-between px-6 md:px-24 pointer-events-none">
           <div className="hidden md:block text-left opacity-20">
-            <h2 className="text-9xl font-black font-display text-white tracking-tighter loading-none">
+            <h2 className="text-9xl font-black font-display text-white tracking-tighter leading-none">
               APP
             </h2>
           </div>
           <div className="hidden md:block text-right opacity-20">
-            <h2 className="text-9xl font-black font-display text-white tracking-tighter loading-none">
+            <h2 className="text-9xl font-black font-display text-white tracking-tighter leading-none">
               2.0
             </h2>
           </div>

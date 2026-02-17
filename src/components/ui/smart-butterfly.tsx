@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 const ButterflyImage = ({ className, src }: { className?: string; src: string }) => (
   <img
     src={src}
-    alt=""
+    alt="Decorative AINAR butterfly"
     className={className}
     draggable={false}
   />
