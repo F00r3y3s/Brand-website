@@ -40,15 +40,38 @@ export default function Home() {
       touchMultiplier: 1.5,
       infinite: false,
     });
+    let rafId = 0;
+    let scrollLockCount = 0;
+
+    const handleScrollLock = (event: Event) => {
+      const customEvent = event as CustomEvent<{ locked?: boolean }>;
+      const shouldLock = customEvent.detail?.locked === true;
+
+      if (shouldLock) {
+        scrollLockCount += 1;
+      } else {
+        scrollLockCount = Math.max(0, scrollLockCount - 1);
+      }
+
+      if (scrollLockCount > 0) {
+        lenis.stop();
+      } else {
+        lenis.start();
+      }
+    };
+
+    window.addEventListener('app:scroll-lock', handleScrollLock as EventListener);
 
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
+      window.removeEventListener('app:scroll-lock', handleScrollLock as EventListener);
+      cancelAnimationFrame(rafId);
       lenis.destroy();
     };
   }, []);

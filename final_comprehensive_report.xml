@@ -1,0 +1,573 @@
+Config: (none, using defaults)
+Database: /Users/omair/.squirrel/projects/localhost-3000/project.db
+New crawl: http://localhost:3000
+<?xml version="1.0" encoding="UTF-8"?>
+<squirrelscan-audit version="0.0.38">
+  <site>
+    <url>http://localhost:3000</url>
+    <pages-crawled>4</pages-crawled>
+    <audit-date>2026-02-16T23:11:05.196Z</audit-date>
+  </site>
+  <health-score overall="62" grade="D">
+    <category name="Security" score="75"/>
+    <category name="Performance" score="85"/>
+    <category name="Crawlability" score="86"/>
+    <category name="Accessibility" score="96"/>
+    <category name="Content" score="71"/>
+    <category name="Images" score="88"/>
+    <category name="E-E-A-T" score="66"/>
+    <category name="Structured Data" score="71"/>
+    <category name="Video" score="80"/>
+    <category name="Links" score="94"/>
+    <category name="Core SEO" score="95"/>
+    <category name="Internationalization" score="100"/>
+    <category name="Legal Compliance" score="100"/>
+    <category name="Mobile" score="100"/>
+    <category name="Social Media" score="100"/>
+    <category name="URL Structure" score="100"/>
+  </health-score>
+  <summary passed="310" warnings="43" failed="5"/>
+  <issues>
+    <category name="Crawlability" errors="1" warnings="2">
+      <rule id="crawl/sitemap-domain" severity="error">
+        <name>Sitemap Domain</name>
+        <description>Checks that all sitemap URLs belong to the expected domain</description>
+        <solution>All URLs in your sitemap should point to pages on your own domain. Cross-domain URLs in sitemaps are a configuration error - search engines will ignore URLs that don&apos;t match the sitemap&apos;s domain. Remove external URLs from your sitemap or fix the domain in URLs if they&apos;re incorrectly formatted.</solution>
+        <check name="sitemap-domain" status="fail">
+          <message>6 URL(s) point to different domain(s)</message>
+          <items count="6">
+            <item id="https://ainar.ae/">
+              <host>ainar.ae</host>
+            </item>
+            <item id="https://ainar.ae/#services">
+              <host>ainar.ae</host>
+            </item>
+            <item id="https://ainar.ae/#app">
+              <host>ainar.ae</host>
+            </item>
+            <item id="https://ainar.ae/#team">
+              <host>ainar.ae</host>
+            </item>
+            <item id="https://ainar.ae/#testimonials">
+              <host>ainar.ae</host>
+            </item>
+            <item id="https://ainar.ae/#contact">
+              <host>ainar.ae</host>
+            </item>
+          </items>
+        </check>
+      </rule>
+      <rule id="crawl/sitemap-coverage" severity="warning">
+        <name>Sitemap Coverage</name>
+        <description>Checks for indexable pages that are not in the sitemap</description>
+        <solution>Your sitemap should include all pages you want search engines to index. Pages that are crawlable and indexable (no noindex, not blocked by robots.txt) should generally be in your sitemap. Missing pages may not be discovered or indexed efficiently. Use a sitemap generator that automatically includes all indexable pages, or manually add important pages.</solution>
+        <check name="sitemap-coverage" status="warn">
+          <message>3 indexable page(s) not in sitemap (100%)</message>
+          <items count="3">
+            <item id="http://localhost:3000/">
+            </item>
+            <item id="http://localhost:3000/privacy">
+            </item>
+            <item id="http://localhost:3000/terms">
+            </item>
+          </items>
+        </check>
+        <check name="sitemap-orphans" status="warn">
+          <message>1 sitemap URL(s) were not crawled</message>
+          <items count="1">
+            <item id="https://ainar.ae/">
+            </item>
+          </items>
+        </check>
+      </rule>
+    </category>
+    <category name="Core SEO" errors="0" warnings="1">
+      <rule id="core/title-unique" severity="warning">
+        <name>Title Uniqueness</name>
+        <description>Checks that page titles are unique across the site</description>
+        <solution>Each page should have a unique title that accurately describes its content. Duplicate titles confuse search engines and users about which page to display. Use a pattern like &apos;Page Topic | Brand Name&apos; to ensure uniqueness. CMS often generate duplicate titles - audit and customize them.</solution>
+        <check name="title-unique" status="warn">
+          <message>1 duplicate title(s) affecting 3 pages</message>
+          <items count="1">
+            <item id="ainar - premium brand agency | sustainability &amp; ai">
+              <label>&quot;ainar - premium brand agency | sustainab...&quot; (3 pages)</label>
+              <pageCount>3</pageCount>
+              <source-pages>
+                <page url="http://localhost:3000/"/>
+                <page url="http://localhost:3000/privacy"/>
+                <page url="http://localhost:3000/terms"/>
+              </source-pages>
+            </item>
+          </items>
+        </check>
+      </rule>
+    </category>
+    <category name="Security" errors="3" warnings="1">
+      <rule id="security/https" severity="error">
+        <name>HTTPS</name>
+        <description>Checks for HTTPS usage</description>
+        <solution>HTTPS encrypts data between users and your server, protecting sensitive information. It&apos;s a ranking signal and required for many modern browser features. Migrate to HTTPS by obtaining an SSL certificate (free from Let&apos;s Encrypt). Update internal links to use https://. Set up 301 redirects from HTTP to HTTPS. Update your canonical URLs and sitemap. Check for mixed content warnings after migration.</solution>
+        <check name="https" status="fail">
+          <message>Page not served over HTTPS</message>
+          <affected-pages count="3">
+            <page url="http://localhost:3000/"/>
+            <page url="http://localhost:3000/privacy"/>
+            <page url="http://localhost:3000/terms"/>
+          </affected-pages>
+        </check>
+      </rule>
+      <rule id="security/csp" severity="warning">
+        <name>Content Security Policy</name>
+        <description>Checks for Content-Security-Policy header and validates directives</description>
+        <solution>CSP prevents XSS attacks by restricting which resources can load. Start with a report-only policy to identify issues. Key directives: default-src &apos;self&apos;, script-src (avoid &apos;unsafe-inline&apos;), img-src, style-src, frame-ancestors. Use nonces or hashes instead of &apos;unsafe-inline&apos; for scripts. Test thoroughly as strict CSP can break functionality.</solution>
+        <check name="csp-unsafe-scripts" status="warn">
+          <message>CSP allows &apos;unsafe-inline&apos; and &apos;unsafe-eval&apos;</message>
+        </check>
+      </rule>
+    </category>
+    <category name="Links" errors="0" warnings="1">
+      <rule id="links/broken-external-links" severity="warning">
+        <name>Broken External Links</name>
+        <description>Detects external links returning 4xx/5xx errors or timeouts</description>
+        <solution>Broken external links hurt user experience and credibility. Regularly audit external links using automated tools. Remove or replace broken links with working alternatives. Consider using archived versions (archive.org) if the original content is gone. For important resources, consider hosting your own copies of critical documentation or linking to more stable sources.</solution>
+        <check name="broken-external-links" status="warn">
+          <message>1 broken external link(s): 1 with 999</message>
+          <items count="1">
+            <item id="https://www.linkedin.com/in/meryemhamidi/">
+              <label>https://www.linkedin.com/in/meryemhamidi/ (999)</label>
+              <status>999</status>
+              <source-pages>
+                <page url="http://localhost:3000/"/>
+                <page url="http://localhost:3000/"/>
+                <page url="http://localhost:3000/privacy"/>
+                <page url="http://localhost:3000/terms"/>
+              </source-pages>
+            </item>
+          </items>
+        </check>
+      </rule>
+    </category>
+    <category name="Content" errors="0" warnings="6">
+      <rule id="content/duplicate-title" severity="warning">
+        <name>Duplicate Title</name>
+        <description>Checks for duplicate title tags across the site</description>
+        <solution>Each page should have a unique title tag that accurately describes its content. Duplicate titles confuse search engines about which page to rank and make your pages less distinguishable in search results. Use unique, descriptive titles that include relevant keywords. For similar pages (e.g., pagination), add differentiating elements like page numbers or category names.</solution>
+        <check name="duplicate-title" status="warn">
+          <message>1 duplicate title(s) found across 3 pages</message>
+          <items count="1">
+            <item id="ainar - premium brand agency | sustainability &amp; ai">
+              <label>&quot;ainar - premium brand agency | sustainab...&quot; (3 pages)</label>
+              <pageCount>3</pageCount>
+              <source-pages>
+                <page url="http://localhost:3000/"/>
+                <page url="http://localhost:3000/privacy"/>
+                <page url="http://localhost:3000/terms"/>
+              </source-pages>
+            </item>
+          </items>
+        </check>
+      </rule>
+      <rule id="content/duplicate-description" severity="warning">
+        <name>Duplicate Description</name>
+        <description>Checks for duplicate meta descriptions across the site</description>
+        <solution>Each page should have a unique meta description that summarizes its specific content. Duplicate descriptions reduce click-through rates and provide poor user experience in search results. Write unique, compelling descriptions for each page. For pages without unique content (like paginated results), consider using no description rather than a duplicate.</solution>
+        <check name="duplicate-description" status="warn">
+          <message>1 duplicate description(s) found across 3 pages</message>
+          <items count="1">
+            <item id="ainar is a premium uae brand agency specializing in sustaina">
+              <label>&quot;ainar is a premium uae brand agency spec...&quot; (3 pages)</label>
+              <pageCount>3</pageCount>
+              <source-pages>
+                <page url="http://localhost:3000/"/>
+                <page url="http://localhost:3000/privacy"/>
+                <page url="http://localhost:3000/terms"/>
+              </source-pages>
+            </item>
+          </items>
+        </check>
+      </rule>
+      <rule id="content/keyword-stuffing" severity="warning">
+        <name>Keyword Stuffing</name>
+        <description>Detects excessive keyword repetition in content</description>
+        <solution>Keyword stuffing is repeating words unnaturally to manipulate rankings. Search engines penalize this practice. Write naturally for users first. Use keywords where they fit naturally. Aim for 1-2% keyword density at most. Use synonyms and related terms instead of repeating the exact same phrase. Focus on providing value, not gaming algorithms.</solution>
+        <check name="keyword-stuffing" status="warn">
+          <message>N word(s) may be overused</message>
+          <affected-pages count="2">
+            <page url="http://localhost:3000/privacy"/>
+            <page url="http://localhost:3000/terms"/>
+          </affected-pages>
+          <items count="3">
+            <item id="data">
+              <label>&quot;data&quot; (3.9%)</label>
+              <count>10</count>
+              <density>3.875968992248062</density>
+            </item>
+            <item id="your">
+              <label>&quot;your&quot; (3.1%)</label>
+              <count>8</count>
+              <density>3.10077519379845</density>
+            </item>
+            <item id="ainar">
+              <label>&quot;ainar&quot; (3.8%)</label>
+              <count>8</count>
+              <density>3.827751196172249</density>
+            </item>
+          </items>
+        </check>
+      </rule>
+      <rule id="content/word-count" severity="warning">
+        <name>Word Count</name>
+        <description>Checks content length for thin content issues</description>
+        <solution>Pages with thin content (under 300 words) often struggle to rank well and are actively deindexed by Google since the June 2025 core update. Add more valuable, relevant content to thin pages—aim for at least 500 words for standard pages and 1000+ for in-depth articles. If a page can&apos;t be fleshed out, voluntarily noindex it or consolidate it into a more comprehensive resource. Trimming thin pages from your index is better than leaving low-value content for Google to penalize.</solution>
+        <check name="word-count" status="warn">
+          <message>Thin content: N words (min N)</message>
+          <affected-pages count="2">
+            <page url="http://localhost:3000/privacy"/>
+            <page url="http://localhost:3000/terms"/>
+          </affected-pages>
+          <items count="2">
+            <item id="http://localhost:3000/privacy">
+              <label>Thin content: 297 words (min 300)</label>
+            </item>
+            <item id="http://localhost:3000/terms">
+              <label>Thin content: 261 words (min 300)</label>
+            </item>
+          </items>
+        </check>
+      </rule>
+    </category>
+    <category name="Structured Data" errors="0" warnings="1">
+      <rule id="schema/video" severity="warning">
+        <name>Video Schema</name>
+        <description>Validates VideoObject schema for video content</description>
+        <solution>VideoObject schema enables video rich results and carousels. Required: name, description, thumbnailUrl, uploadDate. Recommended: duration (ISO 8601), contentUrl, embedUrl. For video courses, use Course with hasCourseInstance. Ensure thumbnailUrl is high quality (min 160x90, max 1920x1080).</solution>
+        <check name="video-schema" status="warn">
+          <message>Page has video but no VideoObject schema</message>
+          <affected-pages count="1">
+            <page url="http://localhost:3000/"/>
+          </affected-pages>
+        </check>
+      </rule>
+    </category>
+    <category name="Images" errors="0" warnings="5">
+      <rule id="images/offscreen-lazy" severity="warning">
+        <name>Offscreen Image Lazy Loading</name>
+        <description>Checks if offscreen images use lazy loading</description>
+        <solution>Add loading=&apos;lazy&apos; to images below the fold to defer loading until needed. This reduces initial page load time and saves bandwidth. Exception: Don&apos;t lazy-load LCP image or above-the-fold content. Use loading=&apos;eager&apos; for critical images.</solution>
+        <check name="offscreen-images-not-lazy" status="warn">
+          <message>8 below-fold image(s) without lazy loading</message>
+          <affected-pages count="1">
+            <page url="http://localhost:3000/"/>
+          </affected-pages>
+          <items count="8">
+            <item id="logo-part-2-aligned.png">
+            </item>
+            <item id="ainar-logo-transparent.png">
+            </item>
+            <item id="phone-mockup.png">
+            </item>
+            <item id="ainar-logo-transparent.png">
+            </item>
+            <item id="ainar-logo-transparent.png">
+            </item>
+            <item id="ainar-logo-transparent.png">
+            </item>
+            <item id="ainar-logo-transparent.png">
+            </item>
+            <item id="ainar-logo-transparent.png">
+            </item>
+          </items>
+        </check>
+      </rule>
+      <rule id="images/dimensions" severity="warning">
+        <name>Image Dimensions</name>
+        <description>Checks for width/height attributes (prevents CLS)</description>
+        <solution>Specifying width and height attributes prevents Cumulative Layout Shift (CLS) by reserving space before images load. Add width and height attributes to img tags matching the image&apos;s intrinsic dimensions. Use CSS for responsive sizing if needed. For responsive images, the aspect ratio from width/height prevents layout shifts even when CSS overrides the actual size.</solution>
+        <check name="image-dimensions" status="warn">
+          <message>N image(s) missing width/height (causes CLS)</message>
+          <affected-pages count="3">
+            <page url="http://localhost:3000/"/>
+            <page url="http://localhost:3000/privacy"/>
+            <page url="http://localhost:3000/terms"/>
+          </affected-pages>
+          <items count="8">
+            <item id="http://localhost:3000/ainar-logo-transparent.png">
+            </item>
+            <item id="http://localhost:3000/ainar-logo-transparent.png">
+            </item>
+            <item id="http://localhost:3000/projects/phone-mockup.png">
+            </item>
+            <item id="http://localhost:3000/ainar-logo-transparent.png">
+            </item>
+            <item id="http://localhost:3000/ainar-logo-transparent.png">
+            </item>
+            <item id="http://localhost:3000/ainar-logo-transparent.png">
+            </item>
+            <item id="http://localhost:3000/ainar-logo-transparent.png">
+            </item>
+            <item id="http://localhost:3000/ainar-logo-transparent.png">
+            </item>
+          </items>
+        </check>
+      </rule>
+      <rule id="images/optimized" severity="info">
+        <name>Image Optimization</name>
+        <description>Checks for image optimization indicators</description>
+        <solution>Optimize images to reduce file sizes without visible quality loss. Use tools like Squoosh, ImageOptim, or TinyPNG. Consider using an image CDN (Cloudinary, Imgix, Cloudflare Images) for automatic optimization and responsive delivery. Modern formats (WebP, AVIF) offer 25-50% better compression.</solution>
+        <check name="image-optimization-needed" status="warn">
+          <message>Images may not be optimized - consider using an image CDN</message>
+          <affected-pages count="1">
+            <page url="http://localhost:3000/"/>
+          </affected-pages>
+        </check>
+      </rule>
+    </category>
+    <category name="Performance" errors="1" warnings="14">
+      <rule id="perf/cls-hints" severity="warning">
+        <name>CLS Optimization Hints</name>
+        <description>Checks for Cumulative Layout Shift prevention</description>
+        <solution>CLS measures visual stability - how much content shifts during load. Prevent layout shifts by: 1) Always set width and height attributes on images and iframes. 2) Reserve space for ads and embeds with CSS min-height. 3) Use CSS aspect-ratio for responsive media. 4) Avoid inserting content above existing content. 5) Use transform animations instead of properties that trigger layout.</solution>
+        <check name="cls-images" status="fail">
+          <message>8 image(s) without width/height (CLS risk)</message>
+          <affected-pages count="1">
+            <page url="http://localhost:3000/"/>
+          </affected-pages>
+          <items count="8">
+            <item id="/ainar-logo-transparent.png">
+            </item>
+            <item id="/ainar-logo-transparent.png">
+            </item>
+            <item id="/projects/phone-mockup.png">
+            </item>
+            <item id="/ainar-logo-transparent.png">
+            </item>
+            <item id="/ainar-logo-transparent.png">
+            </item>
+            <item id="/ainar-logo-transparent.png">
+            </item>
+            <item id="/ainar-logo-transparent.png">
+            </item>
+            <item id="/ainar-logo-transparent.png">
+            </item>
+          </items>
+        </check>
+        <check name="cls-images" status="warn">
+          <message>2 image(s) without width/height (CLS risk)</message>
+          <affected-pages count="2">
+            <page url="http://localhost:3000/privacy"/>
+            <page url="http://localhost:3000/terms"/>
+          </affected-pages>
+          <items count="2">
+            <item id="/ainar-logo-transparent.png">
+            </item>
+            <item id="/ainar-logo-transparent.png">
+            </item>
+          </items>
+        </check>
+      </rule>
+      <rule id="perf/critical-request-chains" severity="warning">
+        <name>Critical Request Chains</name>
+        <description>Identifies chains of dependent resources that delay rendering</description>
+        <solution>Critical request chains are sequences of dependent network requests that must complete before the page can render. Reduce chain depth by: 1) Inlining critical CSS instead of linking external files. 2) Adding async or defer to non-critical scripts. 3) Avoiding CSS @import — use &lt;link&gt; tags instead. 4) Using &lt;link rel=&apos;preload&apos;&gt; for critical resources. 5) Reducing the number of render-blocking resources in &lt;head&gt;.</solution>
+        <check name="critical-request-chains" status="warn">
+          <message>3 critical request chain(s) found</message>
+          <affected-pages count="3">
+            <page url="http://localhost:3000/"/>
+            <page url="http://localhost:3000/privacy"/>
+            <page url="http://localhost:3000/terms"/>
+          </affected-pages>
+          <items count="3">
+            <item id="CSS: /_next/static/chunks/fd82494a2869e629.css">
+            </item>
+            <item id="CSS: /_next/static/chunks/a047dd053e13caca.css">
+            </item>
+            <item id="JS: /_next/static/chunks/a6dad97d9634a72d.js">
+            </item>
+          </items>
+        </check>
+      </rule>
+      <rule id="perf/unminified-js" severity="warning">
+        <name>Unminified JavaScript</name>
+        <description>Detects unminified JavaScript that could be optimized</description>
+        <solution>Minify JavaScript to reduce file size and improve load times. Use build tools like Terser, esbuild, or UglifyJS. Most bundlers (Webpack, Vite, Rollup) minify automatically in production. Minification shortens variable names, removes whitespace, and dead code.</solution>
+        <check name="unminified-js" status="warn">
+          <message>1 JavaScript file(s) appear unminified</message>
+          <affected-pages count="3">
+            <page url="http://localhost:3000/"/>
+            <page url="http://localhost:3000/privacy"/>
+            <page url="http://localhost:3000/terms"/>
+          </affected-pages>
+          <items count="1">
+            <item id="3a9abd17db933ab2.js">
+              <label>201.5KB, ~184.0KB savings</label>
+              <reason>10 comments</reason>
+            </item>
+          </items>
+        </check>
+      </rule>
+      <rule id="perf/cache-headers" severity="warning">
+        <name>Cache Headers</name>
+        <description>Checks Cache-Control header configuration</description>
+        <solution>Use Cache-Control headers to enable browser caching. For static assets (CSS, JS, images), set long max-age (1 year) with immutable when using hashed filenames. For HTML, use shorter max-age or no-cache with revalidation. Example: &apos;Cache-Control: public, max-age=31536000, immutable&apos; for versioned assets.</solution>
+        <check name="cache-control" status="warn">
+          <message>Cache-Control without max-age</message>
+          <affected-pages count="3">
+            <page url="http://localhost:3000/"/>
+            <page url="http://localhost:3000/privacy"/>
+            <page url="http://localhost:3000/terms"/>
+          </affected-pages>
+        </check>
+      </rule>
+      <rule id="perf/http2" severity="info">
+        <name>HTTP/2</name>
+        <description>Checks for HTTP/2 protocol support</description>
+        <solution>HTTP/2 enables multiplexing, header compression, and server push for faster page loads. Most modern web servers and CDNs support HTTP/2 out of the box. Requires HTTPS. Check your server/CDN documentation to enable it. HTTP/3 (QUIC) provides even better performance.</solution>
+        <check name="http2-https-required" status="warn">
+          <message>HTTP/2 requires HTTPS</message>
+          <affected-pages count="3">
+            <page url="http://localhost:3000/"/>
+            <page url="http://localhost:3000/privacy"/>
+            <page url="http://localhost:3000/terms"/>
+          </affected-pages>
+          <items count="3">
+            <item id="http://localhost:3000/">
+              <label>HTTP/2 requires HTTPS</label>
+            </item>
+            <item id="http://localhost:3000/privacy">
+              <label>HTTP/2 requires HTTPS</label>
+            </item>
+            <item id="http://localhost:3000/terms">
+              <label>HTTP/2 requires HTTPS</label>
+            </item>
+          </items>
+        </check>
+      </rule>
+    </category>
+    <category name="Accessibility" errors="0" warnings="7">
+      <rule id="a11y/color-contrast" severity="warning">
+        <name>Color Contrast</name>
+        <description>Checks for color contrast issues in styles and classes</description>
+        <solution>Text must have sufficient contrast with its background for readability. WCAG AA requires 4.5:1 for normal text and 3:1 for large text (18px+ or 14px+ bold). Use tools like WebAIM Contrast Checker to verify. Common issues: light gray text, text over images without overlay. Don&apos;t rely on color alone to convey information - add icons or text labels.</solution>
+        <check name="color-contrast" status="warn">
+          <message>N potential color contrast issue(s)</message>
+          <affected-pages count="3">
+            <page url="http://localhost:3000/"/>
+            <page url="http://localhost:3000/privacy"/>
+            <page url="http://localhost:3000/terms"/>
+          </affected-pages>
+          <items count="14">
+            <item id="img with class &quot;w-full h-full object-cover opa...&quot; may have low contrast">
+            </item>
+            <item id="div with class &quot;mission-card who-subcard p-6 m...&quot; may have low contrast">
+            </item>
+            <item id="h3 with class &quot;who-subcard-title text-4xl fon...&quot; may have low contrast">
+            </item>
+            <item id="p with class &quot;mt-4 text-base md:text-lg text...&quot; may have low contrast">
+            </item>
+            <item id="span with class &quot;-rotate-90 text-[0.9rem] lg:te...&quot; may have low contrast">
+            </item>
+            <item id="h2 with class &quot;text-3xl md:text-[5.2rem] lg:t...&quot; may have low contrast">
+            </item>
+            <item id="span with class &quot;text-[3.2rem] md:text-[6.4rem]...&quot; may have low contrast">
+            </item>
+            <item id="p with class &quot;text-light/62 text-[1.02rem] m...&quot; may have low contrast">
+            </item>
+            <item id="a with class &quot;w-14 h-14 rounded-full border ...&quot; may have low contrast">
+            </item>
+            <item id="a with class &quot;flex items-center gap-2 px-6 p...&quot; may have low contrast">
+            </item>
+            <item id="h4 with class &quot;text-light font-medium mb-8 tr...&quot; may have low contrast">
+            </item>
+            <item id="ul with class &quot;flex flex-col gap-3.5 text-lig...&quot; may have low contrast">
+            </item>
+            <item id="a with class &quot;hover:text-secondary cursor-po...&quot; may have low contrast">
+            </item>
+            <item id="h3 with class &quot;text-3xl md:text-[2.05rem] fon...&quot; may have low contrast">
+            </item>
+          </items>
+        </check>
+      </rule>
+      <rule id="a11y/video-captions" severity="warning">
+        <name>Video Captions</name>
+        <description>Checks that videos have captions or transcripts</description>
+        <solution>All video content needs captions for deaf/hard-of-hearing users (WCAG 1.2.2). Add &lt;track kind=&apos;captions&apos; src=&apos;captions.vtt&apos; srclang=&apos;en&apos;&gt; to video elements. For embedded videos (YouTube, Vimeo), enable captions in the embed settings. Also provide a text transcript for complex content. Auto-generated captions should be reviewed for accuracy.</solution>
+        <check name="video-captions" status="warn">
+          <message>1 video(s) without caption tracks</message>
+          <affected-pages count="1">
+            <page url="http://localhost:3000/"/>
+          </affected-pages>
+          <items count="1">
+            <item id="/FAQ Avatar.webm">
+            </item>
+          </items>
+        </check>
+      </rule>
+      <rule id="a11y/heading-order" severity="warning">
+        <name>Heading Order</name>
+        <description>Checks that heading levels don&apos;t skip</description>
+        <solution>Headings should follow a logical hierarchy without skipping levels. Screen reader users navigate by headings, so skipping from H1 to H3 is confusing. Correct order: H1 -&gt; H2 -&gt; H3 (not H1 -&gt; H3). You can have multiple headings at the same level, and you can go back up (H3 -&gt; H2 is fine). Think of headings as an outline - they should make sense when read alone.</solution>
+        <check name="heading-order" status="warn">
+          <message>1 heading level skip(s) detected</message>
+          <affected-pages count="3">
+            <page url="http://localhost:3000/"/>
+            <page url="http://localhost:3000/privacy"/>
+            <page url="http://localhost:3000/terms"/>
+          </affected-pages>
+          <items count="1">
+            <item id="H4 after H2">
+            </item>
+          </items>
+        </check>
+      </rule>
+    </category>
+    <category name="E-E-A-T" errors="0" warnings="4">
+      <rule id="eeat/about-page" severity="warning">
+        <name>About Page</name>
+        <description>Checks for an about/company page with content</description>
+        <solution>An About page establishes credibility and trust. Include company history, mission, team overview, and credentials. Link from main navigation or footer. For E-E-A-T, explain your expertise and why visitors should trust you. Include contact information and physical location if applicable.</solution>
+        <check name="about-page" status="warn">
+          <message>No About page found</message>
+        </check>
+      </rule>
+      <rule id="eeat/author-byline" severity="warning">
+        <name>Author Bylines</name>
+        <description>Checks for visible author names on content pages</description>
+        <solution>Author bylines demonstrate experience and accountability. Show author names prominently on articles, blog posts, and expert content. Include author credentials where relevant. Link author names to bio pages. For YMYL content (health, finance), author transparency is especially important for Google&apos;s E-E-A-T assessment.</solution>
+        <check name="author-byline" status="warn">
+          <message>No content pages have author attribution</message>
+        </check>
+      </rule>
+      <rule id="eeat/contact-page" severity="warning">
+        <name>Contact Page</name>
+        <description>Checks for contact page with multiple contact methods</description>
+        <solution>A contact page with multiple contact methods builds trust. Include: email address or contact form, phone number (if applicable), physical address, and social media links. Make contact information easy to find from any page. For local businesses, include business hours. Response time expectations are also helpful.</solution>
+        <check name="contact-page" status="warn">
+          <message>No Contact page found</message>
+        </check>
+      </rule>
+      <rule id="eeat/content-dates" severity="warning">
+        <name>Content Dates</name>
+        <description>Checks for published and modified dates on content</description>
+        <solution>Visible dates show content freshness and help users assess relevance. Include datePublished and dateModified in Article schema. Show human-readable dates on pages. Update dateModified when making significant changes. Fresh content signals ongoing maintenance and expertise. Stale dates may hurt rankings for time-sensitive topics.</solution>
+        <check name="date-published" status="warn">
+          <message>No content pages have datePublished</message>
+        </check>
+      </rule>
+    </category>
+    <category name="Video" errors="0" warnings="1">
+      <rule id="video/video-accessible" severity="warning">
+        <name>Video Accessibility</name>
+        <description>Checks for video captions and transcripts</description>
+        <solution>Videos need captions for deaf/hard-of-hearing users and transcripts for SEO. Use &lt;track&gt; elements for captions. Provide text transcripts on the page. Auto-generated captions should be reviewed for accuracy. Captions also help when audio can&apos;t be played. Required by WCAG 2.1 Level A.</solution>
+        <check name="video-accessible" status="warn">
+          <message>No videos have caption tracks</message>
+          <affected-pages count="1">
+            <page url="http://localhost:3000/"/>
+          </affected-pages>
+        </check>
+      </rule>
+    </category>
+  </issues>
+</squirrelscan-audit>
+
+
