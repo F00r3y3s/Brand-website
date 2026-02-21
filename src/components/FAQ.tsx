@@ -194,7 +194,6 @@ export default function FAQ() {
                                     <video
                                         ref={videoRef}
                                         src="/FAQ-thumbsup.webm"
-                                        poster="/FAQ-Avatar-Thumbnail.png"
                                         className="w-full h-full object-contain"
                                         muted
                                         playsInline

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
+import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 
 declare const gsap: any;
 declare const THREE: any;
@@ -17,8 +17,28 @@ export interface LuminaInteractiveListHandle {
 
 export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { items: any[] }>(({ items }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
+    const [hasStartedLoading, setHasStartedLoading] = useState(false);
 
     useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !hasStartedLoading) {
+                    setHasStartedLoading(true);
+                }
+            },
+            { rootMargin: '600px' }
+        );
+
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [hasStartedLoading]);
+
+    useEffect(() => {
+        if (!hasStartedLoading) return;
+
         // --- DYNAMIC SCRIPT LOADING ---
         const loadScripts = async () => {
             const loadScript = (src: string, globalName: string) => new Promise<void>((res, rej) => {

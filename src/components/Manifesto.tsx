@@ -21,12 +21,32 @@ export default function Manifesto() {
   const mobileValuesRef = useRef<HTMLDivElement>(null);
   const desktopValuesRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [hasStartedLoading, setHasStartedLoading] = useState(false);
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // Preload images
+  // Preload images when in view
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !hasStartedLoading) {
+          setHasStartedLoading(true);
+        }
+      },
+      { rootMargin: '400px' } // Start loading when 400px away
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasStartedLoading]);
+
+  useEffect(() => {
+    if (!hasStartedLoading) return;
+
     const loadImages = async () => {
       const loadedImages: HTMLImageElement[] = [];
       const promises = [];
@@ -52,7 +72,7 @@ export default function Manifesto() {
     };
 
     loadImages();
-  }, []);
+  }, [hasStartedLoading]);
 
   // Draw frame based on progress
   useEffect(() => {

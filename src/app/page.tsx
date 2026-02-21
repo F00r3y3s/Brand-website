@@ -14,7 +14,6 @@ import Services from '@/components/Services';
 import Team from '@/components/Team';
 import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
-import CookiesConsent from '@/components/CookiesConsent';
 import FloatingCTA from '@/components/FloatingCTA';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -163,7 +162,6 @@ export default function Home() {
         <Footer />
       </div>
       <FloatingCTA />
-      <CookiesConsent />
     </main>
   );
 }
