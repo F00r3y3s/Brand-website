@@ -529,7 +529,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
             delete (window as any).__luminaUpdateProgress;
             delete (window as any).__luminaStopBackgroundCycle;
         };
-    }, [items]);
+    }, [items, hasStartedLoading]);
 
     // Expose methods to parent via ref
     useImperativeHandle(ref, () => ({
