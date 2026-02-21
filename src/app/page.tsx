@@ -10,7 +10,7 @@ import Manifesto from '@/components/Manifesto';
 import WhoWeAre from '@/components/WhoWeAre';
 import ProjectShowcase from '@/components/ProjectShowcase';
 import Services from '@/components/Services';
-import Testimonials from '@/components/Testimonials';
+// import Testimonials from '@/components/Testimonials';
 import Team from '@/components/Team';
 import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
@@ -155,7 +155,7 @@ export default function Home() {
         <Services />
       </div>
       <Team />
-      <Testimonials />
+      {/* <Testimonials /> */}
       <div ref={faqParallaxRef} className="relative z-40 bg-[#F3F2EF]">
         <FAQ />
       </div>

@@ -40,18 +40,18 @@ export default function FloatingCTA() {
                                 className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl w-64 mb-2 origin-bottom-right"
                             >
                                 <div className="flex flex-col gap-3">
-                                    <Link href="/contact" className="p-3 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-3 group">
+                                    <a href="mailto:hello@ainar.ae" className="p-3 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-3 group">
                                         <div className="w-2 h-2 rounded-full bg-green-500 group-hover:bg-green-400 group-hover:shadow-[0_0_10px_#4ade80]" />
                                         <span className="text-white text-sm font-medium">
                                             {language === 'en' ? 'Start a Project' : 'ابدأ مشروعاً'}
                                         </span>
-                                    </Link>
-                                    <Link href="/careers" className="p-3 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-3 group">
+                                    </a>
+                                    <a href="mailto:hello@ainar.ae" className="p-3 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-3 group">
                                         <div className="w-2 h-2 rounded-full bg-gold group-hover:bg-yellow-300 group-hover:shadow-[0_0_10px_#D4AF37]" />
                                         <span className="text-white text-sm font-medium">
                                             {language === 'en' ? 'Join the Team' : 'انضم للفريق'}
                                         </span>
-                                    </Link>
+                                    </a>
                                 </div>
                             </motion.div>
                         )}

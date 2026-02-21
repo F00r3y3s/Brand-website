@@ -27,7 +27,7 @@ const notoSansArabic = Noto_Sans_Arabic({
 export const metadata: Metadata = {
   metadataBase: new URL('https://ainar.ae'),
   title: {
-    default: "AInar - Premium Brand Agency | Sustainability & AI",
+    default: "AINAR",
     template: "%s | AINAR"
   },
   description:
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: "AInar - Premium Brand Agency | Sustainability & AI",
+    title: "AINAR",
     description: "Empowering businesses through sustainability and AI-driven digital transformation in the UAE.",
     url: 'https://ainar.ae',
     siteName: 'AINAR',
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "AInar - Premium Brand Agency | Sustainability & AI",
+    title: "AINAR",
     description: "Empowering businesses through sustainability and AI-driven digital transformation in the UAE.",
     images: ['/og-image.png'],
   },

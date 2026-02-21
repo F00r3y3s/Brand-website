@@ -8,25 +8,25 @@ const teamMembers = [
   {
     name: "Dr. Meryem Hamidi",
     role: "Founder & CEO",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop",
+    image: "/members/Meryem-PH.webp",
     roleDescription: "Dr. Hamidi leads AINAR with a vision to merge sustainability with advanced intelligence."
   },
   {
     name: "Fatima Moussa Sy",
     role: "Assistant & Business Coordinator",
-    image: "/members/Fatima-PH.jpeg",
+    image: "/members/Fatima-PH.webp",
     roleDescription: "Coordinates daily operations, communications, and executive follow-through across business initiatives."
   },
   {
     name: "Abdul Jabbar",
     role: "Lead IT / Technical Advisor",
-    image: "/members/AJ.jpeg",
+    image: "/members/AJ.webp",
     roleDescription: "Leads IT and technical direction, advising on architecture, implementation quality, and delivery standards."
   },
   {
     name: "Syed Faruk Ahmed",
     role: "Senior Growth & Strategic Advisory Partner",
-    image: "/members/Faruk.jpeg",
+    image: "/members/Faruk.webp",
     roleDescription: "Drives growth strategy, strategic partnerships, and long-term advisory planning across markets."
   }
 ]

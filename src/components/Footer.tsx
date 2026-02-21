@@ -25,6 +25,9 @@ export default function Footer() {
     isOpen: false,
     type: null,
   })
+  const [newsletterEmail, setNewsletterEmail] = useState('')
+  const [isNewsletterSubmitting, setIsNewsletterSubmitting] = useState(false)
+  const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
   const handleNavClick = (selector: string, serviceIndex?: number) => (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault()
@@ -38,6 +41,36 @@ export default function Footer() {
           window.__onLuminaNavClick(serviceIndex)
         }
       }, 340)
+    }
+  }
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newsletterEmail) return
+
+    setIsNewsletterSubmitting(true)
+    setNewsletterStatus('idle')
+
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'newsletter',
+          data: { email: newsletterEmail }
+        }),
+      })
+
+      if (!response.ok) throw new Error('Subscription failed')
+
+      setNewsletterStatus('success')
+      setNewsletterEmail('')
+      setTimeout(() => setNewsletterStatus('idle'), 3000)
+    } catch (error) {
+      console.error('Newsletter error:', error)
+      setNewsletterStatus('error')
+    } finally {
+      setIsNewsletterSubmitting(false)
     }
   }
 
@@ -136,7 +169,7 @@ export default function Footer() {
 
               <div className={`flex flex-wrap gap-4 ${isArabic ? 'justify-end' : ''}`}>
                 <a
-                  href="mailto:meryem.ham@gmail.com"
+                  href="mailto:hello@ainar.ae"
                   className="flex items-center gap-2 px-7 py-3.5 bg-light text-dark rounded-full font-medium hover:bg-secondary transition-colors duration-300"
                 >
                   <Mail size={20} />
@@ -217,17 +250,26 @@ export default function Footer() {
                     : 'اشترك في نشرتنا الإخبارية لأحدث التحديثات حول الذكاء الاصطناعي والاستدامة والتكنولوجيا الخضراء.'}
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4">
                 <input
                   type="email"
+                  required
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
                   placeholder={language === 'en' ? 'Enter your email' : 'أدخل بريدك الإلكتروني'}
                   aria-label={language === 'en' ? 'Email for newsletter' : 'البريد الإلكتروني للنشرة الإخبارية'}
                   className="flex-1 bg-light/5 border border-light/10 rounded-full px-6 py-3.5 text-light placeholder:text-light/30 focus:outline-none focus:border-secondary transition-colors"
                 />
-                <button className="bg-light text-dark px-8 py-3.5 rounded-full font-medium hover:bg-secondary transition-colors duration-300">
-                  {language === 'en' ? 'Subscribe' : 'اشترك'}
+                <button
+                  type="submit"
+                  disabled={isNewsletterSubmitting || newsletterStatus === 'success'}
+                  className="bg-light text-dark px-8 py-3.5 rounded-full font-medium hover:bg-secondary transition-colors duration-300 disabled:opacity-50"
+                >
+                  {isNewsletterSubmitting ? (language === 'en' ? '...' : '...') :
+                    newsletterStatus === 'success' ? (language === 'en' ? 'Subscribed!' : 'تم الاشتراك!') :
+                      (language === 'en' ? 'Subscribe' : 'اشترك')}
                 </button>
-              </div>
+              </form>
             </div>
           </div>
 
@@ -238,7 +280,7 @@ export default function Footer() {
 
             <div className="flex items-center justify-center">
               <img
-                src="/ainar-logo-transparent.png"
+                src="/ainar-logo-transparent.webp"
                 alt="AINAR brand logo for footer"
                 width={180}
                 height={44}

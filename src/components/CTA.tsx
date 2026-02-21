@@ -110,7 +110,7 @@ export default function CTA() {
               {
                 icon: MailIcon,
                 label: language === 'en' ? 'Email' : 'البريد الإلكتروني',
-                value: 'hello@ainar.ai',
+                value: 'hello@ainar.ae',
               },
               {
                 icon: PhoneIcon,

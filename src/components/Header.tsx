@@ -189,7 +189,7 @@ export default function Header() {
 
   const brandMark = (
     <img
-      src="/ainar-logo-transparent.png"
+      src="/ainar-logo-transparent.webp"
       alt="AINAR corporate logo"
       width={72}
       height={18}

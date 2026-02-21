@@ -168,7 +168,7 @@ export default function WhoWeAre() {
                     <div className="mission-card who-main-card w-full p-6 md:p-8 lg:p-10 rounded-[2.5rem] bg-white shadow-xl relative overflow-hidden max-w-full">
                         <div className="relative z-10">
                             <img
-                                src="/ainar-logo-transparent.png"
+                                src="/ainar-logo-transparent.webp"
                                 alt="AINAR company brand logo"
                                 width={185}
                                 height={46}

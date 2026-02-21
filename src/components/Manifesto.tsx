@@ -33,7 +33,7 @@ export default function Manifesto() {
 
       for (let i = 0; i < FRAME_COUNT; i++) {
         const paddedIndex = i.toString().padStart(3, '0');
-        const src = `${IMAGES_BASE_PATH}${paddedIndex}.png`;
+        const src = `${IMAGES_BASE_PATH}${paddedIndex}.webp`;
         const img = new Image();
 
         const promise = new Promise<void>((resolve) => {
@@ -286,7 +286,7 @@ export default function Manifesto() {
       <div className="w-full flex flex-col lg:flex-row relative">
 
         {/* Left Column: Text Content */}
-        <div className="w-full lg:w-[48%] min-h-[60vh] lg:min-h-screen flex flex-col justify-start px-4 lg:px-10 xl:px-14 lg:-ml-4 z-20 relative pt-12 lg:pt-20 pb-12 lg:pb-40">
+        <div className="w-full lg:w-[48%] min-h-[60vh] lg:min-h-screen flex flex-col justify-start px-4 lg:px-10 xl:px-14 lg:-ml-4 z-20 relative pt-12 lg:pt-20 pb-12 lg:pb-40 order-2 lg:order-1">
           <div className="flex flex-col items-start gap-4 max-w-[44rem] flex-grow">
             <h2
               ref={sectionLabelRef}
@@ -340,7 +340,7 @@ export default function Manifesto() {
         </div>
 
         {/* Right Column: Video Sequence */}
-        <div className="w-full lg:w-[52%] h-[40vh] lg:h-screen sticky top-0 relative overflow-hidden">
+        <div className="w-full lg:w-[52%] h-[40vh] lg:h-screen sticky top-0 relative overflow-hidden order-1 lg:order-2">
           <canvas
             ref={canvasRef}
             className="w-full h-full object-cover"

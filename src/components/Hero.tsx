@@ -35,8 +35,8 @@ export default function Hero() {
   const supportingTextRef = useRef<HTMLDivElement>(null);
   const supportingTextBodyRef = useRef<HTMLParagraphElement>(null);
   const mousePos = useRef({
-    x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0,
-    y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0,
+    x: -9999,
+    y: -9999,
   });
   const rotation = useRef({ x: 15, y: 15 });
   const isSphereActive = useRef(false);
@@ -653,10 +653,12 @@ export default function Hero() {
         });
 
         // Branding Parallax (LOCKED)
-        const px = (mX / window.innerWidth - 0.5) * 40;
-        const py = (mY / window.innerHeight - 0.5) * 40;
-        gsap.to('.hero-letter-a', { x: px * 1.2, y: py * 0.8, duration: 1, ease: 'power2.out', overwrite: 'auto' });
-        gsap.to('.hero-letter-alif', { x: px * -0.5, y: py * -0.3, duration: 1.2, ease: 'power2.out', overwrite: 'auto' });
+        if (mX > -5000) {
+          const px = (mX / window.innerWidth - 0.5) * 40;
+          const py = (mY / window.innerHeight - 0.5) * 40;
+          gsap.to('.hero-letter-a', { x: px * 1.2, y: py * 0.8, duration: 1, ease: 'power2.out', overwrite: 'auto' });
+          gsap.to('.hero-letter-alif', { x: px * -0.5, y: py * -0.3, duration: 1.2, ease: 'power2.out', overwrite: 'auto' });
+        }
       };
 
       gsap.ticker.add(updatePhysics);
@@ -705,7 +707,7 @@ export default function Hero() {
   return (
     <section id="home" ref={containerRef} className="relative h-screen flex flex-col items-center justify-center overflow-x-clip overflow-y-visible bg-cream">
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <img src="/hero-bg-clean.png" alt="Hero Background" className="w-full h-full object-cover opacity-35" />
+        <img src="/hero-bg-clean.webp" alt="Hero Background" className="w-full h-full object-cover opacity-35" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
       </div>
 
@@ -713,8 +715,8 @@ export default function Hero() {
         <div ref={headlineRef} className="flex flex-col items-start justify-center text-left order-2 lg:order-1 relative z-20 max-w-[46rem] pt-0 lg:ml-0 overflow-visible">
           <div ref={logoBlockRef} className="mb-0 lg:mb-[-3.5rem] mt-2 lg:-ml-10">
             <div className="hero-logo-split relative w-[336px] sm:w-[420px] lg:w-[530px] aspect-[2000/1100]">
-              <img ref={logoLeftRef} src="/hero-assets/logo-part-1-aligned.png" className="hero-logo-left absolute inset-0 w-full h-full object-contain opacity-0" />
-              <img ref={logoRightRef} src="/hero-assets/logo-part-2-aligned.png" className="hero-logo-right absolute inset-0 w-full h-full object-contain opacity-0" />
+              <img ref={logoLeftRef} src="/hero-assets/logo-part-1-aligned.webp" className="hero-logo-left absolute inset-0 w-full h-full object-contain opacity-0" />
+              <img ref={logoRightRef} src="/hero-assets/logo-part-2-aligned.webp" className="hero-logo-right absolute inset-0 w-full h-full object-contain opacity-0" />
             </div>
           </div>
 
@@ -772,12 +774,12 @@ export default function Hero() {
                   })}
                 </div>
                 <div className="hero-letter-a absolute left-[2%] bottom-0 z-[2] w-[74%] h-[88%] drop-shadow-[0_6px_16px_rgba(10,22,40,0.18)]"
-                  style={{ backgroundColor: '#000000', WebkitMaskImage: 'url(/hero-assets/letter-a.png)', maskImage: 'url(/hero-assets/letter-a.png)', WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat', WebkitMaskPosition: 'center', maskPosition: 'center', WebkitMaskSize: 'contain', maskSize: 'contain' }} />
+                  style={{ backgroundColor: '#000000', WebkitMaskImage: 'url(/hero-assets/letter-a.webp)', maskImage: 'url(/hero-assets/letter-a.webp)', WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat', WebkitMaskPosition: 'center', maskPosition: 'center', WebkitMaskSize: 'contain', maskSize: 'contain' }} />
                 <div className="hero-letter-alif absolute left-[61.5%] top-[8%] w-[14.5%] h-[60%]">
                   <div
                     ref={alifShapeRef}
                     className="hero-letter-alif-shape absolute inset-0 z-[3] drop-shadow-[0_5px_14px_rgba(10,22,40,0.18)]"
-                    style={{ backgroundColor: '#000000', WebkitMaskImage: 'url(/hero-assets/letter-alif.png)', maskImage: 'url(/hero-assets/letter-alif.png)', WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat', WebkitMaskPosition: 'center', maskPosition: 'center', WebkitMaskSize: 'contain', maskSize: 'contain' }}
+                    style={{ backgroundColor: '#000000', WebkitMaskImage: 'url(/hero-assets/letter-alif.webp)', maskImage: 'url(/hero-assets/letter-alif.webp)', WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat', WebkitMaskPosition: 'center', maskPosition: 'center', WebkitMaskSize: 'contain', maskSize: 'contain' }}
                   />
                   <div ref={alifFlagRef} className="hero-alif-flag absolute left-[26%] top-[-30%] z-[1] w-[520%] h-[124%] opacity-0">
                     <svg className="hero-alif-flag-svg" viewBox="0 0 490 220" aria-hidden="true" preserveAspectRatio="xMinYMid meet">

@@ -6,10 +6,6 @@ import { Plus, Minus, ArrowRight } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 import ServiceInquiryModal from './ui/ServiceInquiryModal'
 import { servicesData } from '@/lib/data'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
 
 const FAQS_EN = [
     {

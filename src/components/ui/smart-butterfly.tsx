@@ -21,12 +21,13 @@ export function SmartButterfly({ className }: SmartButterflyProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const flipRef = useRef<HTMLDivElement>(null);
   const [isLanded, setIsLanded] = useState(false);
-  const [imageSrc, setImageSrc] = useState('/butterfly-side.png');
+  const [imageSrc, setImageSrc] = useState('/butterfly-side.webp');
+  const [rotation, setRotation] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     let active = true;
     const img = new Image();
-    img.src = '/butterfly-side.png';
+    img.src = '/butterfly-side.webp';
     img.onload = () => {
       if (!active) return;
       const canvas = document.createElement('canvas');

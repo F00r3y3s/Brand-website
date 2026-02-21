@@ -133,18 +133,24 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
-    max-width: 100vw;
   }
 
   body {
-    overflow-x: hidden;
     background: var(--background);
     color: var(--color-text-primary);
-    max-width: 100vw;
     font-family: var(--font-sans);
     transition: background-color 0.3s ease, color 0.3s ease;
     line-height: 1.6;
+  }
+
+  /* Mobile-only scrolling fix */
+  @media (max-width: 1023px) {
+
+    html,
+    body {
+      overflow-x: hidden !important;
+      max-width: 100vw;
+    }
   }
 
   /* RTL Support */
