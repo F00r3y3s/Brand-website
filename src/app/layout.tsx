@@ -66,6 +66,12 @@ export const metadata: Metadata = {
     description: "Empowering businesses through sustainability and AI-driven digital transformation in the UAE.",
     images: ['/og-image.png'],
   },
+  icons: {
+    icon: [
+      { url: '/favicon.png', type: 'image/png' },
+    ],
+  },
+  manifest: '/site.webmanifest',
 };
 
 export default function RootLayout({
