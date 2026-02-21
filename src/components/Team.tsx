@@ -8,7 +8,7 @@ const teamMembers = [
   {
     name: "Dr. Meryem Hamidi",
     role: "Founder & CEO",
-    image: "/members/Meryem-PH.webp",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop",
     roleDescription: "Dr. Hamidi leads AINAR with a vision to merge sustainability with advanced intelligence."
   },
   {
