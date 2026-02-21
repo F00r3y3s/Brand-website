@@ -543,7 +543,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
             <div id="comingSoonLogoGlass" className="coming-soon-logo-glass" aria-hidden="true">
                 <div className="coming-soon-logo-glass-inner">
                     <div className="coming-soon-logo-plate">
-                        <img src="/ainar-logo-transparent.png" alt="AINAR transparent brand logo" className="coming-soon-logo-image" />
+                        <img src="/ainar-logo-transparent.webp" alt="AINAR transparent brand logo" className="coming-soon-logo-image" />
                     </div>
                 </div>
             </div>
