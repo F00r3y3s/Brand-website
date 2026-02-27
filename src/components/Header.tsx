@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { Menu, X, Globe, Sparkles, FileDown } from 'lucide-react';
+import { Menu, X, Sparkles, FileDown } from 'lucide-react';
 import Link from 'next/link';
 import gsap from 'gsap';
 import NavMenu from '@/components/ui/menu-hover-effects';
 
 export default function Header() {
-  const { language, setLanguage } = useLanguage();
+  const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -238,18 +238,6 @@ export default function Header() {
               </div>
 
               <div className="flex items-center gap-3">
-
-                {/* Language Toggle */}
-                <button
-                  onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
-                  className="group flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-300 bg-white/50 backdrop-blur-md border border-white/20 hover:bg-white/80 hover:scale-105 shadow-sm"
-                  aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
-                >
-                  <Globe size={16} className="text-neutral-900 group-hover:text-gold transition-colors" />
-                  <span className="text-sm font-bold text-neutral-900 group-hover:text-gold transition-colors" aria-hidden="true">
-                    {language === 'en' ? 'AR' : 'EN'}
-                  </span>
-                </button>
 
                 {/* Hamburger Menu Button */}
                 <button

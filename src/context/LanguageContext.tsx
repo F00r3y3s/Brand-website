@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 type Language = 'en' | 'ar';
+const LANGUAGE_TOGGLE_ENABLED = false;
+const FORCED_LANGUAGE: Language = 'en';
 
 interface LanguageContextType {
   language: Language;
@@ -22,26 +24,29 @@ const defaultLanguageContext: LanguageContextType = {
 const LanguageContext = createContext<LanguageContextType>(defaultLanguageContext);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Initialize with 'en' as default to prevent hydration mismatch
-  const [language, setLanguageState] = useState<Language>('en');
+  const getInitialLanguage = (): Language => {
+    if (!LANGUAGE_TOGGLE_ENABLED) return FORCED_LANGUAGE;
+    if (typeof window === 'undefined') return FORCED_LANGUAGE;
+
+    const savedLanguage = window.localStorage.getItem('language') as Language | null;
+    const browserLanguage = window.navigator.language.startsWith('ar') ? 'ar' : 'en';
+    return savedLanguage || browserLanguage;
+  };
+
+  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
 
   useEffect(() => {
-    // Get language from localStorage or use browser default
-    const savedLanguage = localStorage.getItem('language') as Language | null;
-    const browserLanguage = navigator.language.startsWith('ar') ? 'ar' : 'en';
-    const initialLanguage = savedLanguage || browserLanguage;
-
-    // Update state with localStorage value
-    if (initialLanguage !== language) {
-      setLanguageState(initialLanguage);
-    }
-
-    // Update document attributes
-    document.documentElement.dir = initialLanguage === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = initialLanguage;
+    const activeLanguage = LANGUAGE_TOGGLE_ENABLED ? language : FORCED_LANGUAGE;
+    localStorage.setItem('language', activeLanguage);
+    document.documentElement.dir = activeLanguage === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = activeLanguage;
   }, [language]);
 
   const setLanguage = (lang: Language) => {
+    if (!LANGUAGE_TOGGLE_ENABLED) {
+      return;
+    }
+
     setLanguageState(lang);
     localStorage.setItem('language', lang);
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
