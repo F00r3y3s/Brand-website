@@ -15,12 +15,14 @@ import Team from '@/components/Team';
 import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
 import FloatingCTA from '@/components/FloatingCTA';
+import { useLanguage } from '@/context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const FAQ_STICKY_TEST_VH = 400
 
 export default function Home() {
+  const { language } = useLanguage();
   const heroParallaxRef = useRef<HTMLDivElement>(null);
   const whoParallaxRef = useRef<HTMLDivElement>(null);
   const projectsParallaxRef = useRef<HTMLDivElement>(null);
@@ -124,6 +126,15 @@ export default function Home() {
 
     return () => ctx.revert();
   }, []);
+
+  useEffect(() => {
+    // When language changes (especially to RTL), text wrapping and heights change significantly.
+    // We must refresh GSAP triggers after the browser computes the new layout.
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [language]);
 
   return (
     <main id="main-content" className="bg-cream min-h-screen">

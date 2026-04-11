@@ -58,7 +58,7 @@ export default function FloatingCTA() {
                     </AnimatePresence>
 
                     {/* Main Toggles */}
-                    <div className="flex items-center gap-4">
+                    <div dir="ltr" className="flex items-center gap-4">
                         {/* Text Label (Desktop) */}
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}

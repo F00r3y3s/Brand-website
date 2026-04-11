@@ -735,6 +735,11 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                     border: 1px solid rgba(255, 255, 255, 0.26);
                     box-shadow: 0 28px 58px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
                 }
+                [dir="rtl"] .slide-content {
+                    left: auto;
+                    right: clamp(1rem, 3.8vw, 4rem);
+                    text-align: right;
+                }
                 @media (min-width: 1024px) {
                     .slide-content {
                         top: 50%;
@@ -742,6 +747,10 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                         transform: translateY(-50%);
                         left: clamp(1rem, 3vw, 3.5rem);
                         width: min(980px, 72vw);
+                    }
+                    [dir="rtl"] .slide-content {
+                        left: auto;
+                        right: clamp(1rem, 3vw, 3.5rem);
                     }
                 }
                 .slide-title {
@@ -768,6 +777,9 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                     hyphens: auto;
                     text-wrap: pretty;
                     max-width: 100%;
+                }
+                [dir="rtl"] .slide-description {
+                    text-align-last: right;
                 }
                 .slide-subtitle {
                     font-size: clamp(0.98rem, 1.25vw, 1.12rem);

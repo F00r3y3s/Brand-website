@@ -241,23 +241,23 @@ export default function Services() {
                 </span>
               </div>
 
-              <h2 className="w-full max-w-5xl mx-auto text-left text-[clamp(1.75rem,4.5vw,3.5rem)] font-black font-display text-neutral-900 leading-[1.1] tracking-tight">
+              <h2 className={`w-full max-w-5xl mx-auto ${language === 'ar' ? 'text-right' : 'text-left'} text-[clamp(1.75rem,4.5vw,3.5rem)] font-black font-display text-neutral-900 leading-[1.1] tracking-tight`}>
                 {language === 'en' ? 'FROM VISION TO TRANSFORMATION' : 'من الرؤية إلى التحول'}
               </h2>
 
-              <p className="w-full max-w-5xl mx-auto text-left text-[#2f7f8a] text-[clamp(1.2rem,2.5vw,1.8rem)] font-extrabold leading-snug">
+              <p className={`w-full max-w-5xl mx-auto ${language === 'ar' ? 'text-right' : 'text-left'} text-[#2f7f8a] text-[clamp(1.2rem,2.5vw,1.8rem)] font-extrabold leading-snug`}>
                 {language === 'en'
                   ? 'Real change does not begin with policies. It begins with people.'
                   : 'التغيير الحقيقي لا يبدأ بالسياسات. بل يبدأ بالناس.'}
               </p>
 
               <div className="max-w-5xl mx-auto space-y-6 md:space-y-8 pt-4">
-                <p className="text-neutral-700 text-[clamp(1.1rem,1.8vw,1.45rem)] font-medium leading-relaxed text-justify [text-justify:inter-word] [text-align-last:left] hyphens-auto text-pretty">
+                <p className={`text-neutral-700 text-[clamp(1.1rem,1.8vw,1.45rem)] font-medium leading-relaxed text-justify [text-justify:inter-word] hyphens-auto text-pretty ${language === 'ar' ? '[text-align-last:right]' : '[text-align-last:left]'}`}>
                   {language === 'en'
                     ? 'At AINAR, we believe you cannot transform a country without transforming behavior, and you cannot build sustainable growth without redesigning the systems that shape decisions.'
                     : 'في AINAR، نؤمن بأنك لا تستطيع تحويل دولة دون تحويل السلوك، ولا يمكنك بناء نمو مستدام دون إعادة تصميم الأنظمة التي تشكل القرارات.'}
                 </p>
-                <p className="text-neutral-700 text-[clamp(1.1rem,1.8vw,1.45rem)] font-medium leading-relaxed text-justify [text-justify:inter-word] [text-align-last:left] hyphens-auto text-pretty">
+                <p className={`text-neutral-700 text-[clamp(1.1rem,1.8vw,1.45rem)] font-medium leading-relaxed text-justify [text-justify:inter-word] hyphens-auto text-pretty ${language === 'ar' ? '[text-align-last:right]' : '[text-align-last:left]'}`}>
                   {language === 'en'
                     ? 'AINAR turns ambition into measurable impact by combining human expertise, sustainability strategy, intelligent systems, and AI to create real, lasting transformation. We strengthen performance today while building long-term value for tomorrow.'
                     : 'تحوّل AINAR الطموح إلى أثر قابل للقياس من خلال الجمع بين الخبرة البشرية واستراتيجية الاستدامة والأنظمة الذكية والذكاء الاصطناعي لصناعة تحول حقيقي ودائم. نعزز الأداء اليوم مع بناء قيمة طويلة المدى للغد.'}
@@ -270,7 +270,18 @@ export default function Services() {
             ref={listRef}
             className="absolute inset-0 flex items-center justify-center opacity-0 scale-95 blur-[10px] transition-all duration-1000"
           >
-            <LuminaInteractiveList items={servicesData} ref={luminaRef} />
+            <LuminaInteractiveList
+              items={language === 'ar'
+                ? servicesData.map(s => ({
+                    ...s,
+                    title: s.titleAr || s.title,
+                    subtitle: s.subtitleAr || s.subtitle,
+                    description: s.descriptionAr || s.description,
+                  }))
+                : servicesData
+              }
+              ref={luminaRef}
+            />
           </div>
         </section>
       </div>
@@ -278,7 +289,10 @@ export default function Services() {
       <ServiceInquiryModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        serviceTitle={activeService}
+        serviceTitle={language === 'ar'
+          ? (servicesData.find(s => s.title === activeService)?.titleAr || activeService)
+          : activeService
+        }
       />
     </>
   );

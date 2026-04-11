@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { Menu, X, Sparkles, FileDown } from 'lucide-react';
+import { Menu, X, Sparkles, FileDown, Globe } from 'lucide-react';
 import Link from 'next/link';
 import gsap from 'gsap';
 import NavMenu from '@/components/ui/menu-hover-effects';
 
 export default function Header() {
-  const { language } = useLanguage();
+  const { language, setLanguage, isRTL } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -238,6 +238,41 @@ export default function Header() {
               </div>
 
               <div className="flex items-center gap-3">
+                {/* Language Toggle */}
+                <button
+                  onClick={() => {
+                    const newLang = language === 'en' ? 'ar' : 'en';
+                    // Detect currently visible section for anchor preservation
+                    const sections = document.querySelectorAll('section[id]');
+                    let closestSection: string | null = null;
+                    let closestDistance = Infinity;
+                    sections.forEach((section) => {
+                      const rect = section.getBoundingClientRect();
+                      const distance = Math.abs(rect.top);
+                      if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestSection = section.id;
+                      }
+                    });
+                    setLanguage(newLang);
+                    // Scroll back to the same section after re-render
+                    if (closestSection) {
+                      const sectionId = closestSection;
+                      requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                          document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+                        });
+                      });
+                    }
+                  }}
+                  className="flex items-center gap-2 p-2.5 px-4 rounded-full transition-all duration-300 bg-white/50 backdrop-blur-md border border-white/20 hover:bg-white/80 hover:scale-105 shadow-sm group"
+                  aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
+                >
+                  <Globe size={16} className="text-neutral-900 group-hover:text-gold transition-colors" />
+                  <span className="text-[13px] font-bold text-neutral-900 group-hover:text-gold transition-colors pt-0.5" aria-hidden="true">
+                    {language === 'en' ? 'AR' : 'EN'}
+                  </span>
+                </button>
 
                 {/* Hamburger Menu Button */}
                 <button
@@ -263,6 +298,7 @@ export default function Header() {
       {isOpen && (
         <div
           ref={menuRef}
+          dir={isRTL ? 'rtl' : 'ltr'}
           className="fixed inset-0 z-40 bg-neutral-950/98 backdrop-blur-2xl overflow-y-auto"
         >
           {/* Animated Background Gradient */}
@@ -330,6 +366,7 @@ export default function Header() {
                 </h4>
                 <a
                   href="mailto:hello@ainar.ae"
+                  dir="ltr"
                   className="text-lg font-medium text-neutral-300 hover:text-gold transition-colors"
                 >
                   hello@ainar.ae
@@ -346,6 +383,7 @@ export default function Header() {
                 </h4>
                 <a
                   href="tel:+97144000000"
+                  dir="ltr"
                   className="text-lg font-medium text-neutral-300 hover:text-gold transition-colors"
                 >
                   +971 4 XXX XXXX

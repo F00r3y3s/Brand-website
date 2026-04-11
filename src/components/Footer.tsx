@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Linkedin, Mail, FileDown } from 'lucide-react'
+import { Linkedin, Mail, FileDown, AlertCircle } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 import LegalModal from './LegalModal'
 
@@ -197,12 +197,12 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="lg:col-span-5 lg:col-start-8 flex flex-col md:flex-row justify-end gap-8 lg:gap-12 text-left">
-              <div className="flex flex-col items-start">
+            <div className={`lg:col-span-5 lg:col-start-8 flex flex-col md:flex-row justify-end gap-8 lg:gap-12 ${isArabic ? 'text-right' : 'text-left'}`}>
+              <div className={`flex flex-col ${isArabic ? 'items-end' : 'items-start'}`}>
                 <h4 className="text-light font-medium mb-8 tracking-widest uppercase text-sm">
                   {language === 'en' ? 'Navigation' : 'التنقل'}
                 </h4>
-                <ul className="flex flex-col gap-3.5 text-light/60 text-base md:text-lg items-start">
+                <ul className={`flex flex-col gap-3.5 text-light/60 text-base md:text-lg ${isArabic ? 'items-end' : 'items-start'}`}>
                   {navItems.map((item) => (
                     <li key={item.href}>
                       <a
@@ -217,11 +217,11 @@ export default function Footer() {
                 </ul>
               </div>
 
-              <div className="flex flex-col items-start">
+              <div className={`flex flex-col ${isArabic ? 'items-end' : 'items-start'}`}>
                 <h4 className="text-light font-medium mb-8 tracking-widest uppercase text-sm">
                   {language === 'en' ? 'Services' : 'الخدمات'}
                 </h4>
-                <ul className="flex flex-col gap-3.5 text-light/60 text-base md:text-lg items-start">
+                <ul className={`flex flex-col gap-3.5 text-light/60 text-base md:text-lg ${isArabic ? 'items-end' : 'items-start'}`}>
                   {serviceItems.map((item) => (
                     <li key={item.titleEn}>
                       <a
@@ -254,6 +254,7 @@ export default function Footer() {
                 <input
                   type="email"
                   required
+                  dir="ltr"
                   value={newsletterEmail}
                   onChange={(e) => setNewsletterEmail(e.target.value)}
                   placeholder={language === 'en' ? 'Enter your email' : 'أدخل بريدك الإلكتروني'}
@@ -270,6 +271,14 @@ export default function Footer() {
                       (language === 'en' ? 'Subscribe' : 'اشترك')}
                 </button>
               </form>
+              {newsletterStatus === 'error' && (
+                <div className="mt-3 flex items-center gap-2.5 rounded-full border border-red-500/30 bg-red-500/10 px-5 py-2.5 text-red-300">
+                  <AlertCircle size={16} className="shrink-0" />
+                  <span className="text-sm font-medium">
+                    {language === 'en' ? 'Something went wrong. Please try again.' : 'حدث خطأ. يرجى المحاولة مرة أخرى.'}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 

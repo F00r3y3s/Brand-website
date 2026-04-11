@@ -711,9 +711,9 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
       </div>
 
-      <div className="relative z-10 w-full h-full max-w-[1440px] mx-auto px-4 sm:pl-6 sm:pr-10 lg:px-12 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-10 items-center pt-20 pb-16 lg:pt-24 lg:pb-32">
-        <div ref={headlineRef} className="flex flex-col items-start justify-center text-left order-2 lg:order-1 relative z-20 max-w-[46rem] pt-0 lg:ml-0 overflow-visible">
-          <div ref={logoBlockRef} className="mb-0 lg:mb-[-3.5rem] mt-2 lg:-ml-10">
+      <div className="relative z-10 w-full h-full max-w-[1440px] mx-auto px-4 sm:pl-6 sm:pr-10 lg:px-12 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-10 items-center pt-20 pb-16 lg:pt-24 lg:pb-32" dir="ltr">
+        <div ref={headlineRef} className={`flex flex-col justify-center order-2 lg:order-1 relative z-20 max-w-[46rem] pt-0 lg:ml-0 overflow-visible ${language === 'ar' ? 'items-end text-right' : 'items-start text-left'}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
+          <div ref={logoBlockRef} className={`mb-0 lg:mb-[-3.5rem] mt-2 ${language === 'ar' ? 'lg:-mr-10' : 'lg:-ml-10'}`}>
             <div className="hero-logo-split relative w-[336px] sm:w-[420px] lg:w-[530px] aspect-[2000/1100]">
               <img ref={logoLeftRef} src="/hero-assets/logo-part-1-aligned.webp" className="hero-logo-left absolute inset-0 w-full h-full object-contain opacity-0" />
               <img ref={logoRightRef} src="/hero-assets/logo-part-2-aligned.webp" className="hero-logo-right absolute inset-0 w-full h-full object-contain opacity-0" />
@@ -729,13 +729,19 @@ export default function Hero() {
           >
             <h1 className="font-display font-black text-neutral-900 leading-[1.06] tracking-tight mb-7 drop-shadow-sm w-full max-w-[44rem]">
               <span className="block text-[clamp(1.75rem,5vw,2.5rem)] lg:text-[clamp(1.15rem,3.1vw,2.2rem)] leading-tight overflow-visible">
-                {(language === 'en' ? 'Sustainability in Our Roots.' : 'الاستدامة في جذورنا.').split('').map((char, i) => (
-                  <span key={i} className="kinetic-letter inline-block whitespace-pre preserve-3d">{char}</span>
+                {(language === 'en' ? 'Sustainability in Our Roots.' : 'الاستدامة في جذورنا.').split(language === 'en' ? '' : ' ').map((char, i, arr) => (
+                  <React.Fragment key={i}>
+                    <span className="kinetic-letter inline-block whitespace-pre preserve-3d">{char}</span>
+                    {language === 'ar' && i !== arr.length - 1 && ' '}
+                  </React.Fragment>
                 ))}
               </span>
               <span className="block mt-1 text-[clamp(1.75rem,5vw,2.5rem)] lg:text-[clamp(1.15rem,3.1vw,2.2rem)] text-neutral-800 leading-tight overflow-visible">
-                {(language === 'en' ? 'Intelligence for Our Future.' : 'الذكاء لمستقبلنا.').split('').map((char, i) => (
-                  <span key={i} className="kinetic-letter inline-block whitespace-pre preserve-3d">{char}</span>
+                {(language === 'en' ? 'Intelligence for Our Future.' : 'الذكاء لمستقبلنا.').split(language === 'en' ? '' : ' ').map((char, i, arr) => (
+                  <React.Fragment key={i}>
+                    <span className="kinetic-letter inline-block whitespace-pre preserve-3d">{char}</span>
+                    {language === 'ar' && i !== arr.length - 1 && ' '}
+                  </React.Fragment>
                 ))}
               </span>
             </h1>
@@ -820,8 +826,8 @@ export default function Hero() {
       </div>
 
       <div className="absolute bottom-12 left-0 right-0 z-20 flex flex-col items-center gap-4 pointer-events-none">
-        <div ref={(el) => { if (el) heroRefs.current[2] = el }} className="opacity-0 translate-y-8 pointer-events-auto">
-          <button onClick={(e) => { createRipple(e); setIsModalOpen(true); }} className="group px-10 py-4 rounded-full bg-neutral-900 text-white font-bold uppercase tracking-widest text-xs transition-all hover:scale-105 hover:bg-neutral-800 shadow-lg">
+        <div ref={(el) => { if (el) heroRefs.current[2] = el }} className="opacity-0 translate-y-8 pointer-events-auto w-full sm:w-auto flex justify-center">
+          <button onClick={(e) => { createRipple(e); setIsModalOpen(true); }} className="group w-full sm:w-auto px-10 py-4 rounded-full bg-neutral-900 text-white font-bold uppercase tracking-widest text-xs transition-all hover:scale-105 hover:bg-neutral-800 shadow-lg">
             <span className="relative z-10 flex items-center gap-3">{language === 'en' ? 'Start Your Journey' : 'ابدأ رحلتك'}<ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" /></span>
           </button>
         </div>
@@ -832,7 +838,7 @@ export default function Hero() {
           </div>
         </button>
       </div>
-      <ServiceInquiryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} serviceTitle="" mainTitle={language === 'en' ? 'Start Your Journey' : 'ابدأ رحلتك'} enableServiceSelection={true} availableServices={servicesData} />
+      <ServiceInquiryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} serviceTitle="" mainTitle={language === 'en' ? 'Start Your Journey' : 'ابدأ رحلتك'} enableServiceSelection={true} availableServices={language === 'ar' ? servicesData.map(s => ({ title: s.titleAr || s.title })) : servicesData} />
     </section>
   );
 }

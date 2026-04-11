@@ -13,7 +13,7 @@ const FRAME_COUNT = 82;
 const IMAGES_BASE_PATH = '/menifesto-video/Smoothing_animation_no_1080p_202602081719_';
 
 export default function Manifesto() {
-  const { language } = useLanguage();
+  const { language, isRTL } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionLabelRef = useRef<HTMLHeadingElement>(null);
   const titleBadgeRef = useRef<HTMLDivElement>(null);
@@ -316,7 +316,7 @@ export default function Manifesto() {
             </h2>
 
             {/* Title Badge */}
-            <div ref={titleBadgeRef} className="inline-flex mt-1 lg:mt-2">
+            <div ref={titleBadgeRef} className={`inline-flex mt-1 lg:mt-2 ${isRTL ? 'self-end' : ''}`}>
               <TextRevealer
                 text={language === 'en' ? 'OUR VALUE | SUSTAINABLE GROWTH' : 'قيمتنا | النمو المستدام'}
                 className="text-xs sm:text-sm md:text-base font-bold uppercase text-neutral-900 bg-white/90 px-4 py-1.5 md:px-5 md:py-2 tracking-[0.08em] rounded-sm"
@@ -332,7 +332,7 @@ export default function Manifesto() {
               {paragraphs.map((paragraph) => (
                 <p
                   key={paragraph}
-                  className="text-[clamp(1.25rem,2.2vw,2rem)] font-semibold leading-relaxed tracking-normal text-white text-justify [text-justify:inter-word] [text-align-last:left] hyphens-auto text-pretty"
+                  className={`text-[clamp(1.25rem,2.2vw,2rem)] font-semibold leading-relaxed tracking-normal text-white text-justify [text-justify:inter-word] hyphens-auto text-pretty ${isRTL ? '[text-align-last:right]' : '[text-align-last:left]'}`}
                 >
                   {paragraph}
                 </p>

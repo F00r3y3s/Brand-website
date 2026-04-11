@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
 const teamMembers = [
   {
@@ -33,11 +34,14 @@ const teamMembers = [
 
 export default function Team() {
   const [hoveredMember, setHoveredMember] = useState<number | null>(null)
+  const { language, isRTL } = useLanguage()
+  const isArabic = language === 'ar'
 
   return (
     <section
       id="team"
-      className="h-screen min-h-[840px] bg-light relative overflow-hidden cursor-default pt-[8vh]"
+      dir={isRTL ? 'rtl' : 'ltr'}
+      className="min-h-screen bg-light relative overflow-hidden cursor-default pt-[8vh]"
     >
       <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -59,11 +63,14 @@ export default function Team() {
             transition={{ duration: 0.75 }}
           >
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-display mb-2 text-dark leading-none tracking-tight">
-              Core{" "}
-              <span className="text-primary [font-size:inherit] [line-height:inherit]">Team</span>
+              {isArabic ? (
+                <><span className="text-primary [font-size:inherit] [line-height:inherit]">الفريق</span>{" "}الأساسي</>
+              ) : (
+                <>Core{" "}<span className="text-primary [font-size:inherit] [line-height:inherit]">Team</span></>
+              )}
             </h2>
             <p className="text-[1.02rem] md:text-[1.32rem] font-medium text-dark/82 max-w-3xl mx-auto">
-              Much talented, deciplined and dedicated members.
+              {isArabic ? 'أعضاء موهوبون ومنضبطون ومتفانون.' : 'Much talented, disciplined and dedicated members.'}
             </p>
           </motion.div>
         </div>
@@ -81,7 +88,7 @@ export default function Team() {
               onMouseLeave={() => setHoveredMember(null)}
             >
               <div className="relative z-10 text-dark group-hover:text-primary transition-colors duration-300 lg:pr-[23rem] xl:pr-[26rem]">
-                <h3 className="text-[1.75rem] md:text-[2.1rem] lg:text-[2.45rem] font-display font-bold uppercase tracking-tight group-hover:translate-x-2 transition-transform duration-500 ease-out leading-[0.95]">
+                <h3 className="text-[clamp(1.5rem,4vw,2.45rem)] font-display font-bold uppercase tracking-tight group-hover:translate-x-2 transition-transform duration-500 ease-out leading-[0.95]">
                   {member.name}
                 </h3>
                 <div className="mt-2 md:mt-3 flex flex-col gap-1.5">
@@ -91,7 +98,7 @@ export default function Team() {
                     </span>
                     <ArrowUpRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform group-hover:translate-x-1.5 group-hover:-translate-y-1.5 block" />
                   </div>
-                  <span className="text-[12px] md:text-[13px] font-light opacity-78 group-hover:opacity-96 transition-opacity duration-300 max-w-[42rem] text-left block leading-snug">
+                  <span className={`text-[12px] md:text-[13px] font-light opacity-78 group-hover:opacity-96 transition-opacity duration-300 max-w-[42rem] ${isArabic ? 'text-right' : 'text-left'} block leading-snug`}>
                     {member.roleDescription}
                   </span>
                 </div>

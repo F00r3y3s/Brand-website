@@ -24,7 +24,8 @@ const MANIFESTO_AR = [
 ]
 
 export default function WhoWeAre() {
-    const { language } = useLanguage()
+    const { language, isRTL } = useLanguage()
+    const isArabic = language === 'ar'
     const containerRef = useRef<HTMLDivElement>(null)
 
     const MANIFESTO = language === 'en' ? MANIFESTO_EN : MANIFESTO_AR
@@ -165,7 +166,7 @@ export default function WhoWeAre() {
                 </div>
 
                 <div className="mission-grid flex flex-col gap-6 lg:gap-7 max-w-full lg:-translate-y-2 pb-4 lg:pb-8">
-                    <div className="mission-card who-main-card w-full p-6 md:p-8 lg:p-10 rounded-[2.5rem] bg-white shadow-xl relative overflow-hidden max-w-full">
+                    <div className={`mission-card who-main-card w-full p-6 md:p-8 lg:p-10 rounded-[2.5rem] bg-white shadow-xl relative overflow-hidden max-w-full ${isArabic ? 'text-right' : ''}`}>
                         <div className="relative z-10">
                             <img
                                 src="/ainar-logo-transparent.webp"
@@ -174,10 +175,10 @@ export default function WhoWeAre() {
                                 height={46}
                                 className="who-main-logo w-[115px] md:w-[155px] lg:w-[185px] h-auto mb-5 md:mb-6"
                             />
-                            <p className="who-main-copy text-[clamp(1.1rem,2.2vw,1.8rem)] text-dark/85 leading-relaxed max-w-full lg:max-w-[72rem]">
+                            <p className={`who-main-copy text-[clamp(1.1rem,2.2vw,1.8rem)] text-dark/85 leading-relaxed max-w-full lg:max-w-[72rem] ${isArabic ? 'text-right' : ''}`}>
                                 {MANIFESTO.join(' ')}
                             </p>
-                            <div className="who-founder-row mt-6 md:mt-10 flex flex-wrap items-center gap-4">
+                            <div className={`who-founder-row mt-6 md:mt-10 flex flex-wrap items-center gap-4 ${isArabic ? 'justify-end' : ''}`}>
                                 <div className="h-[1px] w-16 bg-dark/35" />
                                 <a
                                     href="https://www.linkedin.com/in/meryemhamidi/"
@@ -194,7 +195,7 @@ export default function WhoWeAre() {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-7 max-w-full">
-                        <div className="mission-card who-subcard p-6 md:p-10 lg:p-12 rounded-[2.5rem] bg-white shadow-xl relative overflow-hidden max-w-full">
+                        <div className={`mission-card who-subcard p-6 md:p-10 lg:p-12 rounded-[2.5rem] bg-white shadow-xl relative overflow-hidden max-w-full ${isArabic ? 'text-right' : ''}`}>
                             <div className="relative z-10">
                                 <h3 className="who-subcard-title text-4xl font-display mb-6 text-dark">
                                     {language === 'en' ? "AINAR's Vision" : 'رؤية اينار'}
@@ -208,7 +209,7 @@ export default function WhoWeAre() {
                             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full" />
                         </div>
 
-                        <div className="mission-card who-subcard p-6 md:p-10 lg:p-12 rounded-[2.5rem] bg-dark text-light shadow-xl relative overflow-hidden">
+                        <div className={`mission-card who-subcard p-6 md:p-10 lg:p-12 rounded-[2.5rem] bg-dark text-light shadow-xl relative overflow-hidden ${isArabic ? 'text-right' : ''}`}>
                             <div className="relative z-10">
                                 <h3 className="who-subcard-title text-4xl font-display mb-6 italic text-secondary">
                                     {language === 'en' ? "AINAR's Mission" : 'مهمة اينار'}

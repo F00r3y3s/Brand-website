@@ -101,7 +101,7 @@ export default function FAQ() {
                     })
                 }}
             />
-            <div className="sticky top-0 min-h-screen flex items-start pt-24 md:pt-32 pb-20 md:pb-24 overflow-hidden">
+            <div className="sticky top-0 min-h-screen flex items-start pt-16 md:pt-20 pb-24 md:pb-28 overflow-hidden">
                 <div className="max-w-6xl mx-auto px-6 md:px-8 w-full">
                     <div>
                         <div className="mb-8 md:mb-12 text-center">
@@ -122,12 +122,12 @@ export default function FAQ() {
                                 <div key={index} className="border-b border-dark/10 last:border-none">
                                     <button
                                         onClick={() => setActiveIndex(activeIndex === index ? null : index)}
-                                        className="w-full py-4 md:py-6 flex items-center justify-between group text-left"
+                                        className="w-full py-4 md:py-6 flex items-center justify-between group text-start"
                                     >
                                         <span className={`text-[clamp(1.1rem,2vw,1.6rem)] font-display transition-colors duration-300 ${activeIndex === index ? 'text-primary' : 'text-dark group-hover:text-primary/70'} leading-tight`}>
                                             {faq.question}
                                         </span>
-                                        <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full border flex items-center justify-center transition-all duration-300 flex-shrink-0 ml-4 ${activeIndex === index ? 'bg-primary border-primary text-white' : 'border-dark/20 text-dark group-hover:border-primary group-hover:text-primary'}`}>
+                                        <div className={`min-w-[44px] min-h-[44px] md:w-10 md:h-10 rounded-full border flex items-center justify-center transition-all duration-300 flex-shrink-0 ${isArabic ? 'mr-4' : 'ml-4'} ${activeIndex === index ? 'bg-primary border-primary text-white' : 'border-dark/20 text-dark group-hover:border-primary group-hover:text-primary'}`}>
                                             {activeIndex === index ? <Minus className="w-4 h-4 md:w-5 md:h-5" /> : <Plus className="w-4 h-4 md:w-5 md:h-5" />}
                                         </div>
                                     </button>
@@ -152,7 +152,7 @@ export default function FAQ() {
                         </div>
                     </div>
 
-                    <div className="relative mt-10 md:mt-14 -translate-y-8 md:-translate-y-10 -mx-4 md:-mx-10 px-8 py-8 md:py-10 bg-dark rounded-[2.5rem] z-20 border border-white/12 shadow-[0_22px_48px_rgba(1,7,18,0.45)] overflow-hidden">
+                    <div className="relative mt-8 md:mt-12 -translate-y-4 md:-translate-y-6 -mx-4 md:-mx-10 px-8 py-8 md:py-10 bg-dark rounded-[2.5rem] z-20 border border-white/12 shadow-[0_22px_48px_rgba(1,7,18,0.45)] overflow-hidden">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_120%_at_88%_24%,rgba(25,181,196,0.14),transparent_70%),linear-gradient(140deg,rgba(2,8,24,0.12),rgba(2,8,24,0.36))]" />
 
                         <div className={`relative z-10 flex flex-col lg:flex-row items-stretch justify-between gap-6 md:gap-8 min-h-[170px] md:min-h-[190px] ${isArabic ? 'lg:flex-row-reverse' : ''}`}>
@@ -194,7 +194,7 @@ export default function FAQ() {
                                     <video
                                         ref={videoRef}
                                         src="/FAQ-thumbsup.webm"
-                                        className="w-full h-full object-contain"
+                                        className="w-full h-full object-contain max-h-[200px] lg:max-h-none"
                                         muted
                                         playsInline
                                         loop
@@ -211,7 +211,10 @@ export default function FAQ() {
                 serviceTitle=""
                 mainTitle={language === 'en' ? 'Start Your Journey' : 'ابدأ رحلتك'}
                 enableServiceSelection={true}
-                availableServices={servicesData}
+                availableServices={language === 'ar'
+                    ? servicesData.map(s => ({ title: s.titleAr || s.title }))
+                    : servicesData
+                }
             />
         </section>
     )
