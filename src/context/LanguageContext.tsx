@@ -33,23 +33,27 @@ function setCookie(name: string, value: string, maxAge = 31536000) {
   document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAge}; SameSite=Lax`;
 }
 
-export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const LanguageProvider: React.FC<{ children: ReactNode, initialLang?: Language }> = ({ children, initialLang }) => {
   const getInitialLanguage = (): Language => {
     if (!LANGUAGE_TOGGLE_ENABLED) return FORCED_LANGUAGE;
-    if (typeof window === 'undefined') return FORCED_LANGUAGE;
-
-    // Priority: cookie → localStorage → browser language
-    const cookieLang = getCookie('language') as Language | null;
-    if (cookieLang === 'en' || cookieLang === 'ar') return cookieLang;
-
-    const savedLanguage = window.localStorage.getItem('language') as Language | null;
-    if (savedLanguage === 'en' || savedLanguage === 'ar') return savedLanguage;
-
-    const browserLanguage = window.navigator.language.startsWith('ar') ? 'ar' : 'en';
-    return browserLanguage;
+    // 1. If explicit initialLang was provided by SSR cookies, return it
+    if (initialLang === 'en' || initialLang === 'ar') return initialLang;
+    
+    // 2. We are rendering either on SSR (no cookie) or First Client Render
+    // To avoid hydration mismatch, return FORCED_LANGUAGE immediately.
+    // The useEffect will pick up the localStorage value to prevent discrepancy.
+    return FORCED_LANGUAGE;
   };
 
   const [language, setLanguageState] = useState<Language>(getInitialLanguage);
+
+  useEffect(() => {
+    // Correct sync after hydration if localStorage has a value we missed
+    const localLang = window.localStorage.getItem('language') as Language | null;
+    if (localLang && localLang !== language && (localLang === 'en' || localLang === 'ar')) {
+      setLanguageState(localLang);
+    }
+  }, []);
 
   useEffect(() => {
     const activeLanguage = LANGUAGE_TOGGLE_ENABLED ? language : FORCED_LANGUAGE;

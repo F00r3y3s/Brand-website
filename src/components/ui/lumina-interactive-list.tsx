@@ -18,6 +18,14 @@ export interface LuminaInteractiveListHandle {
 export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { items: any[] }>(({ items }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [hasStartedLoading, setHasStartedLoading] = useState(false);
+    const itemsRef = useRef(items);
+
+    useEffect(() => {
+        itemsRef.current = items;
+        if ((window as any).__luminaApplyLanguageUpdate) {
+            (window as any).__luminaApplyLanguageUpdate();
+        }
+    }, [items]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -105,9 +113,46 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
 
             const TRANSITION_DURATION = () => SLIDER_CONFIG.settings.transitionDuration;
 
-            const slides = items;
+            const getSlides = () => itemsRef.current;
 
             // --- UTILITIES ---
+            const applyLanguageUpdate = () => {
+                const titleEl = container.querySelector("#mainTitle");
+                const subtitleEl = container.querySelector("#mainSubtitle");
+                const descEl = container.querySelector("#mainDesc");
+                const ctaButtonEl = container.querySelector("#ctaButton");
+                const ctaLabelEl = container.querySelector("#ctaLabel");
+                const csLogoEl = container.querySelector("#comingSoonLogoGlass");
+
+                const currentSlide = getSlides()[currentSlideIndex];
+                if (!currentSlide) return;
+
+                if (titleEl) titleEl.textContent = currentSlide.title || '';
+                if (subtitleEl) subtitleEl.textContent = currentSlide.subtitle || '';
+                if (descEl) descEl.textContent = currentSlide.description || '';
+
+                // Update the navigation pills below
+                const navItems = container.querySelectorAll(".slide-nav-item .slide-nav-title");
+                navItems.forEach((el, index) => {
+                    if (getSlides()[index]) {
+                        el.textContent = getSlides()[index].title;
+                    }
+                });
+
+                const isComingSoon = Boolean(currentSlide.isComingSoon) || String(currentSlide.title || '').toLowerCase().includes('coming soon');
+
+                if (ctaLabelEl) ctaLabelEl.textContent = isComingSoon ? 'Available Soon' : `Inquire about ${currentSlide.title}`;
+                if (ctaButtonEl instanceof HTMLElement) {
+                    if (isComingSoon) {
+                        ctaButtonEl.classList.add('is-disabled');
+                    } else {
+                        ctaButtonEl.classList.remove('is-disabled');
+                    }
+                    ctaButtonEl.setAttribute('aria-disabled', isComingSoon ? 'true' : 'false');
+                }
+            };
+            (window as any).__luminaApplyLanguageUpdate = applyLanguageUpdate;
+
             const updateSlideProgress = (idx: number, prog: number) => {
                 const el = container.querySelectorAll(".slide-nav-item")[idx]?.querySelector(".slide-progress-fill") as HTMLElement;
                 if (el) { el.style.width = `${prog}%`; el.style.opacity = '1'; }
@@ -124,7 +169,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 const sn = container.querySelector("#slideNumber");
                 if (sn) sn.textContent = String(idx + 1).padStart(2, "0");
                 const st = container.querySelector("#slideTotal");
-                if (st) st.textContent = String(slides.length).padStart(2, "0");
+                if (st) st.textContent = String(getSlides().length).padStart(2, "0");
             };
 
             const getActiveTextureForSlide = (idx: number) => {
@@ -235,12 +280,12 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 const ctaLabelEl = container.querySelector('#mainCtaLabel');
                 const ctaButtonEl = container.querySelector('#mainCtaButton');
                 const isComingSoon =
-                    Boolean(slides[idx]?.isComingSoon) ||
-                    String(slides[idx]?.title || '').toLowerCase().includes('coming soon');
+                    Boolean(getSlides()[idx]?.isComingSoon) ||
+                    String(getSlides()[idx]?.title || '').toLowerCase().includes('coming soon');
                 if (titleEl && subtitleEl && descEl) {
-                    titleEl.textContent = slides[idx].title;
-                    (subtitleEl as HTMLElement).textContent = slides[idx].subtitle || '';
-                    if (ctaLabelEl) ctaLabelEl.textContent = isComingSoon ? 'Available Soon' : `Inquire about ${slides[idx].title}`;
+                    titleEl.textContent = getSlides()[idx].title;
+                    (subtitleEl as HTMLElement).textContent = getSlides()[idx].subtitle || '';
+                    if (ctaLabelEl) ctaLabelEl.textContent = isComingSoon ? 'Available Soon' : `Inquire about ${getSlides()[idx].title}`;
                     if (ctaButtonEl instanceof HTMLElement) {
                         ctaButtonEl.classList.toggle('is-disabled', isComingSoon);
                         ctaButtonEl.setAttribute('aria-disabled', isComingSoon ? 'true' : 'false');
@@ -261,7 +306,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                         duration: 0.2,
                         ease: "power1.in",
                         onComplete: () => {
-                            (descEl as HTMLElement).textContent = slides[idx].description;
+                            (descEl as HTMLElement).textContent = getSlides()[idx].description;
                             gsap.fromTo(
                                 descEl,
                                 { y: 10, opacity: 0 },
@@ -350,7 +395,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
             // Expose navigate function to ref
             (window as any).__luminaNavigate = navigateToSlide;
             (window as any).__luminaGetCurrentIndex = () => currentSlideIndex;
-            (window as any).__luminaGetItemCount = () => slides.length;
+            (window as any).__luminaGetItemCount = () => getSlides().length;
             (window as any).__luminaUpdateProgress = updateSlideProgress;
             // Removed auto-slide start/stop exposures as they are no longer needed
 
@@ -358,7 +403,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 const nav = container.querySelector("#slidesNav");
                 if (!nav) return;
                 nav.innerHTML = "";
-                slides.forEach((slide: any, i: number) => {
+                getSlides().forEach((slide: any, i: number) => {
                     const item = document.createElement("div");
                     item.className = `slide-nav-item${i === 0 ? " active" : ""}`;
                     item.dataset.slideIndex = String(i);
@@ -436,7 +481,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 syncRendererSize();
 
                 // Load textures (supports one or multiple background images per service)
-                for (const s of slides) {
+                for (const s of getSlides()) {
                     const mediaSources = Array.isArray(s.media) ? s.media : [s.media];
                     const variants: any[] = [];
                     for (const source of mediaSources) {
@@ -493,13 +538,13 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
             const ctaLabelEl = container.querySelector('#mainCtaLabel');
             const ctaButtonEl = container.querySelector('#mainCtaButton');
             if (tEl && sEl && dEl) {
-                tEl.textContent = slides[0].title;
-                (sEl as HTMLElement).textContent = slides[0].subtitle || '';
-                (dEl as HTMLElement).textContent = slides[0].description;
+                tEl.textContent = getSlides()[0].title;
+                (sEl as HTMLElement).textContent = getSlides()[0].subtitle || '';
+                (dEl as HTMLElement).textContent = getSlides()[0].description;
                 const initialIsComingSoon =
-                    Boolean(slides[0]?.isComingSoon) ||
-                    String(slides[0]?.title || '').toLowerCase().includes('coming soon');
-                if (ctaLabelEl) ctaLabelEl.textContent = initialIsComingSoon ? 'Available Soon' : `Inquire about ${slides[0].title}`;
+                    Boolean(getSlides()[0]?.isComingSoon) ||
+                    String(getSlides()[0]?.title || '').toLowerCase().includes('coming soon');
+                if (ctaLabelEl) ctaLabelEl.textContent = initialIsComingSoon ? 'Available Soon' : `Inquire about ${getSlides()[0].title}`;
                 if (ctaButtonEl instanceof HTMLElement) {
                     ctaButtonEl.classList.toggle('is-disabled', initialIsComingSoon);
                     ctaButtonEl.setAttribute('aria-disabled', initialIsComingSoon ? 'true' : 'false');
@@ -528,8 +573,9 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
             delete (window as any).__luminaGetItemCount;
             delete (window as any).__luminaUpdateProgress;
             delete (window as any).__luminaStopBackgroundCycle;
+            delete (window as any).__luminaApplyLanguageUpdate;
         };
-    }, [items, hasStartedLoading]);
+    }, [hasStartedLoading]);
 
     // Expose methods to parent via ref
     useImperativeHandle(ref, () => ({
@@ -554,7 +600,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
     }));
 
     return (
-        <div className="lumina-wrapper" ref={containerRef}>
+        <div className="slider-wrapper w-full h-full" ref={containerRef}>
             <canvas className="webgl-canvas"></canvas>
             <span className="slide-number" id="slideNumber">01</span>
             <span className="slide-total" id="slideTotal">{String(items.length).padStart(2, '0')}</span>

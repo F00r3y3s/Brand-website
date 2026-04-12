@@ -220,7 +220,7 @@ export default function Services() {
     return () => {
       ctx.revert();
     };
-  }, [introScrollHeight, perSlideScrollHeight, postSliderScrollHeight]);
+  }, [introScrollHeight, perSlideScrollHeight, postSliderScrollHeight, language]);
 
   return (
     <>

@@ -34,6 +34,8 @@ export default function Hero() {
   const alifFlagShadowRef = useRef<SVGPathElement>(null);
   const supportingTextRef = useRef<HTMLDivElement>(null);
   const supportingTextBodyRef = useRef<HTMLParagraphElement>(null);
+  const arOverlayLine1Ref = useRef<HTMLSpanElement>(null);
+  const arOverlayLine2Ref = useRef<HTMLSpanElement>(null);
   const mousePos = useRef({
     x: -9999,
     y: -9999,
@@ -247,6 +249,10 @@ export default function Hero() {
 
       // Ensure letters start at their natural positions
       gsap.set('.kinetic-letter', { x: 0, y: 0, z: 0, scale: 1, opacity: 1, rotateX: 0, rotateY: 0, rotateZ: 0 });
+      // In Arabic mode, kinetic letters are hidden at rest – the overlay shows proper connected words
+      if (language === 'ar') {
+        gsap.set('.kinetic-letter', { opacity: 0 });
+      }
 
       const getUAEFlagColorAt = (xNorm: number, yNorm: number): string => {
         // Vertical red band on hoist side + horizontal tricolor:
@@ -490,12 +496,15 @@ export default function Hero() {
               x: 0, y: 0, z: 0,
               rotateX: 0, rotateY: 0, rotateZ: 0,
               scale: 1,
-              opacity: 1,
+              opacity: arOverlayLine1Ref.current ? 0 : 1,
               duration: 0.42,
               ease: 'power2.out',
               stagger: { amount: 0.14, from: 'center' },
               overwrite: 'auto'
             });
+            // Restore Arabic word overlays if active
+            if (arOverlayLine1Ref.current) gsap.to(arOverlayLine1Ref.current, { opacity: 1, duration: 0.32, ease: 'power2.out', overwrite: 'auto' });
+            if (arOverlayLine2Ref.current) gsap.to(arOverlayLine2Ref.current, { opacity: 1, duration: 0.32, ease: 'power2.out', overwrite: 'auto' });
           }
           return;
         }
@@ -526,6 +535,9 @@ export default function Hero() {
           outsideReleaseSinceMs = 0;
           isSphereActive.current = true;
           animateHeadlineSpacing(true);
+          // In Arabic mode: fade out word overlays so kinetic letters become the globe
+          if (arOverlayLine1Ref.current) gsap.to(arOverlayLine1Ref.current, { opacity: 0, duration: 0.25, ease: 'power2.out', overwrite: 'auto' });
+          if (arOverlayLine2Ref.current) gsap.to(arOverlayLine2Ref.current, { opacity: 0, duration: 0.25, ease: 'power2.out', overwrite: 'auto' });
           gsap.to(globeStrength, {
             current: 1,
             duration: 0.45,
@@ -568,7 +580,8 @@ export default function Hero() {
                 x: 0, y: 0, z: 0,
                 rotateX: 0, rotateY: 0, rotateZ: 0,
                 scale: 1,
-                opacity: 1,
+                // In Arabic mode kinetic spans return to transparent – the overlay will show words
+                opacity: arOverlayLine1Ref.current ? 0 : 1,
                 duration: 1.05,
                 ease: 'elastic.out(1, 0.42)',
                 stagger: { amount: 0.2, from: 'center' },
@@ -576,6 +589,10 @@ export default function Hero() {
               },
               0.05
             );
+
+            // In Arabic mode: fade word overlays back in after letters settle
+            if (arOverlayLine1Ref.current) gsap.to(arOverlayLine1Ref.current, { opacity: 1, duration: 0.55, ease: 'power2.out', delay: 0.5, overwrite: 'auto' });
+            if (arOverlayLine2Ref.current) gsap.to(arOverlayLine2Ref.current, { opacity: 1, duration: 0.55, ease: 'power2.out', delay: 0.5, overwrite: 'auto' });
           }
         }
 
@@ -702,7 +719,7 @@ export default function Hero() {
       };
     }, containerRef);
     return () => ctx.revert();
-  }, []);
+  }, [language]);
 
   return (
     <section id="home" ref={containerRef} className="relative h-screen flex flex-col items-center justify-center overflow-x-clip overflow-y-visible bg-cream">
@@ -727,22 +744,41 @@ export default function Hero() {
             }}
             className="opacity-0 translate-y-8 select-none"
           >
-            <h1 className="font-display font-black text-neutral-900 leading-[1.06] tracking-tight mb-7 drop-shadow-sm w-full max-w-[44rem]">
-              <span className="block text-[clamp(1.75rem,5vw,2.5rem)] lg:text-[clamp(1.15rem,3.1vw,2.2rem)] leading-tight overflow-visible">
-                {(language === 'en' ? 'Sustainability in Our Roots.' : 'الاستدامة في جذورنا.').split(language === 'en' ? '' : ' ').map((char, i, arr) => (
-                  <React.Fragment key={i}>
-                    <span className="kinetic-letter inline-block whitespace-pre preserve-3d">{char}</span>
-                    {language === 'ar' && i !== arr.length - 1 && ' '}
-                  </React.Fragment>
+            <h1 className="font-display font-black text-neutral-900 leading-[1.06] tracking-tight mb-7 drop-shadow-sm w-full max-w-[44rem] relative" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+              {/* Line 1: kinetic letters – Arabic chars in AR mode, English chars in EN mode */}
+              <span className="block text-[clamp(1.75rem,5vw,2.5rem)] lg:text-[clamp(1.15rem,3.1vw,2.2rem)] leading-tight overflow-visible relative">
+                {(language === 'ar' ? 'الاستدامة في جذورنا.' : 'Sustainability in Our Roots.').split('').map((char, i) => (
+                  <span
+                    key={i}
+                    className="kinetic-letter inline-block whitespace-pre preserve-3d"
+                  >{char}</span>
                 ))}
+                {/* Arabic word overlay – properly shaped connected text, visible at rest, hidden during globe */}
+                {language === 'ar' && (
+                  <span
+                    ref={arOverlayLine1Ref}
+                    className="absolute inset-0 flex items-center pointer-events-none select-none font-display font-black text-neutral-900"
+                    dir="rtl"
+                    aria-hidden="true"
+                  >الاستدامة في جذورنا.</span>
+                )}
               </span>
-              <span className="block mt-1 text-[clamp(1.75rem,5vw,2.5rem)] lg:text-[clamp(1.15rem,3.1vw,2.2rem)] text-neutral-800 leading-tight overflow-visible">
-                {(language === 'en' ? 'Intelligence for Our Future.' : 'الذكاء لمستقبلنا.').split(language === 'en' ? '' : ' ').map((char, i, arr) => (
-                  <React.Fragment key={i}>
-                    <span className="kinetic-letter inline-block whitespace-pre preserve-3d">{char}</span>
-                    {language === 'ar' && i !== arr.length - 1 && ' '}
-                  </React.Fragment>
+              {/* Line 2 */}
+              <span className="block mt-1 text-[clamp(1.75rem,5vw,2.5rem)] lg:text-[clamp(1.15rem,3.1vw,2.2rem)] text-neutral-800 leading-tight overflow-visible relative">
+                {(language === 'ar' ? 'الذكاء لمستقبلنا.' : 'Intelligence for Our Future.').split('').map((char, i) => (
+                  <span
+                    key={i}
+                    className="kinetic-letter inline-block whitespace-pre preserve-3d"
+                  >{char}</span>
                 ))}
+                {language === 'ar' && (
+                  <span
+                    ref={arOverlayLine2Ref}
+                    className="absolute inset-0 flex items-center pointer-events-none select-none font-display font-black text-neutral-800"
+                    dir="rtl"
+                    aria-hidden="true"
+                  >الذكاء لمستقبلنا.</span>
+                )}
               </span>
             </h1>
           </div>
@@ -754,7 +790,7 @@ export default function Hero() {
             }}
             className="opacity-0 translate-y-8"
           >
-            <p ref={supportingTextBodyRef} className="text-lg md:text-xl text-neutral-700 max-w-xl mb-8 leading-relaxed font-medium text-pretty">
+            <p ref={supportingTextBodyRef} dir={language === 'ar' ? 'rtl' : 'ltr'} className={`text-lg md:text-xl text-neutral-700 max-w-xl mb-8 leading-relaxed font-medium text-pretty ${language === 'ar' ? 'text-right' : ''}`}>
               {language === 'en' ? 'AI-powered sustainability solutions and app that reward green behavior and drive real impact.' : 'حلول استدامة مدعومة بالذكاء الاصطناعي وتطبيق يكافئ السلوك الأخضر ويدفع نحو تأثير حقيقي.'}
             </p>
           </div>

@@ -1,9 +1,13 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const teamMembers = [
   {
@@ -33,13 +37,30 @@ const teamMembers = [
 ]
 
 export default function Team() {
+  const containerRef = useRef<HTMLElement>(null)
   const [hoveredMember, setHoveredMember] = useState<number | null>(null)
   const { language, isRTL } = useLanguage()
   const isArabic = language === 'ar'
 
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.team-header', 
+        { opacity: 0, x: -50 },
+        { opacity: 1, x: 0, duration: 0.75, scrollTrigger: { trigger: '.team-header', start: 'top 85%' } }
+      );
+      gsap.fromTo('.team-member-row',
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.45, stagger: 0.08, scrollTrigger: { trigger: '.team-members-container', start: 'top 85%' } }
+      );
+    }, containerRef);
+    return () => ctx.revert();
+  }, [language]);
+
   return (
     <section
       id="team"
+      ref={containerRef}
       dir={isRTL ? 'rtl' : 'ltr'}
       className="min-h-screen bg-light relative overflow-hidden cursor-default pt-[8vh]"
     >
@@ -56,12 +77,7 @@ export default function Team() {
 
       <div className="max-w-[90vw] mx-auto relative z-10 w-full">
         <div className="mb-4 md:mb-5 text-center">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.75 }}
-          >
+          <div className="team-header opacity-0">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-display mb-2 text-dark leading-none tracking-tight">
               {isArabic ? (
                 <><span className="text-primary [font-size:inherit] [line-height:inherit]">الفريق</span>{" "}الأساسي</>
@@ -72,18 +88,14 @@ export default function Team() {
             <p className="text-[1.02rem] md:text-[1.32rem] font-medium text-dark/82 max-w-3xl mx-auto">
               {isArabic ? 'أعضاء موهوبون ومنضبطون ومتفانون.' : 'Much talented, disciplined and dedicated members.'}
             </p>
-          </motion.div>
+          </div>
         </div>
 
-        <div className="flex flex-col mt-16 md:mt-20">
+        <div className="team-members-container flex flex-col mt-16 md:mt-20">
           {teamMembers.map((member, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.45, delay: index * 0.08 }}
-              className="group relative border-t border-dark/10 py-[1.2rem] md:py-[1.45rem] hover:px-3 transition-all duration-300 cursor-pointer overflow-visible"
+              className="team-member-row opacity-0 group relative border-t border-dark/10 py-[1.2rem] md:py-[1.45rem] hover:px-3 transition-all duration-300 cursor-pointer overflow-visible"
               onMouseEnter={() => setHoveredMember(index)}
               onMouseLeave={() => setHoveredMember(null)}
             >
@@ -137,7 +149,7 @@ export default function Team() {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </div>
           ))}
           <div className="border-t border-dark/10" />
         </div>

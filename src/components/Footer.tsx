@@ -99,7 +99,7 @@ export default function Footer() {
     }, triggerRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [language])
 
   const brandProfileHref = '/downloads/ainar-fze-brand-profile.pdf'
   const navItems = [

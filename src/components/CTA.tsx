@@ -38,7 +38,7 @@ export default function CTA() {
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [language]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

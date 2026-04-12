@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import type { Metadata } from "next";
 import { Inter, Outfit, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
@@ -74,11 +75,14 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const langCookie = cookieStore.get('language')?.value;
+
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <head>
@@ -97,7 +101,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         <div className="grain-overlay" />
-        <Providers>
+        <Providers initialLang={langCookie as any}>
           <MagneticCursor />
           {children}
         </Providers>

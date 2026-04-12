@@ -78,14 +78,14 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!heroParallaxRef.current || !whoParallaxRef.current || !projectsParallaxRef.current || !faqParallaxRef.current || !footerParallaxRef.current) return;
+    if (!heroParallaxRef.current || !whoParallaxRef.current || !projectsParallaxRef.current || !footerParallaxRef.current) return;
 
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         id: 'heroParallaxPin',
         trigger: heroParallaxRef.current,
         start: 'top top',
-        end: '+=180%', // Increased for more scroll room
+        end: () => `+=${(heroParallaxRef.current?.offsetHeight || window.innerHeight) + window.innerHeight * 0.65}`,
         pin: true,
         pinSpacing: false,
         anticipatePin: 1,
@@ -95,7 +95,7 @@ export default function Home() {
         id: 'whoParallaxPin',
         trigger: whoParallaxRef.current,
         start: 'top top',
-        end: '+=180%', // Increased for more scroll room
+        end: () => `+=${(whoParallaxRef.current?.offsetHeight || window.innerHeight) + window.innerHeight * 0.35}`,
         pin: true,
         pinSpacing: false,
         anticipatePin: 1,
@@ -105,17 +105,7 @@ export default function Home() {
         id: 'projectsParallaxPin',
         trigger: projectsParallaxRef.current,
         start: 'top top',
-        end: '+=70%',
-        pin: true,
-        pinSpacing: false,
-        anticipatePin: 1,
-      });
-
-      ScrollTrigger.create({
-        id: 'faqParallaxPin',
-        trigger: faqParallaxRef.current,
-        start: 'top top',
-        end: () => `+=${Math.round(window.innerHeight * (FAQ_STICKY_TEST_VH / 100))}`,
+        end: () => `+=${projectsParallaxRef.current?.offsetHeight || window.innerHeight}`,
         pin: true,
         pinSpacing: false,
         anticipatePin: 1,
@@ -125,15 +115,23 @@ export default function Home() {
     ScrollTrigger.refresh();
 
     return () => ctx.revert();
-  }, []);
+  }, [language]);
 
   useEffect(() => {
-    // When language changes (especially to RTL), text wrapping and heights change significantly.
-    // We must refresh GSAP triggers after the browser computes the new layout.
-    const timer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 250);
-    return () => clearTimeout(timer);
+    // When language changes (especially to RTL), text wrapping and heights change
+    // significantly. A single refresh is insufficient because:
+    // 1. Component useEffects with [language] deps kill & recreate their own triggers
+    // 2. Font/text reflow can take multiple frames to settle
+    // 3. Pinned elements need cascading recalculation
+    // We do a multi-pass refresh to catch all layout changes.
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    // First pass: after React commit + initial reflow
+    timers.push(setTimeout(() => ScrollTrigger.refresh(), 100));
+    // Second pass: after fonts and images settle
+    timers.push(setTimeout(() => ScrollTrigger.refresh(), 400));
+    // Third pass: final safety net for complex pinned sections
+    timers.push(setTimeout(() => ScrollTrigger.refresh(), 800));
+    return () => timers.forEach(clearTimeout);
   }, [language]);
 
   return (
