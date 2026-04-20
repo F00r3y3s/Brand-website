@@ -839,7 +839,8 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 }
                 @media (min-width: 1024px) {
                     .slide-title {
-                        white-space: nowrap;
+                        white-space: normal;
+                        word-break: break-word;
                     }
                 }
                 .cta-button {
@@ -933,10 +934,12 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 .slide-nav-title {
                     font-family: var(--font-display, "Outfit", sans-serif);
                     text-transform: uppercase;
-                    letter-spacing: 0.1em;
+                    letter-spacing: 0.08em;
                     font-size: 0.68rem;
                     font-weight: 780;
                     white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                     color: rgba(255, 255, 255, 0.98);
                     transition: color 0.3s ease;
                     text-align: center;
@@ -944,7 +947,10 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                 }
                 @media (min-width: 1024px) {
                     .slide-nav-title {
-                        font-size: 0.9rem;
+                        font-size: 0.7rem;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: clip;
                     }
                 }
                 .slide-progress-line {
