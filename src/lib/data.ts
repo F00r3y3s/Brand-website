@@ -25,7 +25,7 @@ export const servicesData: ServiceItem[] = [
     subtitle: "AI-Driven Behavioral Platforms and National Digital Infrastructure",
     subtitleAr: "منصات سلوكية مدعومة بالذكاء الاصطناعي وبنية تحتية رقمية وطنية",
     description: "We design and build AI-driven behavioral platforms and national-scale digital infrastructure. Our solutions are engineered for resilience, performance, and long-term scalability, empowering governments and enterprises to deliver smarter, data-informed services to their people.",
-    descriptionAr: "نصمم وننشئ منصات سلوكية مدعومة بالذكاء الاصطناعي وبنية تحتية رقمية على المستوى الوطني. حلولنا مُصممة للصمود والأداء العالي وقابلية التوسع طويلة الأمد — لتمكين الحكومات والمؤسسات من تقديم خدمات أكثر ذكاءً ومبنية على البيانات لمواطنيها.",
+    descriptionAr: "نصمم وننشئ منصات سلوكية مدعومة بالذكاء الاصطناعي وبنية تحتية رقمية على المستوى الوطني. حلولنا مُصممة للصمود والأداء العالي وقابلية التوسع طويلة الأمد، لتمكين الحكومات والمؤسسات من تقديم خدمات أكثر ذكاءً ومبنية على البيانات لمواطنيها.",
     media: ["/services/custom/app%20development.webp", "/services/custom/App%20development%201.webp"]
   },
   {
@@ -34,7 +34,7 @@ export const servicesData: ServiceItem[] = [
     subtitle: "Sustainability-Focused Content Strategy and Digital Production",
     subtitleAr: "استراتيجية محتوى تركّز على الاستدامة والإنتاج الرقمي",
     description: "We craft sustainability-focused content strategies and manage end-to-end digital production. By combining human creative direction with AI-powered tools, we help organizations communicate their vision compellingly, producing consistent, high-quality content that resonates and drives real engagement.",
-    descriptionAr: "نضع استراتيجيات محتوى تُركّز على الاستدامة وندير عمليات الإنتاج الرقمي من الألف إلى الياء. من خلال الجمع بين التوجيه الإبداعي البشري وأدوات الذكاء الاصطناعي، نساعد المؤسسات على التعبير عن رؤيتها بشكل مقنع — بإنتاج محتوى متسق وعالي الجودة يُحدث تفاعلاً حقيقياً.",
+    descriptionAr: "نضع استراتيجيات محتوى تُركّز على الاستدامة وندير عمليات الإنتاج الرقمي من الألف إلى الياء. من خلال الجمع بين التوجيه الإبداعي البشري وأدوات الذكاء الاصطناعي، نساعد المؤسسات على التعبير عن رؤيتها بشكل مقنع، بإنتاج محتوى متسق وعالي الجودة يُحدث تفاعلاً حقيقياً.",
     media: ["/services/custom/socialmedia%201.webp", "/services/custom/social%20media%202.webp"]
   },
   {
