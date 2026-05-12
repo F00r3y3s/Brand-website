@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 type Language = 'en' | 'ar';
-const LANGUAGE_TOGGLE_ENABLED = true;
+const LANGUAGE_TOGGLE_ENABLED = false;
 const FORCED_LANGUAGE: Language = 'en';
 
 interface LanguageContextType {

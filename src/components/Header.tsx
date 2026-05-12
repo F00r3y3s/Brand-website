@@ -265,13 +265,8 @@ export default function Header() {
                       });
                     }
                   }}
-                  className="flex items-center gap-2 p-2.5 px-4 rounded-full transition-all duration-300 bg-white/50 backdrop-blur-md border border-white/20 hover:bg-white/80 hover:scale-105 shadow-sm group"
-                  aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
+                  className="hidden"
                 >
-                  <Globe size={16} className="text-neutral-900 group-hover:text-gold transition-colors" />
-                  <span className="text-[13px] font-bold text-neutral-900 group-hover:text-gold transition-colors pt-0.5" aria-hidden="true">
-                    {language === 'en' ? 'AR' : 'EN'}
-                  </span>
                 </button>
 
                 {/* Hamburger Menu Button */}
