@@ -13,54 +13,50 @@ interface LegalModalProps {
 export default function LegalModal({ isOpen, onClose, type }: LegalModalProps) {
     const { language } = useLanguage();
     const contentRef = useRef<HTMLDivElement>(null);
-    const footerObserverRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!isOpen) return;
 
+        const originalBodyOverflow = document.body.style.overflow;
+        const originalHtmlOverflow = document.documentElement.style.overflow;
+        const originalBodyPaddingRight = document.body.style.paddingRight;
+        const scrollbarCompensation = window.innerWidth - document.documentElement.clientWidth;
+
         // Prevent background scrolling when modal is open
+        window.dispatchEvent(new CustomEvent('app:scroll-lock', { detail: { locked: true } }));
+        document.documentElement.style.overflow = 'hidden';
         document.body.style.overflow = 'hidden';
-
-        // Observer for auto-close when scrolling to footer within modal
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        // Footer is visible - auto-close
-                        setTimeout(() => {
-                            onClose();
-                        }, 300);
-                    }
-                });
-            },
-            {
-                threshold: 0.1,
-                root: contentRef.current,
-            }
-        );
-
-        if (footerObserverRef.current) {
-            observer.observe(footerObserverRef.current);
+        if (scrollbarCompensation > 0) {
+            document.body.style.paddingRight = `${scrollbarCompensation}px`;
         }
+
+        const contentElement = contentRef.current;
+        const handleWheel = (event: WheelEvent) => {
+            if (!contentElement) return;
+
+            const inComposedPath = event.composedPath().includes(contentElement);
+            if (!inComposedPath) return;
+
+            const scrollLimit = contentElement.scrollHeight - contentElement.clientHeight;
+            if (scrollLimit <= 0) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const next = contentElement.scrollTop + event.deltaY;
+            contentElement.scrollTop = Math.max(0, Math.min(scrollLimit, next));
+        };
+
+        window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
 
         return () => {
-            document.body.style.overflow = '';
-            if (footerObserverRef.current) {
-                observer.unobserve(footerObserverRef.current);
-            }
+            window.dispatchEvent(new CustomEvent('app:scroll-lock', { detail: { locked: false } }));
+            document.documentElement.style.overflow = originalHtmlOverflow;
+            document.body.style.overflow = originalBodyOverflow;
+            document.body.style.paddingRight = originalBodyPaddingRight;
+            window.removeEventListener('wheel', handleWheel, true);
         };
-    }, [isOpen, onClose]);
-
-    // Prevent background scroll when clicking/scrolling on modal
-    const handleModalClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
-    };
-
-    const handleBackdropClick = (e: React.MouseEvent) => {
-        if (e.target === e.currentTarget) {
-            onClose();
-        }
-    };
+    }, [isOpen]);
 
     if (!isOpen) return null;
 
@@ -243,23 +239,29 @@ export default function LegalModal({ isOpen, onClose, type }: LegalModalProps) {
 
     return (
         <div
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
-            onClick={handleBackdropClick}
+            className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-6 bg-[radial-gradient(circle_at_top,rgba(18,29,44,0.56),rgba(5,8,13,0.86))] backdrop-blur-md"
+            style={{ overscrollBehavior: 'none' }}
         >
             <div
-                className="relative w-full h-full max-w-4xl max-h-[90vh] m-4 bg-cream rounded-2xl shadow-2xl flex flex-col"
-                onClick={handleModalClick}
+                className="relative w-full h-full max-w-4xl max-h-[90vh] bg-[linear-gradient(180deg,#f7f4ed_0%,#ece7dd_100%)] rounded-[2rem] border border-[#d4af37]/35 shadow-[0_36px_88px_rgba(2,10,24,0.55)] flex flex-col overflow-hidden"
             >
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#d4af37]/80 to-transparent" />
+
                 {/* Header with close button */}
-                <div className="flex items-center justify-between p-6 border-b border-neutral-200 flex-shrink-0">
-                    <h1 className="text-3xl md:text-4xl font-display font-black text-neutral-900">
-                        {type === 'terms'
-                            ? (language === 'en' ? 'Terms of Service' : 'شروط الخدمة')
-                            : (language === 'en' ? 'Privacy Policy' : 'سياسة الخصوصية')}
-                    </h1>
+                <div className="flex items-center justify-between gap-4 p-6 md:p-7 border-b border-neutral-900/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(255,255,255,0.45))] flex-shrink-0">
+                    <div>
+                        <p className="text-[0.66rem] md:text-xs font-black uppercase tracking-[0.22em] text-neutral-700/65">
+                            {language === 'en' ? 'Legal' : 'قانوني'}
+                        </p>
+                        <h1 className="mt-1 text-3xl md:text-4xl font-display font-black text-neutral-900">
+                            {type === 'terms'
+                                ? (language === 'en' ? 'Terms of Service' : 'شروط الخدمة')
+                                : (language === 'en' ? 'Privacy Policy' : 'سياسة الخصوصية')}
+                        </h1>
+                    </div>
                     <button
                         onClick={onClose}
-                        className="w-10 h-10 rounded-full bg-neutral-900 text-white flex items-center justify-center hover:bg-neutral-800 hover:scale-110 transition-all duration-300"
+                        className="w-11 h-11 rounded-full border border-neutral-900/20 bg-neutral-950 text-white flex items-center justify-center hover:bg-neutral-800 hover:scale-105 transition-all duration-300 shadow-[0_10px_24px_rgba(5,10,20,0.35)]"
                         aria-label="Close"
                     >
                         <X size={20} />
@@ -269,15 +271,12 @@ export default function LegalModal({ isOpen, onClose, type }: LegalModalProps) {
                 {/* Scrollable content */}
                 <div
                     ref={contentRef}
-                    className="flex-1 overflow-y-auto overflow-x-hidden p-6"
+                    className="flex-1 overflow-y-auto overflow-x-hidden px-5 py-6 md:px-8 md:py-8"
                     style={{ overscrollBehavior: 'contain' }}
                 >
-                    <div className="prose prose-lg prose-neutral max-w-none text-neutral-700">
+                    <div className="prose prose-lg prose-neutral max-w-none text-neutral-700 prose-headings:font-display prose-headings:text-neutral-900 prose-p:text-[1.04rem] md:prose-p:text-[1.08rem] prose-p:leading-relaxed [&_section]:rounded-2xl [&_section]:border [&_section]:border-neutral-900/8 [&_section]:bg-white/55 [&_section]:shadow-[0_10px_24px_rgba(8,16,30,0.08)] [&_section]:px-4 [&_section]:py-4 md:[&_section]:px-6 md:[&_section]:py-5">
                         {type === 'terms' ? termsContent : privacyContent}
                     </div>
-
-                    {/* Footer observer target */}
-                    <div ref={footerObserverRef} className="h-4 mt-8" />
                 </div>
             </div>
         </div>

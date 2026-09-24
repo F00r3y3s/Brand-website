@@ -13,7 +13,7 @@ const FRAME_COUNT = 82;
 const IMAGES_BASE_PATH = '/menifesto-video/Smoothing_animation_no_1080p_202602081719_';
 
 export default function Manifesto() {
-  const { language } = useLanguage();
+  const { language, isRTL } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionLabelRef = useRef<HTMLHeadingElement>(null);
   const titleBadgeRef = useRef<HTMLDivElement>(null);
@@ -21,19 +21,39 @@ export default function Manifesto() {
   const mobileValuesRef = useRef<HTMLDivElement>(null);
   const desktopValuesRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [hasStartedLoading, setHasStartedLoading] = useState(false);
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // Preload images
+  // Preload images when in view
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !hasStartedLoading) {
+          setHasStartedLoading(true);
+        }
+      },
+      { rootMargin: '400px' } // Start loading when 400px away
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasStartedLoading]);
+
+  useEffect(() => {
+    if (!hasStartedLoading) return;
+
     const loadImages = async () => {
       const loadedImages: HTMLImageElement[] = [];
       const promises = [];
 
       for (let i = 0; i < FRAME_COUNT; i++) {
         const paddedIndex = i.toString().padStart(3, '0');
-        const src = `${IMAGES_BASE_PATH}${paddedIndex}.png`;
+        const src = `${IMAGES_BASE_PATH}${paddedIndex}.webp`;
         const img = new Image();
 
         const promise = new Promise<void>((resolve) => {
@@ -52,7 +72,7 @@ export default function Manifesto() {
     };
 
     loadImages();
-  }, []);
+  }, [hasStartedLoading]);
 
   // Draw frame based on progress
   useEffect(() => {
@@ -283,10 +303,10 @@ export default function Manifesto() {
       ref={containerRef}
       className="relative w-full min-h-screen flex items-center bg-neutral-950 overflow-hidden"
     >
-      <div className="w-full flex flex-col lg:flex-row relative">
+      <div className="w-full max-w-[1440px] mx-auto flex flex-col lg:flex-row relative">
 
         {/* Left Column: Text Content */}
-        <div className="w-full lg:w-[48%] min-h-[60vh] lg:min-h-screen flex flex-col justify-start px-4 lg:px-10 xl:px-14 lg:-ml-4 z-20 relative pt-12 lg:pt-20 pb-12 lg:pb-40">
+        <div className="w-full lg:w-[48%] min-h-[60vh] lg:min-h-screen flex flex-col justify-start px-4 lg:px-10 xl:px-14 lg:-ml-4 z-20 relative pt-12 lg:pt-20 pb-12 lg:pb-40 order-2 lg:order-1">
           <div className="flex flex-col items-start gap-4 max-w-[44rem] flex-grow">
             <h2
               ref={sectionLabelRef}
@@ -296,7 +316,7 @@ export default function Manifesto() {
             </h2>
 
             {/* Title Badge */}
-            <div ref={titleBadgeRef} className="inline-flex mt-1 lg:mt-2">
+            <div ref={titleBadgeRef} className={`inline-flex mt-1 lg:mt-2 ${isRTL ? 'self-end' : ''}`}>
               <TextRevealer
                 text={language === 'en' ? 'OUR VALUE | SUSTAINABLE GROWTH' : 'قيمتنا | النمو المستدام'}
                 className="text-xs sm:text-sm md:text-base font-bold uppercase text-neutral-900 bg-white/90 px-4 py-1.5 md:px-5 md:py-2 tracking-[0.08em] rounded-sm"
@@ -312,7 +332,7 @@ export default function Manifesto() {
               {paragraphs.map((paragraph) => (
                 <p
                   key={paragraph}
-                  className="text-[clamp(1.25rem,2.2vw,2rem)] font-semibold leading-relaxed tracking-normal text-white text-justify [text-justify:inter-word] [text-align-last:left] hyphens-auto text-pretty"
+                  className={`text-[clamp(1.25rem,2.2vw,2rem)] font-semibold leading-relaxed tracking-normal text-white text-justify [text-justify:inter-word] hyphens-auto text-pretty ${isRTL ? '[text-align-last:right]' : '[text-align-last:left]'}`}
                 >
                   {paragraph}
                 </p>
@@ -340,7 +360,7 @@ export default function Manifesto() {
         </div>
 
         {/* Right Column: Video Sequence */}
-        <div className="w-full lg:w-[52%] h-[40vh] lg:h-screen sticky top-0 relative overflow-hidden">
+        <div className="w-full lg:w-[52%] h-[40vh] lg:h-screen sticky top-0 relative overflow-hidden order-1 lg:order-2">
           <canvas
             ref={canvasRef}
             className="w-full h-full object-cover"
@@ -356,7 +376,7 @@ export default function Manifesto() {
           ref={desktopValuesRef}
           className="hidden lg:flex pointer-events-none absolute bottom-12 left-0 right-0 z-30 px-5 lg:px-10 xl:px-14"
         >
-          <div className="flex justify-between gap-6 w-full max-w-[92rem] mx-auto items-stretch">
+          <div className="flex justify-between gap-6 w-full max-w-[1440px] mx-auto items-stretch">
             {values.map((item) => (
               <div
                 key={item.title}

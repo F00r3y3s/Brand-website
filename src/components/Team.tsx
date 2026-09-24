@@ -1,8 +1,13 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const teamMembers = [
   {
@@ -14,30 +19,44 @@ const teamMembers = [
   {
     name: "Fatima Moussa Sy",
     role: "Assistant & Business Coordinator",
-    image: "/members/Fatima-PH.jpeg",
+    image: "/members/Fatima-PH.webp",
     roleDescription: "Coordinates daily operations, communications, and executive follow-through across business initiatives."
   },
   {
     name: "Abdul Jabbar",
     role: "Lead IT / Technical Advisor",
-    image: "/members/AJ.jpeg",
+    image: "/members/AJ.webp",
     roleDescription: "Leads IT and technical direction, advising on architecture, implementation quality, and delivery standards."
-  },
-  {
-    name: "Syed Faruk Ahmed",
-    role: "Senior Growth & Strategic Advisory Partner",
-    image: "/members/Faruk.jpeg",
-    roleDescription: "Drives growth strategy, strategic partnerships, and long-term advisory planning across markets."
   }
 ]
 
 export default function Team() {
+  const containerRef = useRef<HTMLElement>(null)
   const [hoveredMember, setHoveredMember] = useState<number | null>(null)
+  const { language, isRTL } = useLanguage()
+  const isArabic = language === 'ar'
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.team-header', 
+        { opacity: 0, x: -50 },
+        { opacity: 1, x: 0, duration: 0.75, scrollTrigger: { trigger: '.team-header', start: 'top 85%' } }
+      );
+      gsap.fromTo('.team-member-row',
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.45, stagger: 0.08, scrollTrigger: { trigger: '.team-members-container', start: 'top 85%' } }
+      );
+    }, containerRef);
+    return () => ctx.revert();
+  }, [language]);
 
   return (
     <section
       id="team"
-      className="h-screen min-h-[840px] bg-light relative overflow-hidden cursor-default pt-[8vh]"
+      ref={containerRef}
+      dir={isRTL ? 'rtl' : 'ltr'}
+      className="min-h-screen bg-light relative overflow-hidden cursor-default pt-[8vh]"
     >
       <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -50,38 +69,32 @@ export default function Team() {
         </svg>
       </div>
 
-      <div className="max-w-[90vw] mx-auto relative z-10 w-full">
+      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
         <div className="mb-4 md:mb-5 text-center">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.75 }}
-          >
+          <div className="team-header opacity-0">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-display mb-2 text-dark leading-none tracking-tight">
-              Core{" "}
-              <span className="text-primary [font-size:inherit] [line-height:inherit]">Team</span>
+              {isArabic ? (
+                <><span className="text-primary [font-size:inherit] [line-height:inherit]">الفريق</span>{" "}الأساسي</>
+              ) : (
+                <>Core{" "}<span className="text-primary [font-size:inherit] [line-height:inherit]">Team</span></>
+              )}
             </h2>
             <p className="text-[1.02rem] md:text-[1.32rem] font-medium text-dark/82 max-w-3xl mx-auto">
-              Much talented, deciplined and dedicated members.
+              {isArabic ? 'أعضاء موهوبون ومنضبطون ومتفانون.' : 'Much talented, disciplined and dedicated members.'}
             </p>
-          </motion.div>
+          </div>
         </div>
 
-        <div className="flex flex-col mt-16 md:mt-20">
+        <div className="team-members-container flex flex-col mt-16 md:mt-20">
           {teamMembers.map((member, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.45, delay: index * 0.08 }}
-              className="group relative border-t border-dark/10 py-[1.2rem] md:py-[1.45rem] hover:px-3 transition-all duration-300 cursor-pointer overflow-visible"
+              className="team-member-row opacity-0 group relative border-t border-dark/10 py-[1.2rem] md:py-[1.45rem] hover:px-3 transition-all duration-300 cursor-pointer overflow-visible"
               onMouseEnter={() => setHoveredMember(index)}
               onMouseLeave={() => setHoveredMember(null)}
             >
               <div className="relative z-10 text-dark group-hover:text-primary transition-colors duration-300 lg:pr-[23rem] xl:pr-[26rem]">
-                <h3 className="text-[1.75rem] md:text-[2.1rem] lg:text-[2.45rem] font-display font-bold uppercase tracking-tight group-hover:translate-x-2 transition-transform duration-500 ease-out leading-[0.95]">
+                <h3 className="text-[clamp(1.5rem,4vw,2.45rem)] font-display font-bold uppercase tracking-tight group-hover:translate-x-2 transition-transform duration-500 ease-out leading-[0.95]">
                   {member.name}
                 </h3>
                 <div className="mt-2 md:mt-3 flex flex-col gap-1.5">
@@ -91,7 +104,7 @@ export default function Team() {
                     </span>
                     <ArrowUpRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform group-hover:translate-x-1.5 group-hover:-translate-y-1.5 block" />
                   </div>
-                  <span className="text-[12px] md:text-[13px] font-light opacity-78 group-hover:opacity-96 transition-opacity duration-300 max-w-[42rem] text-left block leading-snug">
+                  <span className={`text-[12px] md:text-[13px] font-light opacity-78 group-hover:opacity-96 transition-opacity duration-300 max-w-[42rem] ${isArabic ? 'text-right' : 'text-left'} block leading-snug`}>
                     {member.roleDescription}
                   </span>
                 </div>
@@ -130,7 +143,7 @@ export default function Team() {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </div>
           ))}
           <div className="border-t border-dark/10" />
         </div>

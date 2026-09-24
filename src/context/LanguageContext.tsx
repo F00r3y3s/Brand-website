@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 type Language = 'en' | 'ar';
+const LANGUAGE_TOGGLE_ENABLED = false;
+const FORCED_LANGUAGE: Language = 'en';
 
 interface LanguageContextType {
   language: Language;
@@ -21,29 +23,54 @@ const defaultLanguageContext: LanguageContextType = {
 
 const LanguageContext = createContext<LanguageContextType>(defaultLanguageContext);
 
-export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Initialize with 'en' as default to prevent hydration mismatch
-  const [language, setLanguageState] = useState<Language>('en');
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+function setCookie(name: string, value: string, maxAge = 31536000) {
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAge}; SameSite=Lax`;
+}
+
+export const LanguageProvider: React.FC<{ children: ReactNode, initialLang?: Language }> = ({ children, initialLang }) => {
+  const getInitialLanguage = (): Language => {
+    if (!LANGUAGE_TOGGLE_ENABLED) return FORCED_LANGUAGE;
+    // 1. If explicit initialLang was provided by SSR cookies, return it
+    if (initialLang === 'en' || initialLang === 'ar') return initialLang;
+    
+    // 2. We are rendering either on SSR (no cookie) or First Client Render
+    // To avoid hydration mismatch, return FORCED_LANGUAGE immediately.
+    // The useEffect will pick up the localStorage value to prevent discrepancy.
+    return FORCED_LANGUAGE;
+  };
+
+  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
 
   useEffect(() => {
-    // Get language from localStorage or use browser default
-    const savedLanguage = localStorage.getItem('language') as Language | null;
-    const browserLanguage = navigator.language.startsWith('ar') ? 'ar' : 'en';
-    const initialLanguage = savedLanguage || browserLanguage;
-
-    // Update state with localStorage value
-    if (initialLanguage !== language) {
-      setLanguageState(initialLanguage);
+    // Correct sync after hydration if localStorage has a value we missed
+    const localLang = window.localStorage.getItem('language') as Language | null;
+    if (localLang && localLang !== language && (localLang === 'en' || localLang === 'ar')) {
+      setLanguageState(localLang);
     }
+  }, []);
 
-    // Update document attributes
-    document.documentElement.dir = initialLanguage === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = initialLanguage;
+  useEffect(() => {
+    const activeLanguage = LANGUAGE_TOGGLE_ENABLED ? language : FORCED_LANGUAGE;
+    localStorage.setItem('language', activeLanguage);
+    setCookie('language', activeLanguage);
+    document.documentElement.dir = activeLanguage === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = activeLanguage;
   }, [language]);
 
   const setLanguage = (lang: Language) => {
+    if (!LANGUAGE_TOGGLE_ENABLED) {
+      return;
+    }
+
     setLanguageState(lang);
     localStorage.setItem('language', lang);
+    setCookie('language', lang);
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
   };
@@ -95,6 +122,34 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     'general.phone': { en: 'Phone', ar: 'الهاتف' },
     'general.location': { en: 'Location', ar: 'الموقع' },
     'general.dubai_uae': { en: 'Dubai, UAE 🇦🇪', ar: 'دبي، الإمارات العربية المتحدة 🇦🇪' },
+
+    // Modal (ServiceInquiryModal)
+    'modal.contact_form': { en: 'Contact Form', ar: 'نموذج التواصل' },
+    'modal.subtitle': { en: 'Tell us what you are building and we will follow up with a custom roadmap.', ar: 'أخبرنا بما تبنيه وسنتابع معك بخارطة طريق مخصصة.' },
+    'modal.selected_service': { en: 'Selected Service', ar: 'الخدمة المختارة' },
+    'modal.select_placeholder': { en: 'Select a service...', ar: 'اختر خدمة...' },
+    'modal.name': { en: 'Name', ar: 'الاسم' },
+    'modal.name_placeholder': { en: 'Your full name', ar: 'اسمك الكامل' },
+    'modal.organization': { en: 'Organization', ar: 'المؤسسة' },
+    'modal.organization_placeholder': { en: 'Organization name', ar: 'اسم المؤسسة' },
+    'modal.email': { en: 'Email', ar: 'البريد الإلكتروني' },
+    'modal.email_placeholder': { en: 'name@company.com', ar: 'name@company.com' },
+    'modal.contact_number': { en: 'Contact Number', ar: 'رقم التواصل' },
+    'modal.contact_number_placeholder': { en: '+971 50 123 4567', ar: '+971 50 123 4567' },
+    'modal.linkedin': { en: 'LinkedIn', ar: 'لينكد إن' },
+    'modal.linkedin_placeholder': { en: 'https://linkedin.com/in/yourprofile', ar: 'https://linkedin.com/in/yourprofile' },
+    'modal.message': { en: 'Message', ar: 'الرسالة' },
+    'modal.message_placeholder': { en: 'Tell us about your project goals, timeline, and what success looks like.', ar: 'أخبرنا عن أهداف مشروعك والجدول الزمني وما يعنيه النجاح بالنسبة لك.' },
+    'modal.send': { en: 'Send', ar: 'إرسال' },
+    'modal.sending': { en: 'Sending...', ar: 'جارٍ الإرسال...' },
+    'modal.success_title': { en: 'Message Sent', ar: 'تم الإرسال' },
+    'modal.success_body': { en: 'Thanks for reaching out. Our team will get back to you within 1 business day.', ar: 'شكرًا على تواصلكم. سيتواصل معكم فريقنا خلال يوم عمل واحد.' },
+    'modal.error': { en: 'Something went wrong. Please try again.', ar: 'حدث خطأ. يرجى المحاولة مرة أخرى.' },
+    'modal.general_inquiry': { en: 'General Inquiry', ar: 'استفسار عام' },
+    'modal.other': { en: 'Other', ar: 'أخرى' },
+
+    // Newsletter
+    'newsletter.error': { en: 'Something went wrong. Please try again.', ar: 'حدث خطأ. يرجى المحاولة مرة أخرى.' },
   };
 
   const t = (key: string, lang?: Language): string => {

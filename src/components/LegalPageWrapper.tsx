@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -11,6 +12,7 @@ interface LegalPageWrapperProps {
 }
 
 export default function LegalPageWrapper({ children }: LegalPageWrapperProps) {
+    const { isRTL } = useLanguage();
     const router = useRouter();
     const footerObserverRef = useRef<HTMLDivElement>(null);
     const [showCloseButton, setShowCloseButton] = useState(true);
@@ -62,15 +64,15 @@ export default function LegalPageWrapper({ children }: LegalPageWrapperProps) {
     };
 
     return (
-        <div className="bg-cream min-h-screen flex flex-col relative">
+        <div dir={isRTL ? 'rtl' : 'ltr'} className="bg-cream min-h-screen flex flex-col relative">
             <Header />
 
             {/* Fixed Close Button */}
             {showCloseButton && (
                 <button
                     onClick={handleClose}
-                    className="fixed top-24 right-6 md:right-12 z-50 w-12 h-12 rounded-full bg-neutral-900 text-white flex items-center justify-center hover:bg-neutral-800 hover:scale-110 transition-all duration-300 shadow-lg"
-                    aria-label="Close and return to footer"
+                    className={`fixed top-24 ${isRTL ? 'left-6 md:left-12' : 'right-6 md:right-12'} z-50 w-12 h-12 rounded-full bg-neutral-900 text-white flex items-center justify-center hover:bg-neutral-800 hover:scale-110 transition-all duration-300 shadow-lg`}
+                    aria-label={isRTL ? 'إغلاق والعودة' : 'Close and return to footer'}
                 >
                     <X size={24} />
                 </button>

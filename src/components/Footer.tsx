@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Linkedin, Mail, FileDown } from 'lucide-react'
+import { Linkedin, Mail, FileDown, AlertCircle } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 import LegalModal from './LegalModal'
 
@@ -25,6 +25,9 @@ export default function Footer() {
     isOpen: false,
     type: null,
   })
+  const [newsletterEmail, setNewsletterEmail] = useState('')
+  const [isNewsletterSubmitting, setIsNewsletterSubmitting] = useState(false)
+  const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
   const handleNavClick = (selector: string, serviceIndex?: number) => (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault()
@@ -38,6 +41,36 @@ export default function Footer() {
           window.__onLuminaNavClick(serviceIndex)
         }
       }, 340)
+    }
+  }
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newsletterEmail) return
+
+    setIsNewsletterSubmitting(true)
+    setNewsletterStatus('idle')
+
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'newsletter',
+          data: { email: newsletterEmail }
+        }),
+      })
+
+      if (!response.ok) throw new Error('Subscription failed')
+
+      setNewsletterStatus('success')
+      setNewsletterEmail('')
+      setTimeout(() => setNewsletterStatus('idle'), 3000)
+    } catch (error) {
+      console.error('Newsletter error:', error)
+      setNewsletterStatus('error')
+    } finally {
+      setIsNewsletterSubmitting(false)
     }
   }
 
@@ -55,7 +88,13 @@ export default function Footer() {
       })
 
       tl.to(circleRef.current, {
-        scale: 34,
+        scale: () => {
+          const vw = typeof window !== 'undefined' ? window.innerWidth : 1920;
+          const vh = typeof window !== 'undefined' ? window.innerHeight : 1080;
+          const diagonal = Math.hypot(vw, vh);
+          const circleSize = circleRef.current?.offsetWidth || 128;
+          return Math.max(34, Math.ceil((diagonal * 1.6) / circleSize));
+        },
         ease: 'power3.inOut',
       })
         .to(contentRef.current, {
@@ -66,7 +105,7 @@ export default function Footer() {
     }, triggerRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [language])
 
   const brandProfileHref = '/downloads/ainar-fze-brand-profile.pdf'
   const navItems = [
@@ -136,7 +175,7 @@ export default function Footer() {
 
               <div className={`flex flex-wrap gap-4 ${isArabic ? 'justify-end' : ''}`}>
                 <a
-                  href="mailto:meryem.ham@gmail.com"
+                  href="mailto:hello@ainar.ae"
                   className="flex items-center gap-2 px-7 py-3.5 bg-light text-dark rounded-full font-medium hover:bg-secondary transition-colors duration-300"
                 >
                   <Mail size={20} />
@@ -164,12 +203,12 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="lg:col-span-5 lg:col-start-8 flex flex-col md:flex-row justify-end gap-8 lg:gap-12 text-left">
-              <div className="flex flex-col items-start">
+            <div className={`lg:col-span-5 lg:col-start-8 flex flex-col md:flex-row justify-end gap-8 lg:gap-12 ${isArabic ? 'text-right' : 'text-left'}`}>
+              <div className={`flex flex-col ${isArabic ? 'items-end' : 'items-start'}`}>
                 <h4 className="text-light font-medium mb-8 tracking-widest uppercase text-sm">
                   {language === 'en' ? 'Navigation' : 'التنقل'}
                 </h4>
-                <ul className="flex flex-col gap-3.5 text-light/60 text-base md:text-lg items-start">
+                <ul className={`flex flex-col gap-3.5 text-light/60 text-base md:text-lg ${isArabic ? 'items-end' : 'items-start'}`}>
                   {navItems.map((item) => (
                     <li key={item.href}>
                       <a
@@ -184,11 +223,11 @@ export default function Footer() {
                 </ul>
               </div>
 
-              <div className="flex flex-col items-start">
+              <div className={`flex flex-col ${isArabic ? 'items-end' : 'items-start'}`}>
                 <h4 className="text-light font-medium mb-8 tracking-widest uppercase text-sm">
                   {language === 'en' ? 'Services' : 'الخدمات'}
                 </h4>
-                <ul className="flex flex-col gap-3.5 text-light/60 text-base md:text-lg items-start">
+                <ul className={`flex flex-col gap-3.5 text-light/60 text-base md:text-lg ${isArabic ? 'items-end' : 'items-start'}`}>
                   {serviceItems.map((item) => (
                     <li key={item.titleEn}>
                       <a
@@ -217,17 +256,35 @@ export default function Footer() {
                     : 'اشترك في نشرتنا الإخبارية لأحدث التحديثات حول الذكاء الاصطناعي والاستدامة والتكنولوجيا الخضراء.'}
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4">
                 <input
                   type="email"
+                  required
+                  dir="ltr"
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
                   placeholder={language === 'en' ? 'Enter your email' : 'أدخل بريدك الإلكتروني'}
                   aria-label={language === 'en' ? 'Email for newsletter' : 'البريد الإلكتروني للنشرة الإخبارية'}
                   className="flex-1 bg-light/5 border border-light/10 rounded-full px-6 py-3.5 text-light placeholder:text-light/30 focus:outline-none focus:border-secondary transition-colors"
                 />
-                <button className="bg-light text-dark px-8 py-3.5 rounded-full font-medium hover:bg-secondary transition-colors duration-300">
-                  {language === 'en' ? 'Subscribe' : 'اشترك'}
+                <button
+                  type="submit"
+                  disabled={isNewsletterSubmitting || newsletterStatus === 'success'}
+                  className="bg-light text-dark px-8 py-3.5 rounded-full font-medium hover:bg-secondary transition-colors duration-300 disabled:opacity-50"
+                >
+                  {isNewsletterSubmitting ? (language === 'en' ? '...' : '...') :
+                    newsletterStatus === 'success' ? (language === 'en' ? 'Subscribed!' : 'تم الاشتراك!') :
+                      (language === 'en' ? 'Subscribe' : 'اشترك')}
                 </button>
-              </div>
+              </form>
+              {newsletterStatus === 'error' && (
+                <div className="mt-3 flex items-center gap-2.5 rounded-full border border-red-500/30 bg-red-500/10 px-5 py-2.5 text-red-300">
+                  <AlertCircle size={16} className="shrink-0" />
+                  <span className="text-sm font-medium">
+                    {language === 'en' ? 'Something went wrong. Please try again.' : 'حدث خطأ. يرجى المحاولة مرة أخرى.'}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -238,7 +295,7 @@ export default function Footer() {
 
             <div className="flex items-center justify-center">
               <img
-                src="/ainar-logo-transparent.png"
+                src="/ainar-logo-transparent.webp"
                 alt="AINAR brand logo for footer"
                 width={180}
                 height={44}

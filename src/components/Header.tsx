@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { Menu, X, Globe, Sparkles, FileDown } from 'lucide-react';
+import { Menu, X, Sparkles, FileDown, Globe } from 'lucide-react';
 import Link from 'next/link';
 import gsap from 'gsap';
 import NavMenu from '@/components/ui/menu-hover-effects';
 
 export default function Header() {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, isRTL } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -62,10 +62,10 @@ export default function Header() {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       setIsScrolled(currentScrollY > 50);
-      const lastScrollY = lastScrollYRef.current;
-      const revealThreshold = Math.max(220, window.innerHeight * 0.5);
+      const heroThreshold = Math.max(window.innerHeight * 0.7, 500);
 
-      if (currentScrollY <= 60) {
+      // In the hero section: always display the regular top navbar
+      if (currentScrollY <= heroThreshold) {
         setHeaderVisible(true);
         hiddenFromYRef.current = currentScrollY;
         clearHideTimer();
@@ -73,33 +73,10 @@ export default function Header() {
         return;
       }
 
-      if (currentScrollY > lastScrollY) {
-        // Scrolling down: hide quickly and reset anchor for future reveal distance.
-        hiddenFromYRef.current = currentScrollY;
-        if (currentScrollY > 100 && !isOpen) {
-          setHeaderVisible(false);
-        }
-        clearHideTimer();
-      } else if (currentScrollY < lastScrollY) {
-        // Scrolling up: only reveal after meaningful upward distance.
-        const upwardDistance = hiddenFromYRef.current - currentScrollY;
-        if (isOpen || upwardDistance >= revealThreshold) {
-          setHeaderVisible(true);
-        }
-
-        if (isVisibleRef.current && currentScrollY > 100 && !isOpen) {
-          scheduleHide();
-        } else {
-          clearHideTimer();
-        }
-      } else {
-        if (currentScrollY > 100 && !isOpen) {
-          scheduleHide();
-        } else {
-          clearHideTimer();
-        }
+      // Scrolled past the hero section: hide the top navbar so the right-side floating navbar takes over
+      if (!isOpen) {
+        setHeaderVisible(false);
       }
-
       lastScrollYRef.current = currentScrollY;
     };
 
@@ -189,7 +166,7 @@ export default function Header() {
 
   const brandMark = (
     <img
-      src="/ainar-logo-transparent.png"
+      src="/ainar-logo-transparent.webp"
       alt="AINAR corporate logo"
       width={72}
       height={18}
@@ -206,7 +183,7 @@ export default function Header() {
             : 'bg-white/5 backdrop-blur-sm border-b border-white/5'
           }`}
       >
-        <div className="w-full px-4 sm:px-8 lg:pl-12 lg:pr-24 max-w-[100vw] overflow-hidden">
+        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
           <div className="flex items-center justify-between h-20 md:h-24">
             {/* Left: Status Indicator & Brand */}
             <div className="flex items-center gap-3 lg:-ml-2">
@@ -238,17 +215,35 @@ export default function Header() {
               </div>
 
               <div className="flex items-center gap-3">
-
                 {/* Language Toggle */}
                 <button
-                  onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
-                  className="group flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-300 bg-white/50 backdrop-blur-md border border-white/20 hover:bg-white/80 hover:scale-105 shadow-sm"
-                  aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
+                  onClick={() => {
+                    const newLang = language === 'en' ? 'ar' : 'en';
+                    // Detect currently visible section for anchor preservation
+                    const sections = document.querySelectorAll('section[id]');
+                    let closestSection: string | null = null;
+                    let closestDistance = Infinity;
+                    sections.forEach((section) => {
+                      const rect = section.getBoundingClientRect();
+                      const distance = Math.abs(rect.top);
+                      if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestSection = section.id;
+                      }
+                    });
+                    setLanguage(newLang);
+                    // Scroll back to the same section after re-render
+                    if (closestSection) {
+                      const sectionId = closestSection;
+                      requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                          document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+                        });
+                      });
+                    }
+                  }}
+                  className="hidden"
                 >
-                  <Globe size={16} className="text-neutral-900 group-hover:text-gold transition-colors" />
-                  <span className="text-sm font-bold text-neutral-900 group-hover:text-gold transition-colors" aria-hidden="true">
-                    {language === 'en' ? 'AR' : 'EN'}
-                  </span>
                 </button>
 
                 {/* Hamburger Menu Button */}
@@ -275,6 +270,7 @@ export default function Header() {
       {isOpen && (
         <div
           ref={menuRef}
+          dir={isRTL ? 'rtl' : 'ltr'}
           className="fixed inset-0 z-40 bg-neutral-950/98 backdrop-blur-2xl overflow-y-auto"
         >
           {/* Animated Background Gradient */}
@@ -342,6 +338,7 @@ export default function Header() {
                 </h4>
                 <a
                   href="mailto:hello@ainar.ae"
+                  dir="ltr"
                   className="text-lg font-medium text-neutral-300 hover:text-gold transition-colors"
                 >
                   hello@ainar.ae
@@ -358,6 +355,7 @@ export default function Header() {
                 </h4>
                 <a
                   href="tel:+97144000000"
+                  dir="ltr"
                   className="text-lg font-medium text-neutral-300 hover:text-gold transition-colors"
                 >
                   +971 4 XXX XXXX

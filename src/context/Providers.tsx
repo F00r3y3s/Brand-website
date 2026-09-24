@@ -4,10 +4,10 @@ import React, { ReactNode } from 'react';
 import { LanguageProvider } from './LanguageContext';
 import { ThemeProvider } from './ThemeContext';
 
-export function Providers({ children }: { children: ReactNode }) {
+export function Providers({ children, initialLang }: { children: ReactNode, initialLang?: 'en' | 'ar' }) {
   return (
     <ThemeProvider>
-      <LanguageProvider>
+      <LanguageProvider initialLang={initialLang}>
         {children}
       </LanguageProvider>
     </ThemeProvider>

@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import type { Metadata } from "next";
 import { Inter, Outfit, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
@@ -27,7 +28,7 @@ const notoSansArabic = Noto_Sans_Arabic({
 export const metadata: Metadata = {
   metadataBase: new URL('https://ainar.ae'),
   title: {
-    default: "AInar - Premium Brand Agency | Sustainability & AI",
+    default: "AINAR",
     template: "%s | AINAR"
   },
   description:
@@ -45,7 +46,7 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: "AInar - Premium Brand Agency | Sustainability & AI",
+    title: "AINAR",
     description: "Empowering businesses through sustainability and AI-driven digital transformation in the UAE.",
     url: 'https://ainar.ae',
     siteName: 'AINAR',
@@ -62,17 +63,26 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "AInar - Premium Brand Agency | Sustainability & AI",
+    title: "AINAR",
     description: "Empowering businesses through sustainability and AI-driven digital transformation in the UAE.",
     images: ['/og-image.png'],
   },
+  icons: {
+    icon: [
+      { url: '/favicon.png', type: 'image/png' },
+    ],
+  },
+  manifest: '/site.webmanifest',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const langCookie = cookieStore.get('language')?.value;
+
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <head>
@@ -91,7 +101,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         <div className="grain-overlay" />
-        <Providers>
+        <Providers initialLang={langCookie as any}>
           <MagneticCursor />
           {children}
         </Providers>

@@ -41,7 +41,7 @@ export default function ProjectShowcase() {
       language === 'en' ? 'Mobile App' : 'تطبيق جوال',
       language === 'en' ? 'In Progress' : 'قيد التنفيذ',
     ],
-    imageUrl: '/projects/phone-mockup.png',
+    imageUrl: '/projects/phone-mockup.webp',
   };
 
   const sideOffset = Math.max(78, Math.round(cardWidth * 0.22));
@@ -88,7 +88,7 @@ export default function ProjectShowcase() {
                 <div className="absolute top-6 left-6 z-30 pointer-events-none">
                   <div className="rounded-2xl border border-white/70 bg-white/80 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.35)] px-3 py-2">
                     <Image
-                      src="/ainar-logo-transparent.png"
+                      src="/ainar-logo-transparent.webp"
                       alt="AINAR brand logo for ongoing project showcase"
                       width={180}
                       height={90}
@@ -120,7 +120,7 @@ export default function ProjectShowcase() {
               <div className="group w-full h-full rounded-[2rem] bg-neutral-950 relative overflow-hidden border border-white/10 flex flex-col items-center justify-center text-center px-8 transition-all duration-200 hover:scale-[1.01] hover:border-gold/45 shadow-xl">
                 <div className="rounded-3xl border border-white/75 bg-white/90 backdrop-blur-xl shadow-[0_18px_44px_rgba(0,0,0,0.45)] px-6 py-4 mb-6 transition-transform duration-200 group-hover:scale-105 group-hover:shadow-[0_24px_56px_rgba(0,0,0,0.55)]">
                   <Image
-                    src="/ainar-logo-transparent.png"
+                    src="/ainar-logo-transparent.webp"
                     alt="AINAR brand logo for upcoming projects"
                     width={320}
                     height={160}

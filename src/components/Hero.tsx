@@ -34,9 +34,11 @@ export default function Hero() {
   const alifFlagShadowRef = useRef<SVGPathElement>(null);
   const supportingTextRef = useRef<HTMLDivElement>(null);
   const supportingTextBodyRef = useRef<HTMLParagraphElement>(null);
+  const arOverlayLine1Ref = useRef<HTMLSpanElement>(null);
+  const arOverlayLine2Ref = useRef<HTMLSpanElement>(null);
   const mousePos = useRef({
-    x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0,
-    y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0,
+    x: -9999,
+    y: -9999,
   });
   const rotation = useRef({ x: 15, y: 15 });
   const isSphereActive = useRef(false);
@@ -247,6 +249,10 @@ export default function Hero() {
 
       // Ensure letters start at their natural positions
       gsap.set('.kinetic-letter', { x: 0, y: 0, z: 0, scale: 1, opacity: 1, rotateX: 0, rotateY: 0, rotateZ: 0 });
+      // In Arabic mode, kinetic letters are hidden at rest – the overlay shows proper connected words
+      if (language === 'ar') {
+        gsap.set('.kinetic-letter', { opacity: 0 });
+      }
 
       const getUAEFlagColorAt = (xNorm: number, yNorm: number): string => {
         // Vertical red band on hoist side + horizontal tricolor:
@@ -490,12 +496,15 @@ export default function Hero() {
               x: 0, y: 0, z: 0,
               rotateX: 0, rotateY: 0, rotateZ: 0,
               scale: 1,
-              opacity: 1,
+              opacity: arOverlayLine1Ref.current ? 0 : 1,
               duration: 0.42,
               ease: 'power2.out',
               stagger: { amount: 0.14, from: 'center' },
               overwrite: 'auto'
             });
+            // Restore Arabic word overlays if active
+            if (arOverlayLine1Ref.current) gsap.to(arOverlayLine1Ref.current, { opacity: 1, duration: 0.32, ease: 'power2.out', overwrite: 'auto' });
+            if (arOverlayLine2Ref.current) gsap.to(arOverlayLine2Ref.current, { opacity: 1, duration: 0.32, ease: 'power2.out', overwrite: 'auto' });
           }
           return;
         }
@@ -526,6 +535,9 @@ export default function Hero() {
           outsideReleaseSinceMs = 0;
           isSphereActive.current = true;
           animateHeadlineSpacing(true);
+          // In Arabic mode: fade out word overlays so kinetic letters become the globe
+          if (arOverlayLine1Ref.current) gsap.to(arOverlayLine1Ref.current, { opacity: 0, duration: 0.25, ease: 'power2.out', overwrite: 'auto' });
+          if (arOverlayLine2Ref.current) gsap.to(arOverlayLine2Ref.current, { opacity: 0, duration: 0.25, ease: 'power2.out', overwrite: 'auto' });
           gsap.to(globeStrength, {
             current: 1,
             duration: 0.45,
@@ -568,7 +580,8 @@ export default function Hero() {
                 x: 0, y: 0, z: 0,
                 rotateX: 0, rotateY: 0, rotateZ: 0,
                 scale: 1,
-                opacity: 1,
+                // In Arabic mode kinetic spans return to transparent – the overlay will show words
+                opacity: arOverlayLine1Ref.current ? 0 : 1,
                 duration: 1.05,
                 ease: 'elastic.out(1, 0.42)',
                 stagger: { amount: 0.2, from: 'center' },
@@ -576,6 +589,10 @@ export default function Hero() {
               },
               0.05
             );
+
+            // In Arabic mode: fade word overlays back in after letters settle
+            if (arOverlayLine1Ref.current) gsap.to(arOverlayLine1Ref.current, { opacity: 1, duration: 0.55, ease: 'power2.out', delay: 0.5, overwrite: 'auto' });
+            if (arOverlayLine2Ref.current) gsap.to(arOverlayLine2Ref.current, { opacity: 1, duration: 0.55, ease: 'power2.out', delay: 0.5, overwrite: 'auto' });
           }
         }
 
@@ -653,10 +670,12 @@ export default function Hero() {
         });
 
         // Branding Parallax (LOCKED)
-        const px = (mX / window.innerWidth - 0.5) * 40;
-        const py = (mY / window.innerHeight - 0.5) * 40;
-        gsap.to('.hero-letter-a', { x: px * 1.2, y: py * 0.8, duration: 1, ease: 'power2.out', overwrite: 'auto' });
-        gsap.to('.hero-letter-alif', { x: px * -0.5, y: py * -0.3, duration: 1.2, ease: 'power2.out', overwrite: 'auto' });
+        if (mX > -5000) {
+          const px = (mX / window.innerWidth - 0.5) * 40;
+          const py = (mY / window.innerHeight - 0.5) * 40;
+          gsap.to('.hero-letter-a', { x: px * 1.2, y: py * 0.8, duration: 1, ease: 'power2.out', overwrite: 'auto' });
+          gsap.to('.hero-letter-alif', { x: px * -0.5, y: py * -0.3, duration: 1.2, ease: 'power2.out', overwrite: 'auto' });
+        }
       };
 
       gsap.ticker.add(updatePhysics);
@@ -700,21 +719,31 @@ export default function Hero() {
       };
     }, containerRef);
     return () => ctx.revert();
-  }, []);
+  }, [language]);
 
   return (
     <section id="home" ref={containerRef} className="relative h-screen flex flex-col items-center justify-center overflow-x-clip overflow-y-visible bg-cream">
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <img src="/hero-bg-clean.png" alt="Hero Background" className="w-full h-full object-cover opacity-35" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
+      <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center overflow-hidden">
+        <div className="relative w-full max-w-[1600px] h-full">
+          <img
+            src="/hero-bg-clean.webp"
+            alt="Hero Background"
+            className="w-full h-full object-cover opacity-35"
+            style={{
+              maskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)',
+              WebkitMaskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)'
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
+        </div>
       </div>
 
-      <div className="relative z-10 w-full h-full max-w-[1440px] mx-auto px-4 sm:pl-6 sm:pr-10 lg:px-12 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-10 items-center pt-20 pb-16 lg:pt-24 lg:pb-32">
-        <div ref={headlineRef} className="flex flex-col items-start justify-center text-left order-2 lg:order-1 relative z-20 max-w-[46rem] pt-0 lg:ml-0 overflow-visible">
-          <div ref={logoBlockRef} className="mb-0 lg:mb-[-3.5rem] mt-2 lg:-ml-10">
+      <div className="relative z-10 w-full h-full max-w-[1440px] mx-auto px-4 sm:pl-6 sm:pr-10 lg:px-12 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-10 items-center pt-20 pb-16 lg:pt-24 lg:pb-32" dir="ltr">
+        <div ref={headlineRef} className={`flex flex-col justify-center order-2 lg:order-1 relative z-20 max-w-[46rem] pt-0 lg:ml-0 overflow-visible ${language === 'ar' ? 'items-end text-right' : 'items-start text-left'}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
+          <div ref={logoBlockRef} className={`mb-0 lg:mb-[-3.5rem] mt-2 ${language === 'ar' ? 'lg:-mr-10' : 'lg:-ml-10'}`}>
             <div className="hero-logo-split relative w-[336px] sm:w-[420px] lg:w-[530px] aspect-[2000/1100]">
-              <img ref={logoLeftRef} src="/hero-assets/logo-part-1-aligned.png" className="hero-logo-left absolute inset-0 w-full h-full object-contain opacity-0" />
-              <img ref={logoRightRef} src="/hero-assets/logo-part-2-aligned.png" className="hero-logo-right absolute inset-0 w-full h-full object-contain opacity-0" />
+              <img ref={logoLeftRef} src="/hero-assets/logo-part-1-aligned.webp" className="hero-logo-left absolute inset-0 w-full h-full object-contain opacity-0" />
+              <img ref={logoRightRef} src="/hero-assets/logo-part-2-aligned.webp" className="hero-logo-right absolute inset-0 w-full h-full object-contain opacity-0" />
             </div>
           </div>
 
@@ -725,16 +754,41 @@ export default function Hero() {
             }}
             className="opacity-0 translate-y-8 select-none"
           >
-            <h1 className="font-display font-black text-neutral-900 leading-[1.06] tracking-tight mb-7 drop-shadow-sm w-full max-w-[44rem]">
-              <span className="block text-[clamp(1.75rem,5vw,2.5rem)] lg:text-[clamp(1.15rem,3.1vw,2.2rem)] leading-tight overflow-visible">
-                {(language === 'en' ? 'Sustainability in Our Roots.' : 'الاستدامة في جذورنا.').split('').map((char, i) => (
-                  <span key={i} className="kinetic-letter inline-block whitespace-pre preserve-3d">{char}</span>
+            <h1 className="font-display font-black text-neutral-900 leading-[1.06] tracking-tight mb-7 drop-shadow-sm w-full max-w-[44rem] relative" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+              {/* Line 1: kinetic letters – Arabic chars in AR mode, English chars in EN mode */}
+              <span className="block text-[clamp(1.75rem,5vw,2.5rem)] lg:text-[clamp(1.15rem,3.1vw,2.2rem)] leading-tight overflow-visible relative">
+                {(language === 'ar' ? 'الاستدامة في جذورنا.' : 'Sustainability in Our Roots.').split('').map((char, i) => (
+                  <span
+                    key={i}
+                    className="kinetic-letter inline-block whitespace-pre preserve-3d"
+                  >{char}</span>
                 ))}
+                {/* Arabic word overlay – properly shaped connected text, visible at rest, hidden during globe */}
+                {language === 'ar' && (
+                  <span
+                    ref={arOverlayLine1Ref}
+                    className="absolute inset-0 flex items-center pointer-events-none select-none font-display font-black text-neutral-900"
+                    dir="rtl"
+                    aria-hidden="true"
+                  >الاستدامة في جذورنا.</span>
+                )}
               </span>
-              <span className="block mt-1 text-[clamp(1.75rem,5vw,2.5rem)] lg:text-[clamp(1.15rem,3.1vw,2.2rem)] text-neutral-800 leading-tight overflow-visible">
-                {(language === 'en' ? 'Intelligence for Our Future.' : 'الذكاء لمستقبلنا.').split('').map((char, i) => (
-                  <span key={i} className="kinetic-letter inline-block whitespace-pre preserve-3d">{char}</span>
+              {/* Line 2 */}
+              <span className="block mt-1 text-[clamp(1.75rem,5vw,2.5rem)] lg:text-[clamp(1.15rem,3.1vw,2.2rem)] text-neutral-800 leading-tight overflow-visible relative">
+                {(language === 'ar' ? 'الذكاء لمستقبلنا.' : 'Intelligence for Our Future.').split('').map((char, i) => (
+                  <span
+                    key={i}
+                    className="kinetic-letter inline-block whitespace-pre preserve-3d"
+                  >{char}</span>
                 ))}
+                {language === 'ar' && (
+                  <span
+                    ref={arOverlayLine2Ref}
+                    className="absolute inset-0 flex items-center pointer-events-none select-none font-display font-black text-neutral-800"
+                    dir="rtl"
+                    aria-hidden="true"
+                  >الذكاء لمستقبلنا.</span>
+                )}
               </span>
             </h1>
           </div>
@@ -746,7 +800,7 @@ export default function Hero() {
             }}
             className="opacity-0 translate-y-8"
           >
-            <p ref={supportingTextBodyRef} className="text-lg md:text-xl text-neutral-700 max-w-xl mb-8 leading-relaxed font-medium text-pretty">
+            <p ref={supportingTextBodyRef} dir={language === 'ar' ? 'rtl' : 'ltr'} className={`text-lg md:text-xl text-neutral-700 max-w-xl mb-8 leading-relaxed font-medium text-pretty ${language === 'ar' ? 'text-right' : ''}`}>
               {language === 'en' ? 'AI-powered sustainability solutions and app that reward green behavior and drive real impact.' : 'حلول استدامة مدعومة بالذكاء الاصطناعي وتطبيق يكافئ السلوك الأخضر ويدفع نحو تأثير حقيقي.'}
             </p>
           </div>
@@ -772,12 +826,12 @@ export default function Hero() {
                   })}
                 </div>
                 <div className="hero-letter-a absolute left-[2%] bottom-0 z-[2] w-[74%] h-[88%] drop-shadow-[0_6px_16px_rgba(10,22,40,0.18)]"
-                  style={{ backgroundColor: '#000000', WebkitMaskImage: 'url(/hero-assets/letter-a.png)', maskImage: 'url(/hero-assets/letter-a.png)', WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat', WebkitMaskPosition: 'center', maskPosition: 'center', WebkitMaskSize: 'contain', maskSize: 'contain' }} />
+                  style={{ backgroundColor: '#000000', WebkitMaskImage: 'url(/hero-assets/letter-a.webp)', maskImage: 'url(/hero-assets/letter-a.webp)', WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat', WebkitMaskPosition: 'center', maskPosition: 'center', WebkitMaskSize: 'contain', maskSize: 'contain' }} />
                 <div className="hero-letter-alif absolute left-[61.5%] top-[8%] w-[14.5%] h-[60%]">
                   <div
                     ref={alifShapeRef}
                     className="hero-letter-alif-shape absolute inset-0 z-[3] drop-shadow-[0_5px_14px_rgba(10,22,40,0.18)]"
-                    style={{ backgroundColor: '#000000', WebkitMaskImage: 'url(/hero-assets/letter-alif.png)', maskImage: 'url(/hero-assets/letter-alif.png)', WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat', WebkitMaskPosition: 'center', maskPosition: 'center', WebkitMaskSize: 'contain', maskSize: 'contain' }}
+                    style={{ backgroundColor: '#000000', WebkitMaskImage: 'url(/hero-assets/letter-alif.webp)', maskImage: 'url(/hero-assets/letter-alif.webp)', WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat', WebkitMaskPosition: 'center', maskPosition: 'center', WebkitMaskSize: 'contain', maskSize: 'contain' }}
                   />
                   <div ref={alifFlagRef} className="hero-alif-flag absolute left-[26%] top-[-30%] z-[1] w-[520%] h-[124%] opacity-0">
                     <svg className="hero-alif-flag-svg" viewBox="0 0 490 220" aria-hidden="true" preserveAspectRatio="xMinYMid meet">
@@ -817,9 +871,9 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-12 left-0 right-0 z-20 flex flex-col items-center gap-4 pointer-events-none">
-        <div ref={(el) => { if (el) heroRefs.current[2] = el }} className="opacity-0 translate-y-8 pointer-events-auto">
-          <button onClick={(e) => { createRipple(e); setIsModalOpen(true); }} className="group px-10 py-4 rounded-full bg-neutral-900 text-white font-bold uppercase tracking-widest text-xs transition-all hover:scale-105 hover:bg-neutral-800 shadow-lg">
+      <div className="absolute bottom-12 left-0 right-0 z-20 flex flex-col items-center gap-4 pointer-events-none max-w-[1440px] mx-auto px-4">
+        <div ref={(el) => { if (el) heroRefs.current[2] = el }} className="opacity-0 translate-y-8 pointer-events-auto w-full sm:w-auto flex justify-center">
+          <button onClick={(e) => { createRipple(e); setIsModalOpen(true); }} className="group w-full sm:w-auto px-10 py-4 rounded-full bg-neutral-900 text-white font-bold uppercase tracking-widest text-xs transition-all hover:scale-105 hover:bg-neutral-800 shadow-lg">
             <span className="relative z-10 flex items-center gap-3">{language === 'en' ? 'Start Your Journey' : 'ابدأ رحلتك'}<ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" /></span>
           </button>
         </div>
@@ -830,7 +884,7 @@ export default function Hero() {
           </div>
         </button>
       </div>
-      <ServiceInquiryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} serviceTitle="" mainTitle={language === 'en' ? 'Start Your Journey' : 'ابدأ رحلتك'} enableServiceSelection={true} availableServices={servicesData} />
+      <ServiceInquiryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} serviceTitle="" mainTitle={language === 'en' ? 'Start Your Journey' : 'ابدأ رحلتك'} enableServiceSelection={true} availableServices={language === 'ar' ? servicesData.map(s => ({ title: s.titleAr || s.title })) : servicesData} />
     </section>
   );
 }

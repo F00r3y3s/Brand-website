@@ -10,18 +10,22 @@ import Manifesto from '@/components/Manifesto';
 import WhoWeAre from '@/components/WhoWeAre';
 import ProjectShowcase from '@/components/ProjectShowcase';
 import Services from '@/components/Services';
-import Testimonials from '@/components/Testimonials';
+// import Testimonials from '@/components/Testimonials';
 import Team from '@/components/Team';
 import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
-import CookiesConsent from '@/components/CookiesConsent';
 import FloatingCTA from '@/components/FloatingCTA';
+import FloatingNav from '@/components/FloatingNav';
+import PartnerBanner from '@/components/PartnerBanner';
+import PartnerAnnouncementModal from '@/components/PartnerAnnouncementModal';
+import { useLanguage } from '@/context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const FAQ_STICKY_TEST_VH = 400
 
 export default function Home() {
+  const { language } = useLanguage();
   const heroParallaxRef = useRef<HTMLDivElement>(null);
   const whoParallaxRef = useRef<HTMLDivElement>(null);
   const projectsParallaxRef = useRef<HTMLDivElement>(null);
@@ -40,28 +44,51 @@ export default function Home() {
       touchMultiplier: 1.5,
       infinite: false,
     });
+    let rafId = 0;
+    let scrollLockCount = 0;
+
+    const handleScrollLock = (event: Event) => {
+      const customEvent = event as CustomEvent<{ locked?: boolean }>;
+      const shouldLock = customEvent.detail?.locked === true;
+
+      if (shouldLock) {
+        scrollLockCount += 1;
+      } else {
+        scrollLockCount = Math.max(0, scrollLockCount - 1);
+      }
+
+      if (scrollLockCount > 0) {
+        lenis.stop();
+      } else {
+        lenis.start();
+      }
+    };
+
+    window.addEventListener('app:scroll-lock', handleScrollLock as EventListener);
 
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
+      window.removeEventListener('app:scroll-lock', handleScrollLock as EventListener);
+      cancelAnimationFrame(rafId);
       lenis.destroy();
     };
   }, []);
 
   useEffect(() => {
-    if (!heroParallaxRef.current || !whoParallaxRef.current || !projectsParallaxRef.current || !faqParallaxRef.current || !footerParallaxRef.current) return;
+    if (!heroParallaxRef.current || !whoParallaxRef.current || !projectsParallaxRef.current || !footerParallaxRef.current) return;
 
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         id: 'heroParallaxPin',
         trigger: heroParallaxRef.current,
         start: 'top top',
-        end: '+=180%', // Increased for more scroll room
+        end: () => `+=${(heroParallaxRef.current?.offsetHeight || window.innerHeight) + window.innerHeight * 0.65}`,
         pin: true,
         pinSpacing: false,
         anticipatePin: 1,
@@ -71,7 +98,7 @@ export default function Home() {
         id: 'whoParallaxPin',
         trigger: whoParallaxRef.current,
         start: 'top top',
-        end: '+=180%', // Increased for more scroll room
+        end: () => `+=${(whoParallaxRef.current?.offsetHeight || window.innerHeight) + window.innerHeight * 0.35}`,
         pin: true,
         pinSpacing: false,
         anticipatePin: 1,
@@ -81,17 +108,7 @@ export default function Home() {
         id: 'projectsParallaxPin',
         trigger: projectsParallaxRef.current,
         start: 'top top',
-        end: '+=70%',
-        pin: true,
-        pinSpacing: false,
-        anticipatePin: 1,
-      });
-
-      ScrollTrigger.create({
-        id: 'faqParallaxPin',
-        trigger: faqParallaxRef.current,
-        start: 'top top',
-        end: () => `+=${Math.round(window.innerHeight * (FAQ_STICKY_TEST_VH / 100))}`,
+        end: () => `+=${projectsParallaxRef.current?.offsetHeight || window.innerHeight}`,
         pin: true,
         pinSpacing: false,
         anticipatePin: 1,
@@ -101,7 +118,24 @@ export default function Home() {
     ScrollTrigger.refresh();
 
     return () => ctx.revert();
-  }, []);
+  }, [language]);
+
+  useEffect(() => {
+    // When language changes (especially to RTL), text wrapping and heights change
+    // significantly. A single refresh is insufficient because:
+    // 1. Component useEffects with [language] deps kill & recreate their own triggers
+    // 2. Font/text reflow can take multiple frames to settle
+    // 3. Pinned elements need cascading recalculation
+    // We do a multi-pass refresh to catch all layout changes.
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    // First pass: after React commit + initial reflow
+    timers.push(setTimeout(() => ScrollTrigger.refresh(), 100));
+    // Second pass: after fonts and images settle
+    timers.push(setTimeout(() => ScrollTrigger.refresh(), 400));
+    // Third pass: final safety net for complex pinned sections
+    timers.push(setTimeout(() => ScrollTrigger.refresh(), 800));
+    return () => timers.forEach(clearTimeout);
+  }, [language]);
 
   return (
     <main id="main-content" className="bg-cream min-h-screen">
@@ -132,15 +166,19 @@ export default function Home() {
         <Services />
       </div>
       <Team />
-      <Testimonials />
+      {/* <Testimonials /> */}
       <div ref={faqParallaxRef} className="relative z-40 bg-[#F3F2EF]">
         <FAQ />
+      </div>
+      <div className="relative z-45">
+        <PartnerBanner />
       </div>
       <div ref={footerParallaxRef} className="relative z-50">
         <Footer />
       </div>
       <FloatingCTA />
-      <CookiesConsent />
+      <FloatingNav />
+      <PartnerAnnouncementModal />
     </main>
   );
 }
