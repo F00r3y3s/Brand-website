@@ -146,6 +146,7 @@ export default function Header() {
     { name: language === 'en' ? 'Projects' : 'المشاريع', href: '#projects' },
     { name: language === 'en' ? 'Services' : 'الخدمات', href: '#services' },
     { name: language === 'en' ? 'Team' : 'الفريق', href: '#team' },
+    { name: language === 'en' ? 'Partners' : 'شركاؤنا', href: '#partners' },
     { name: language === 'en' ? 'Contact' : 'تواصل معنا', href: '#footer' },
     {
       name: language === 'en' ? 'Download' : 'تحميل',
@@ -161,6 +162,7 @@ export default function Header() {
     { href: '#projects', label: { en: 'Projects', ar: 'المشاريع' } },
     { href: '#services', label: { en: 'Services', ar: 'الخدمات' } },
     { href: '#team', label: { en: 'Team', ar: 'الفريق' } },
+    { href: '#partners', label: { en: 'Partners', ar: 'شركاؤنا' } },
     { href: '#footer', label: { en: 'Contact', ar: 'تواصل معنا' } },
   ];
 
@@ -195,7 +197,7 @@ export default function Header() {
                 </span>
               </div>
 
-              {/* Brand Logo — Always LTR */}
+              {/* Brand Logo - Always LTR */}
               <Link
                 href="/"
                 className="group flex items-center gap-2"

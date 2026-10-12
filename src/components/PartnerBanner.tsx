@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
-import { ExternalLink, ArrowUpRight, Calendar, MapPin, Sparkles, Layers, Image as ImageIcon, CheckCircle2 } from 'lucide-react'
+import { ArrowUpRight, Calendar, MapPin, Sparkles, Layers, Image as ImageIcon, CheckCircle2 } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 
 interface BannerFormat {
@@ -94,7 +94,7 @@ export default function PartnerBanner() {
             <p className="text-dark/60 text-sm md:text-base font-light max-w-2xl mx-auto leading-relaxed">
               {isArabic
                 ? 'تفخر اينار بشراكتها الاستراتيجية مع المؤتمر العالمي للمرافق لتسريع التحول الرقمي والاستدامة في قطاع الطاقة والمياه.'
-                : 'AINAR is proud to be an official strategic partner of the World Utilities Congress — driving AI innovation and sustainable transformation across global utilities.'}
+                : 'AINAR is proud to be an official strategic partner of the World Utilities Congress, driving AI innovation and sustainable transformation across global utilities.'}
             </p>
           </motion.div>
 
@@ -234,18 +234,8 @@ export default function PartnerBanner() {
                   </div>
                 </div>
 
-                {/* Action buttons */}
-                <div className="flex items-center gap-3">
-                  <a
-                    href="https://worldutilitiescongress.com/media/new-download-centre/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-mono text-white/70 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-                  >
-                    <span>{isArabic ? 'مركز التحميل' : 'Media Centre'}</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-
+                {/* Action button: Visit Official Summit */}
+                <div className="flex items-center">
                   <a
                     href="https://worldutilitiescongress.com"
                     target="_blank"

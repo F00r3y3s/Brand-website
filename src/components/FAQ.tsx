@@ -13,10 +13,6 @@ const FAQS_EN = [
         answer: "We specialize in high-impact sectors including Renewable Energy, Sustainable Smart Cities, AI-Driven Manufacturing, and Green E-Commerce. Our approach is tailored to the unique regulatory and cultural landscape of the UAE and global markets."
     },
     {
-        question: "How does the AI-powered sustainability app work?",
-        answer: "Our app uses advanced machine learning to analyze user behaviors and environmental impact in real-time. It provides actionable insights, rewards green choices, and fosters a community of impact through innovative gamification and verified sustainability metrics."
-    },
-    {
         question: "Do you offer custom software development for startups?",
         answer: "Yes, we partner with startups and established enterprises to design and build scalable, future-proof software ecosystems. From MVP development to enterprise-level AI integration, we ensure your tech is as sustainable as your vision."
     },
@@ -30,10 +26,6 @@ const FAQS_AR = [
     {
         question: "ما القطاعات التي تتخصص فيها اينار؟",
         answer: "نتخصص في القطاعات ذات التأثير العالي بما في ذلك الطاقة المتجددة والمدن الذكية المستدامة والتصنيع المدعوم بالذكاء الاصطناعي والتجارة الإلكترونية الخضراء. يتم تصميم نهجنا وفقاً للمشهد التنظيمي والثقافي الفريد لدولة الإمارات العربية المتحدة والأسواق العالمية."
-    },
-    {
-        question: "كيف يعمل تطبيق الاستدامة المدعوم بالذكاء الاصطناعي؟",
-        answer: "يستخدم تطبيقنا التعلم الآلي المتقدم لتحليل سلوكيات المستخدم والأثر البيئي في الوقت الفعلي. يوفر رؤى قابلة للتنفيذ ويكافئ الخيارات الخضراء ويعزز مجتمع التأثير من خلال أساليب التلعيب المبتكرة ومقاييس الاستدامة المعتمدة."
     },
     {
         question: "هل تقدمون خدمات تطوير البرمجيات المخصصة للشركات الناشئة؟",

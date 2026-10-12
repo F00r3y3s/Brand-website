@@ -28,8 +28,8 @@ export default function Services() {
   const listRef = useRef<HTMLDivElement>(null);
   const luminaRef = useRef<LuminaInteractiveListHandle>(null);
   const introScrollHeight = 140;
-  const perSlideScrollHeight = 150;
-  const postSliderScrollHeight = 0;
+  const perSlideScrollHeight = 160;
+  const postSliderScrollHeight = 120; // hold on last slide before next section arrives
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeService, setActiveService] = useState('');
@@ -114,19 +114,27 @@ export default function Services() {
           const sliderEndProg = sliderStartProg + sliderProgRange;
 
           if (progress < sliderStartProg) {
-            // Intro blur/fade phase
+            // Intro clean fade & subtle slide phase (no blur, easy on the eyes)
             const p = progress / introProg;
+            const introOpacity = Math.max(0, 1 - Math.pow(p, 1.25));
+            const introY = -24 * p;
 
-            gsap.set(introRef.current, { scale: 1 + (p * 0.42), opacity: 1 - p, filter: `blur(${p * 18}px)`, pointerEvents: 'auto' });
-            gsap.set(listRef.current, { opacity: 0, scale: 0.95, filter: 'blur(10px)', pointerEvents: 'none' });
+            gsap.set(introRef.current, { y: introY, opacity: introOpacity, pointerEvents: p > 0.8 ? 'none' : 'auto' });
+
+            if (p < 0.3) {
+              gsap.set(listRef.current, { opacity: 0, y: 18, pointerEvents: 'none' });
+            } else {
+              const listP = (p - 0.3) / 0.7;
+              gsap.set(listRef.current, { opacity: listP, y: 18 * (1 - listP), pointerEvents: listP > 0.5 ? 'auto' : 'none' });
+            }
 
             if (isInSliderPhase.current) {
               isInSliderPhase.current = false;
               hasEnteredSliderPhase.current = false;
             }
           } else {
-            gsap.set(introRef.current, { scale: 1.5, opacity: 0, filter: 'blur(20px)', pointerEvents: 'none' });
-            gsap.set(listRef.current, { opacity: 1, scale: 1, filter: 'blur(0px)', pointerEvents: 'auto' });
+            gsap.set(introRef.current, { y: -24, opacity: 0, pointerEvents: 'none' });
+            gsap.set(listRef.current, { opacity: 1, y: 0, pointerEvents: 'auto' });
 
             if (progress < sliderEndProg) {
               // Slider phase
@@ -268,7 +276,7 @@ export default function Services() {
 
           <div
             ref={listRef}
-            className="absolute inset-0 flex items-center justify-center opacity-0 scale-95 blur-[10px] transition-all duration-1000"
+            className="absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none"
           >
             <LuminaInteractiveList
               items={language === 'ar'
