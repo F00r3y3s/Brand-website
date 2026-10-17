@@ -15,7 +15,7 @@ interface TeamMember {
   nameAr?: string
   role: string
   roleAr?: string
-  image: string
+  image?: string
   roleDescription: string
   roleDescriptionAr?: string
   profession: string
@@ -164,16 +164,7 @@ export default function Team() {
               }}
             >
               <div className="flex items-center gap-4 md:gap-6">
-                {/* Default Avatar Symbol Icon */}
-                <div className="w-14 h-14 md:w-16 md:h-16 rounded-full border border-dark/15 bg-white p-1.5 shadow-sm shrink-0 flex items-center justify-center overflow-hidden group-hover:scale-105 group-hover:border-primary/40 group-hover:shadow-md transition-all duration-300">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-
-                <div className="relative z-10 text-dark group-hover:text-primary transition-colors duration-300 lg:pr-[23rem] xl:pr-[26rem] flex-1">
+                <div className="relative z-10 text-dark group-hover:text-primary transition-colors duration-300 flex-1">
                   <div className="flex items-center gap-3">
                     <h3 className="text-[clamp(1.5rem,4vw,2.45rem)] font-display font-bold uppercase tracking-tight group-hover:translate-x-2 transition-transform duration-500 ease-out leading-[0.95]">
                       {isArabic && member.nameAr ? member.nameAr : member.name}
@@ -199,7 +190,7 @@ export default function Team() {
                 </div>
               </div>
 
-              {/* Desktop Hover Floating Preview */}
+              {/* Desktop Hover Floating Preview - commented out for now
               <AnimatePresence>
                 {hoveredMember === index && (
                   <motion.div
@@ -237,6 +228,7 @@ export default function Team() {
                   </motion.div>
                 )}
               </AnimatePresence>
+              */}
             </div>
           ))}
           <div className="border-t border-dark/10" />
@@ -298,16 +290,8 @@ function TeamMemberModal({
               <X className="w-5 h-5" />
             </button>
 
-            {/* Avatar and Identity */}
-            <div className="flex flex-col items-center text-center">
-              <div className="w-24 h-24 rounded-full border-2 border-primary/20 bg-[#f8f7f4] p-2 shadow-inner flex items-center justify-center mb-4">
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-
+            {/* Identity */}
+            <div className="flex flex-col items-center text-center mt-2">
               <h3 className="text-2xl md:text-3xl font-display font-bold text-dark uppercase tracking-tight">
                 {isArabic && member.nameAr ? member.nameAr : member.name}
               </h3>
