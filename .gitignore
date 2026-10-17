@@ -50,3 +50,10 @@ DEVELOPMENT_CHECKLIST.md
 implementation plan.md
 task.md
 docs/SPEC-ainar.md
+*.xml
+public/emulator_*
+public/screen-emulator.html
+PLAN-site-optimization.md
+WALKTHROUGH.md
+mobile-zoom-optimization.md
+

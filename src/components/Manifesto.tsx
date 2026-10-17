@@ -303,7 +303,7 @@ export default function Manifesto() {
       ref={containerRef}
       className="relative w-full min-h-screen flex items-center bg-neutral-950 overflow-hidden"
     >
-      <div className="w-full flex flex-col lg:flex-row relative">
+      <div className="w-full max-w-[1440px] mx-auto flex flex-col lg:flex-row relative">
 
         {/* Left Column: Text Content */}
         <div className="w-full lg:w-[48%] min-h-[60vh] lg:min-h-screen flex flex-col justify-start px-4 lg:px-10 xl:px-14 lg:-ml-4 z-20 relative pt-12 lg:pt-20 pb-12 lg:pb-40 order-2 lg:order-1">
@@ -376,7 +376,7 @@ export default function Manifesto() {
           ref={desktopValuesRef}
           className="hidden lg:flex pointer-events-none absolute bottom-12 left-0 right-0 z-30 px-5 lg:px-10 xl:px-14"
         >
-          <div className="flex justify-between gap-6 w-full max-w-[92rem] mx-auto items-stretch">
+          <div className="flex justify-between gap-6 w-full max-w-[1440px] mx-auto items-stretch">
             {values.map((item) => (
               <div
                 key={item.title}

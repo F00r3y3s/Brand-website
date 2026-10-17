@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import Image from 'next/image';
 import ProjectCard from './ProjectCard';
@@ -13,6 +14,24 @@ export default function ProjectShowcase() {
   const [cardHeight, setCardHeight] = useState(530);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeCard, setActiveCard] = useState<1 | 2>(1);
+
+  // Lock Lenis + body scroll when modal is open
+  useEffect(() => {
+    const dispatch = (locked: boolean) =>
+      window.dispatchEvent(new CustomEvent('app:scroll-lock', { detail: { locked } }));
+
+    if (isModalOpen) {
+      dispatch(true);
+      document.body.style.overflow = 'hidden';
+      const onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsModalOpen(false); };
+      window.addEventListener('keydown', onEsc);
+      return () => {
+        dispatch(false);
+        document.body.style.overflow = '';
+        window.removeEventListener('keydown', onEsc);
+      };
+    }
+  }, [isModalOpen]);
 
   useEffect(() => {
     const updateSize = () => {
@@ -141,29 +160,41 @@ export default function ProjectShowcase() {
         </div>
       </section>
 
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm"
-          onClick={() => setIsModalOpen(false)}
-        >
-          <div
-            className="relative w-full max-w-6xl h-[90vh] mx-4 md:mx-6 bg-neutral-950 rounded-[2rem] overflow-hidden shadow-2xl border border-white/10"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-5 right-5 z-20 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 transition-all flex items-center justify-center"
-              aria-label="Close modal"
-            >
-              <X className="w-5 h-5 text-white" />
-            </button>
-
-            <div className="w-full h-full overflow-hidden">
-              <AppShowcase isModal />
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Portal-based modal: renders at document.body, above all stacking contexts */}
+      <ProjectModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
+  );
+}
+
+// Portal wrapper - renders above every stacking context (GSAP pins, fixed nav, etc.)
+function ProjectModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  if (!mounted || !isOpen) return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-black/85 backdrop-blur-md"
+      style={{ zIndex: 99999 }}
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-6xl h-[90vh] mx-4 md:mx-6 bg-neutral-950 rounded-[2rem] overflow-hidden shadow-2xl border border-white/10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-5 right-5 z-20 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 transition-all flex items-center justify-center"
+          aria-label="Close modal"
+        >
+          <X className="w-5 h-5 text-white" />
+        </button>
+
+        <div className="w-full h-full overflow-hidden">
+          <AppShowcase isModal />
+        </div>
+      </div>
+    </div>,
+    document.body
   );
 }

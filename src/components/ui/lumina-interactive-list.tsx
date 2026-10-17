@@ -791,12 +791,12 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                         top: 50%;
                         bottom: auto;
                         transform: translateY(-50%);
-                        left: clamp(1rem, 3vw, 3.5rem);
-                        width: min(980px, 72vw);
+                        left: max(clamp(1rem, 3vw, 3.5rem), calc(50% - 720px + 3rem));
+                        width: min(980px, min(72vw, calc(1440px - 6rem)));
                     }
                     [dir="rtl"] .slide-content {
                         left: auto;
-                        right: clamp(1rem, 3vw, 3.5rem);
+                        right: max(clamp(1rem, 3vw, 3.5rem), calc(50% - 720px + 3rem));
                     }
                 }
                 .slide-title {
@@ -986,7 +986,7 @@ export const LuminaInteractiveList = forwardRef<LuminaInteractiveListHandle, { i
                         bottom: clamp(5.6rem, 9.5vh, 7.8rem);
                         transform: translateX(-50%);
                         justify-content: space-between;
-                        width: min(1490px, calc(100% - 1.75rem));
+                        width: min(1440px, calc(100% - 1.75rem));
                         padding: 0;
                         gap: 1.1rem;
                         overflow: visible;

@@ -15,6 +15,9 @@ import Team from '@/components/Team';
 import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
 import FloatingCTA from '@/components/FloatingCTA';
+import FloatingNav from '@/components/FloatingNav';
+import PartnerBanner from '@/components/PartnerBanner';
+import PartnerAnnouncementModal from '@/components/PartnerAnnouncementModal';
 import { useLanguage } from '@/context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -26,6 +29,7 @@ export default function Home() {
   const heroParallaxRef = useRef<HTMLDivElement>(null);
   const whoParallaxRef = useRef<HTMLDivElement>(null);
   const projectsParallaxRef = useRef<HTMLDivElement>(null);
+  const teamParallaxRef = useRef<HTMLDivElement>(null);
   const faqParallaxRef = useRef<HTMLDivElement>(null);
   const footerParallaxRef = useRef<HTMLDivElement>(null);
 
@@ -78,7 +82,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!heroParallaxRef.current || !whoParallaxRef.current || !projectsParallaxRef.current || !footerParallaxRef.current) return;
+    if (!heroParallaxRef.current || !whoParallaxRef.current || !projectsParallaxRef.current || !teamParallaxRef.current || !footerParallaxRef.current) return;
 
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
@@ -106,6 +110,16 @@ export default function Home() {
         trigger: projectsParallaxRef.current,
         start: 'top top',
         end: () => `+=${projectsParallaxRef.current?.offsetHeight || window.innerHeight}`,
+        pin: true,
+        pinSpacing: false,
+        anticipatePin: 1,
+      });
+
+      ScrollTrigger.create({
+        id: 'teamParallaxPin',
+        trigger: teamParallaxRef.current,
+        start: 'top top',
+        end: () => `+=${(teamParallaxRef.current?.offsetHeight || window.innerHeight) + window.innerHeight * 0.4}`,
         pin: true,
         pinSpacing: false,
         anticipatePin: 1,
@@ -162,15 +176,23 @@ export default function Home() {
       <div className="relative z-30">
         <Services />
       </div>
-      <Team />
+
+      <div ref={teamParallaxRef} className="relative z-35 bg-light">
+        <Team />
+      </div>
       {/* <Testimonials /> */}
       <div ref={faqParallaxRef} className="relative z-40 bg-[#F3F2EF]">
         <FAQ />
+      </div>
+      <div className="relative z-45">
+        <PartnerBanner />
       </div>
       <div ref={footerParallaxRef} className="relative z-50">
         <Footer />
       </div>
       <FloatingCTA />
+      <FloatingNav />
+      <PartnerAnnouncementModal />
     </main>
   );
 }

@@ -88,7 +88,13 @@ export default function Footer() {
       })
 
       tl.to(circleRef.current, {
-        scale: 34,
+        scale: () => {
+          const vw = typeof window !== 'undefined' ? window.innerWidth : 1920;
+          const vh = typeof window !== 'undefined' ? window.innerHeight : 1080;
+          const diagonal = Math.hypot(vw, vh);
+          const circleSize = circleRef.current?.offsetWidth || 128;
+          return Math.max(34, Math.ceil((diagonal * 1.6) / circleSize));
+        },
         ease: 'power3.inOut',
       })
         .to(contentRef.current, {

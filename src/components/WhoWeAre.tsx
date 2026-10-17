@@ -158,7 +158,7 @@ export default function WhoWeAre() {
 
     return (
         <section id="who-we-are" ref={containerRef} className="pt-14 pb-24 lg:pt-[4.5rem] lg:pb-[7rem] bg-[#F3F2EF] relative overflow-hidden">
-            <div className="max-w-[92vw] xl:max-w-[86rem] mx-auto">
+            <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
                 <div className="mb-5 lg:mb-6">
                     <h2 className="who-title text-[clamp(1.8rem,4vw,3rem)] font-display font-black uppercase tracking-[0.08em] text-dark/90 leading-none drop-shadow-[0_1px_0_rgba(255,255,255,0.7)]">
                         {language === 'en' ? 'WHO WE ARE' : 'من نحن'}

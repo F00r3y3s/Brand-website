@@ -77,7 +77,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode, initialLang?: Lan
 
   const isRTL = language === 'ar';
 
-  // Translation dictionary — UAE MSA Arabic standard
+  // Translation dictionary - UAE MSA Arabic standard
   // (matches register used on uae.gov.ae, tamm.abudhabi, etc.)
   const translations: Record<string, Record<Language, string>> = {
     // Navigation

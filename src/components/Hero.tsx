@@ -723,9 +723,19 @@ export default function Hero() {
 
   return (
     <section id="home" ref={containerRef} className="relative h-screen flex flex-col items-center justify-center overflow-x-clip overflow-y-visible bg-cream">
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <img src="/hero-bg-clean.webp" alt="Hero Background" className="w-full h-full object-cover opacity-35" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
+      <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center overflow-hidden">
+        <div className="relative w-full max-w-[1600px] h-full">
+          <img
+            src="/hero-bg-clean.webp"
+            alt="Hero Background"
+            className="w-full h-full object-cover opacity-35"
+            style={{
+              maskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)',
+              WebkitMaskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)'
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
+        </div>
       </div>
 
       <div className="relative z-10 w-full h-full max-w-[1440px] mx-auto px-4 sm:pl-6 sm:pr-10 lg:px-12 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-10 items-center pt-20 pb-16 lg:pt-24 lg:pb-32" dir="ltr">
@@ -861,7 +871,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-12 left-0 right-0 z-20 flex flex-col items-center gap-4 pointer-events-none">
+      <div className="absolute bottom-12 left-0 right-0 z-20 flex flex-col items-center gap-4 pointer-events-none max-w-[1440px] mx-auto px-4">
         <div ref={(el) => { if (el) heroRefs.current[2] = el }} className="opacity-0 translate-y-8 pointer-events-auto w-full sm:w-auto flex justify-center">
           <button onClick={(e) => { createRipple(e); setIsModalOpen(true); }} className="group w-full sm:w-auto px-10 py-4 rounded-full bg-neutral-900 text-white font-bold uppercase tracking-widest text-xs transition-all hover:scale-105 hover:bg-neutral-800 shadow-lg">
             <span className="relative z-10 flex items-center gap-3">{language === 'en' ? 'Start Your Journey' : 'ابدأ رحلتك'}<ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" /></span>

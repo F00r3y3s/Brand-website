@@ -62,10 +62,10 @@ export default function Header() {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       setIsScrolled(currentScrollY > 50);
-      const lastScrollY = lastScrollYRef.current;
-      const revealThreshold = Math.max(220, window.innerHeight * 0.5);
+      const heroThreshold = Math.max(window.innerHeight * 0.7, 500);
 
-      if (currentScrollY <= 60) {
+      // In the hero section: always display the regular top navbar
+      if (currentScrollY <= heroThreshold) {
         setHeaderVisible(true);
         hiddenFromYRef.current = currentScrollY;
         clearHideTimer();
@@ -73,33 +73,10 @@ export default function Header() {
         return;
       }
 
-      if (currentScrollY > lastScrollY) {
-        // Scrolling down: hide quickly and reset anchor for future reveal distance.
-        hiddenFromYRef.current = currentScrollY;
-        if (currentScrollY > 100 && !isOpen) {
-          setHeaderVisible(false);
-        }
-        clearHideTimer();
-      } else if (currentScrollY < lastScrollY) {
-        // Scrolling up: only reveal after meaningful upward distance.
-        const upwardDistance = hiddenFromYRef.current - currentScrollY;
-        if (isOpen || upwardDistance >= revealThreshold) {
-          setHeaderVisible(true);
-        }
-
-        if (isVisibleRef.current && currentScrollY > 100 && !isOpen) {
-          scheduleHide();
-        } else {
-          clearHideTimer();
-        }
-      } else {
-        if (currentScrollY > 100 && !isOpen) {
-          scheduleHide();
-        } else {
-          clearHideTimer();
-        }
+      // Scrolled past the hero section: hide the top navbar so the right-side floating navbar takes over
+      if (!isOpen) {
+        setHeaderVisible(false);
       }
-
       lastScrollYRef.current = currentScrollY;
     };
 
@@ -169,6 +146,7 @@ export default function Header() {
     { name: language === 'en' ? 'Projects' : 'المشاريع', href: '#projects' },
     { name: language === 'en' ? 'Services' : 'الخدمات', href: '#services' },
     { name: language === 'en' ? 'Team' : 'الفريق', href: '#team' },
+    { name: language === 'en' ? 'Partners' : 'شركاؤنا', href: '#partners' },
     { name: language === 'en' ? 'Contact' : 'تواصل معنا', href: '#footer' },
     {
       name: language === 'en' ? 'Download' : 'تحميل',
@@ -184,6 +162,7 @@ export default function Header() {
     { href: '#projects', label: { en: 'Projects', ar: 'المشاريع' } },
     { href: '#services', label: { en: 'Services', ar: 'الخدمات' } },
     { href: '#team', label: { en: 'Team', ar: 'الفريق' } },
+    { href: '#partners', label: { en: 'Partners', ar: 'شركاؤنا' } },
     { href: '#footer', label: { en: 'Contact', ar: 'تواصل معنا' } },
   ];
 
@@ -206,7 +185,7 @@ export default function Header() {
             : 'bg-white/5 backdrop-blur-sm border-b border-white/5'
           }`}
       >
-        <div className="w-full px-4 sm:px-8 lg:pl-12 lg:pr-24 max-w-[100vw] overflow-hidden">
+        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
           <div className="flex items-center justify-between h-20 md:h-24">
             {/* Left: Status Indicator & Brand */}
             <div className="flex items-center gap-3 lg:-ml-2">
@@ -218,7 +197,7 @@ export default function Header() {
                 </span>
               </div>
 
-              {/* Brand Logo — Always LTR */}
+              {/* Brand Logo - Always LTR */}
               <Link
                 href="/"
                 className="group flex items-center gap-2"
